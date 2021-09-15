@@ -1,0 +1,6 @@
+{
+	"defaultPrefix": "$",
+	"splitter": "\\",
+ 	"dateFormat": "M/D/YYYY H:mm:ss:SSS",
+	"embedColor": "#3E4CDD"
+}

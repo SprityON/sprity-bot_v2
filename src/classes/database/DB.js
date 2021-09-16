@@ -1,6 +1,21 @@
 const Bot = require('../../Bot')
 
 module.exports = class DB {
+  static connect() {
+    return new Promise((resolve, reject) => {
+      require('mysql').createConnection({
+        host: process.env.DB_HOST,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASS,
+        database: "sprity_bot"
+      }).connect(err => 
+        err
+        ? (reject('\n**\nDatabase error.\n' + err + '\n**'))
+        : resolve('Database is connected.\n')
+      )
+    })
+  }
+
   static get pool() {
     return require('mysql').createPool({
       timeout: 10000,

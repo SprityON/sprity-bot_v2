@@ -158,19 +158,19 @@ module.exports = class Utils {
   static commandCooldown = {
     cooldownSet: new Set(),
     async execute(member, command) {
-      let thisUserInSet = false
+      let foundUserSet = false
       const userObj = { id: member.id, command: command, timeout: Date.now() + command.timeout }
-
+        
       for (const user of this.cooldownSet) {
 
         if (user.id === member.id) {
           if (command.name === user.command.name) {
-            thisUserInSet = true
+            foundUserSet = true
 
             if (user.timeout < Date.now()) {
               this.cooldownSet.delete(user)
 
-              thisUserInSet = false
+              foundUserSet = false
             } else {
               let seconds = Math.floor((user.timeout - Date.now()) / 1000)
               return [true, seconds]
@@ -179,7 +179,7 @@ module.exports = class Utils {
         }
       }
 
-      if (!thisUserInSet) {
+      if (!foundUserSet) {
         this.cooldownSet.add(userObj)
         return [false]
       }

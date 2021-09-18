@@ -1,0 +1,32 @@
+const Utils = require('../../classes/utilities/Utils')
+
+module.exports = {
+  name: Utils.getCmdName(__filename, __dirname),
+  category: Utils.getCmdCategory(__filename),
+  usage: '',
+  aliases: [],
+  permissions: ['MANAGE_MESSAGES'],
+  timeout: 1000,
+
+  execute(msg, args) {
+    msg.delete({ timeout: 5000 })
+
+    if (!args[0] || isNaN(args[0])) return msg.inlineReply(`That is not a valid number.`);
+
+    if (args[0] > 100) 
+      return msg.inlineReply(`I can only delete up to 100 messages.`).then(msg => msg.delete({ timeout: 5000 }));
+
+    if (args[0] < 1) 
+      return msg.inlineReply(`I can only delete messages starting from 1.`).then(msg => msg.delete({ timeout: 5000 }))
+
+    msg.channel.bulkDelete(args[0])
+
+    msg.inlineReply(`Cleared ${args[0]} messages.`).then(msg => msg.delete({ timeout: 5000 }));
+  },
+
+  help: {
+    enabled: false,
+    title: '',
+    description: ``,
+  }
+}

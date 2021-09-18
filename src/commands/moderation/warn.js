@@ -1,68 +1,60 @@
 const Utils = require('../../classes/utilities/Utils')
 const DB = require("../../classes/database/DB")
+const Bot = require('../../Bot')
+const Member = require('../../classes/guild/Member')
 
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
   category: Utils.getCmdCategory(__filename),
   usage: '<member> <reason>',
   aliases: [],
-  permissions: ['MANAGE_MESSAGES'],
+  permissions: ['KICK_MEMBERS'],
   timeout: 1000,
 
-  execute(msg, args) {
-    let mentionedMember = msg.mentions.members.first()
-    if (!mentionedMember) return msg.reply(`you did not mention a member!`)
-
-    const warnRole1 = msg.guild.roles.cache.get('759688280923963392')
-    const warnRole2 = msg.guild.roles.cache.get('759688483094396958')
-
-    const warn1 = mentionedMember.roles.cache.find(role => role === warnRole1)
-    const warn2 = mentionedMember.roles.cache.find(role => role === warnRole2)
-
+  async execute(msg, args) {
+    const member = msg.mentions.members.first()
+    console.log(msg);
+    if (!member) return msg.inlineReply(`You have to mention a member.`)
+    const warns = await new Member(member).warns
     if (!args[1]) return msg.inlineReply(`You have to provide a reason.`)
 
-    let argsWithoutMentions = args.filter(arg => !Discord.MessageMentions.USERS_PATTERN.test(arg))
-    argsWithoutMentions = argsWithoutMentions.join(' ')
+    const warning1 = msg.guild.roles.cache.find(role => role.name === 'Warning 1')
+    const warning2 = msg.guild.roles.cache.find(role => role.name === 'Warning 2')
 
-    DB.query(`SELECT * FROM members WHERE member_id = ${mentionedMember.id}`, data => {
-      let result = data[0]
-      if (warn1) { mentionedMember.roles.remove(warnRole1) }
-      if (warn2) { mentionedMember.roles.remove(warnRole2) }
+    const reason = args.filter(arg => !Bot.Discord.MessageMentions.USERS_PATTERN.test(arg)).join(' ')
+    msg.channel.send(new Bot.Discord.MessageEmbed()
+      .addField(`${member.displayName} was warned by ${msg.member.displayName}`, `Warns: ${warns + 1}\nReason: ${reason}`))
 
-      if (result[0].warns == 0) {
-        mentionedMember.roles.add(warnRole1)
+    switch (warns) {
+      case 0:
+        member.roles.add(warning1)
 
-        DB.query(`UPDATE members SET warning_reason_one = '${argsWithoutMentions}' WHERE member_id = ${mentionedMember.id}`)
-        DB.query(`UPDATE members SET warns = 1 WHERE member_id = ${mentionedMember.id}`)
-      } else if (result[0].warns == 1) {
-        mentionedMember.roles.add(warnRole1)
-        mentionedMember.roles.add(warnRole2)
+        DB.query(`UPDATE members SET warning_reason_one = ?, warns = 1 WHERE member_id = ${member.id}`, [reason])
 
-        DB.query(`UPDATE members SET warning_reason_two = '${argsWithoutMentions}' WHERE member_id = ${mentionedMember.id}`)
-        DB.query(`UPDATE members SET warns = 2 WHERE member_id = ${mentionedMember.id}`)
-      } else if (result[0].warns == 2) {
-        mentionedMember.roles.add(warnRole1)
-        mentionedMember.roles.add(warnRole2)
+        break;
+      case 1:
+        member.roles.add(warning2)
 
-        let kickedRole = mentionedMember.roles.cache.find(role => role.name === "Kicked")
-        if (kickedRole) {
-          if (!args[1]) return msg.reply(`this member has 2 warnings and is already kicked. You may ban **${mentionedMember.displayName}**!`)
-        } else {
-          if (!args[1]) return msg.reply(`this member has 2 warnings. You may kick **${mentionedMember.displayName}**!`)
-        }
-      }
+        DB.query(`UPDATE members SET warning_reason_two = ?, warns = 2 WHERE member_id = ${member.id}`, [reason])
 
-      const embed = new Discord.MessageEmbed()
-        .setColor(embedcolor)
-        .addField(`${mentionedMember.displayName} was warned by ${msg.member.displayName}`, `Warns: ${result[0].warns + 1}\nReason: ${argsWithoutMentions}`)
-      msg.channel.send(embed)
-      Functions.updateDB.checkMemberWarns(mentionedMember)
-    })
+        break;
+      case 2:
+        member.roles.cache.find(role => role.name === "Kicked")
+          ? (() => { 
+            msg.inlineReply(`**${member.user.username}** Banned by warning system.\n\nReason:\n\`${reason}\``)
+            new Member(member).ban(reason) 
+          })()
+          : (() => {
+            msg.inlineReply(`**${member.user.username}** kicked by warning system.\n\nReason:\n\`${reason}\``)
+            new Member(member).kick(reason)
+          })()
+        break;
+    }
   },
 
   help: {
-    enabled: false,
-    title: '',
-    description: ``,
+    enabled: true,
+    title: 'Warn',
+    description: `Warn a member. Working example:\n$warn @ingo Spamming constantly`,
   }
 }

@@ -33,7 +33,7 @@ module.exports = class Utils {
         require('../../Bot').client["on"]
           (Utils.getFileName(e),
             (...args) => {
-              if (args[0].author.bot && args[0].author.bot === true) return
+              if ((args[0].author && args[0].author.bot) || (args[0].user && args[0].user.bot)) return
               require(`../../events/${e}`).execute(...args);
             })
       })
@@ -80,6 +80,8 @@ module.exports = class Utils {
   }
 
   static async refresh() {
+    // check if there is a member who must be unmuted
+
     const me = require('../../Bot').client.guilds.cache.get(`380704827812085780`).me
 
     me.guild.members.cache.forEach(async member => {
@@ -205,7 +207,7 @@ module.exports = class Utils {
   }) {
     const Bot = require('../../Bot');
 
-    let embed = new require('../../Bot').Discord.MessageEmbed()
+    let embed = new Bot.Discord.MessageEmbed()
       .setColor(process.env.EMBEDCOLOR);
 
     const colors = [

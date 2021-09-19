@@ -1,20 +1,17 @@
 const Bot = require('../../Bot')
+const DB = require('../../classes/database/DB')
 const Utils = require("../../classes/utilities/Utils")
 
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
   category: Utils.getCmdCategory(__filename),
-  usage(guild_id, callback) {
-    Utils.getCmdUsage(__filename, __dirname, data => {
-      callback(data)
-    }, guild_id)
-  },
+  usage: 'help <command/category>',
   aliases: [],
   permissions: ['SEND_MESSAGES'],
   timeout: 1000,
 
-  execute(msg, args) {
-    const { readdirSync, lstatSync } = Utils.modules.fs
+  async execute(msg, args) {
+    const { readdirSync, lstatSync } = require('fs')
 
     let categories = require(`../categories.json`)
     const commandCategoryFolders = readdirSync('commands').filter(file => !file.includes('.'))
@@ -45,22 +42,20 @@ module.exports = {
           extraFields++
           alt_num++
         } else {
-          for (let i = 0; i < extraFields; i++) {
+          for (let i = 0; i < extraFields; i++) 
             embed.addField(`\u200b`, `\u200b`, true)
-          }
+          
           break
         }
       }
 
-      msg.channel.send(embed)
-      return
+      return msg.channel.send(embed)
     } else if (args[0]) {
       let text = ''
       let isCategory = false
-      for (const cat of categories) {
+      for (const cat of categories) 
         if (cat.category == args[0]) 
           isCategory = true
-      }
 
       if (isCategory) {
         embed.setTitle(`${args[0].slice(0,1).toUpperCase() + args[0].slice(1,args[0].length)} Commands`)
@@ -83,7 +78,6 @@ module.exports = {
               }
               i++
             })
-
 
             break
           } else {
@@ -124,17 +118,16 @@ module.exports = {
 
         })
 
-        command.usage(msg.guild.id, prefix => {
+        const prefix = await DB.guild.getPrefix()
 
-          embed.setDescription(`**${prefix}help ${command.help.title||'no title'}**`)
-            .addField(`Description`, `${command.help.description||'no description'}`)
-            .addField(`Usage`, `\`${prefix}${command.name||'no usage'}\``)
-            .addField(`Aliases`, `${aliases||'no alias'}`)
-            .addField(`Cooldown`, `${command.timeout / 1000}s`)
-            .addField(`Permissions`, `\`\`\`${permissions}\`\`\``)
+        embed.setDescription(`**${prefix}help ${command.name||'no title'}**`)
+          .addField(`Description`, `${command.help.description||'no description'}`)
+          .addField(`Usage`, `\`${prefix}${command.usage||'no usage'}\``)
+          .addField(`Aliases`, `${aliases||'no alias'}`)
+          .addField(`Cooldown`, `${command.timeout / 1000}s`)
+          .addField(`Permissions`, `\`\`\`${permissions}\`\`\``)
 
-          msg.channel.send(embed)
-        })
+        msg.channel.send(embed)
       }
     }
   },

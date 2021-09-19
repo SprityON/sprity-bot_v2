@@ -47,14 +47,14 @@ module.exports = {
     const beginDate = moment().format(require('../../config.json').dateFormat)
     const endDate = moment().add(`${timeINT}`, `${unit}`).format('M/D/YYYY H:mm:ss:SSS')
 
-    DB.query(`INSERT INTO timer_dates(member_id, begindate, enddate) VALUES ('${member.id}', '${beginDate}', '${endDate}')`)
+    DB.query(`INSERT INTO timer_dates(member_id, begindate, enddate, type) VALUES ('${member.id}', '${beginDate}', '${endDate}', 'mute')`)
     member.roles.add(role)
 
     setTimeout(() => {
       member.roles.remove(role)
       msg.inlineReply(`**${member.displayName}** has been unmuted!`)
 
-      DB.query(`DELETE FROM timer_dates WHERE member_id = ${member.id}`)
+      DB.query(`DELETE FROM timer_dates WHERE member_id = ${member.id} AND type = mute`)
     }, ms(time));
 
     msg.inlineReply(`**${member.user.username}** has been muted for ${ms(ms(time), { long: true })}!`)

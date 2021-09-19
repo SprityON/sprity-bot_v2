@@ -39,6 +39,23 @@ module.exports = class Utils {
       })
   }
 
+  static advancedReplace(string, searchString, replaceString) {
+    let newString = ''
+
+    for (let i = 0; i < string.length; i++) {
+      const char = string[i];
+      
+      if (char === searchString) {
+        newString += replaceString
+        continue
+      }
+
+      newString += char
+    }
+
+    return newString
+  }
+
   static getFileName(path) {
     let fileName;
     path.endsWith('.js')

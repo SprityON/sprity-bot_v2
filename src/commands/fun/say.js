@@ -3,13 +3,13 @@ const Utils = require("../../classes/utilities/Utils")
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
   category: Utils.getCmdCategory(__filename),
-  usage: '<message>',
+  usage: 'say <message>',
   aliases: [],
   permissions: ['SEND_MESSAGES'],
   timeout: 1000,
 
   execute(msg, args) {
-    msg.delete({timeout: 250})
+    msg.delete()
     msg.channel.send(
       Utils.createEmbed(
         [

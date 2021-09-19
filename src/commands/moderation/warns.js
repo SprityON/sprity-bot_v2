@@ -5,7 +5,7 @@ const Utils = require('../../classes/utilities/Utils')
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
   category: Utils.getCmdCategory(__filename),
-  usage: '',
+  usage: 'warns <member> OR warns clear <amount> <member>',
   aliases: [],
   permissions: ['SEND_MESSAGES'],
   timeout: 1000,
@@ -15,7 +15,6 @@ module.exports = {
     if (!member) return msg.inlineReply(`You have to mention a member.`)
 
     DB.query(`SELECT * FROM members WHERE member_id = ${member.id}`, data => {
-      console.log(data);
       if (!data) return msg.inlineReply(`**${member.user.username}** does not have any warnings.`)
       for (let row_one of data[0]) {
         if (!args[0] || args[0].startsWith('<@') && args[0].endsWith('>')) {

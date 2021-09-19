@@ -338,10 +338,6 @@ module.exports = {
                         })
 
                         break;
-
-                      default:
-
-                        break;
                     }
 
                     collected1.first().delete()

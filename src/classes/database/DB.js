@@ -63,9 +63,16 @@ module.exports = class DB {
   }
 
   static member = {
+    addToDB: async (member) => {
+      this.query(`select member_id from members where member_id = ${member.id}`, data => {
+        if (!data[0][0]) this.query(`insert into members (member_id) values (${member.id})`)
+      })
+    },
+
     getWarns: async (member) => {
       return new Promise(async (resolve, reject) => {
         const result = await this.query(`select * from members where member_id = ${member.id}`)
+        if (!result[0][0]) return this.member.addToDB(member)
         resolve(result[0][0].warns)
       })
     }

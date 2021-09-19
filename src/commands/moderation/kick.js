@@ -1,10 +1,9 @@
-const Member = require('../../classes/guild/Member')
 const Utils = require('../../classes/utilities/Utils')
 
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
   category: Utils.getCmdCategory(__filename),
-  usage: '',
+  usage: 'kick <member> <reason>',
   aliases: [],
   permissions: ['SEND_MESSAGES'],
   timeout: 1000,
@@ -20,7 +19,7 @@ module.exports = {
         let reason = argsWithoutMention.join(' ')
         if (!reason) return msg.inlineReply(`You have to provide a reason.`)
 
-        new Member(member).kick(reason)
+        member.kick(reason)
 
         msg.inlineReply(`${member.displayName} was kicked for: ${reason}`)
       }
@@ -30,8 +29,8 @@ module.exports = {
   },
 
   help: {
-    enabled: false,
-    title: '',
-    description: ``,
+    enabled: true,
+    title: 'Kick',
+    description: `Kick a member. Working example:\n${require('../../config.json').defaultPrefix}kick <member> <reason>`,
   }
 }

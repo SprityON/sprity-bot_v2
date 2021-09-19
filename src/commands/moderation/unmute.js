@@ -4,7 +4,7 @@ const Utils = require('../../classes/utilities/Utils')
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
   category: Utils.getCmdCategory(__filename),
-  usage: '<member>',
+  usage: 'unmute <member>',
   aliases: [],
   permissions: ['MANAGE_MESSAGES'],
   timeout: 1000,
@@ -18,7 +18,7 @@ module.exports = {
     if (member.roles.cache.find(r => r.name == role.name)) {
       member.roles.remove(role)
       msg.inlineReply(`**${msg.member.user.username}** has been unmuted!`)
-      DB.query(`DELETE FROM timer_dates WHERE member_id = ${member.id}`)
+      DB.query(`DELETE FROM timer_dates WHERE member_id = ${member.id} AND type = 'mute'`)
     } else {
       msg.inlineReply(`**${member.user.username}** is already unmuted.`)
     }

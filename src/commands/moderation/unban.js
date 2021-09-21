@@ -11,7 +11,9 @@ module.exports = {
   execute(msg, args) {
     let member = msg.mentions.members.first()
     if (member) return msg.inlineReply('Unban Members with their Member ID.')
-    msg.guild.fetchBans().then(bannedMembers => {
+    
+    msg.guild.fetchBans()
+    .then(bannedMembers => {
       let bannedMember;
       let memberID = args[0]
       

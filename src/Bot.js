@@ -18,7 +18,7 @@ module.exports = new class Bot {
 	 */
 
 	run(client) {
-		require("./classes/other/replyInline")
+		require("./classes/other/ExtraStructures")
 		client.login(process.env.TOKEN);
 		client.once('ready', this.ready.bind(this, client))
 			.on('guildCreate', this.guildCreate.bind(this))

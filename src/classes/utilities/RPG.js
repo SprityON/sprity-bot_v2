@@ -1,4 +1,6 @@
 const DB = require("../database/DB")
+const Utils = require("./Utils")
+const moment = require('moment')
 
 module.exports = class RPG {
   constructor (member) {
@@ -35,6 +37,9 @@ module.exports = class RPG {
 
             msg.inlineReply(`Your account was created!`)
             DB.query(`insert into rpg (member_id, username, inventory) values ('${this.member.id}', '${username}', '[{"points": 0}, {}]')`)
+            DB.query(`insert into timer_dates (member_id, enddate, type) values ('${this.member.id}', '${moment().clone().format('M/D/YYYY H:mm:ss:SSS')}', 'daily')`)
+            DB.query(`insert into timer_dates (member_id, enddate, type) values ('${this.member.id}', '${moment().clone().format('M/D/YYYY H:mm:ss:SSS')}', 'weekly')`)
+            DB.query(`insert into timer_dates (member_id, enddate, type) values ('${this.member.id}', '${moment().clone().format('M/D/YYYY H:mm:ss:SSS')}', 'monthly')`)
           })
         : msg.inlineReply(`Cancelled!`)
     }).catch(collected => {
@@ -57,8 +62,12 @@ module.exports = class RPG {
       time: 120000 
     }).then(collected => {
       collected.first().content.toLowerCase() === 'y'
-        ? DB.query(`delete from rpg where member_id = ${msg.member.id}`)
-        .then(msg.inlineReply(`Your account was deleted!`))
+        ? 
+        (() => {
+          DB.query(`delete from rpg where member_id = ${msg.member.id}`)
+          DB.query(`delete from timer_dates where member_id = ${msg.member.id}`)
+          msg.inlineReply(`Your account was deleted!`)
+        })()
         : msg.inlineReply(`Cancelled!`)
     })
     DB.query(`delete from rpg where member_id = ${this.member.id}`)
@@ -70,6 +79,58 @@ module.exports = class RPG {
       result[0][0]
         ? resolve(true)
         : (resolve(false), this.create(msg))
+    })
+  }
+
+  get inventory() {
+    return new Promise(async (resolve, reject) => {
+      const result = await DB.query(`select * from rpg where member_id = ${this.member.id}`)
+      resolve(JSON.parse(result[0][0].inventory))
+    })
+  }
+
+  getDaily() {
+    return new Promise(async (resolve, reject) => {
+      const result = await DB.query(`select enddate from timer_dates where member_id = ${this.member.id} and type = 'daily'`)
+      if (result[0][0]) {
+        const enddate = result[0][0].enddate
+
+        const [arr, ongoing, message] = Utils.dateDifference(enddate)
+
+        ongoing
+          ? resolve([false, arr, message])
+          : resolve([true])
+      } else resolve([true])
+    })
+  }
+
+  getWeekly() {
+    return new Promise(async (resolve, reject) => {
+      const result = await DB.query(`select enddate from timer_dates where member_id = ${this.member.id} and type = 'weekly'`)
+      if (result[0][0]) {
+        const enddate = result[0][0].enddate
+
+        const [arr, ongoing, message] = Utils.dateDifference(enddate)
+
+        ongoing
+          ? resolve([false, arr, message])
+          : resolve([true])
+      } else resolve([true])
+    })
+  }
+
+  getMonthly() {
+    return new Promise(async (resolve, reject) => {
+      const result = await DB.query(`select enddate from timer_dates where member_id = ${this.member.id} and type = 'monthly'`)
+      if (result[0][0]) {
+        const enddate = result[0][0].enddate
+
+        const [arr, ongoing, message] = Utils.dateDifference(enddate)
+
+        ongoing
+          ? resolve([false, arr, message])
+          : resolve([true])
+      } else resolve([true])
     })
   }
 }

@@ -9,8 +9,6 @@ module.exports = {
   timeout: 1000,
 
   execute(msg, args) {
-    msg.delete({ timeout: 5000 })
-
     if (!args[0] || isNaN(args[0])) return msg.inlineReply(`That is not a valid number.`);
 
     if (args[0] > 100) 
@@ -21,7 +19,7 @@ module.exports = {
 
     msg.channel.bulkDelete(args[0])
 
-    msg.inlineReply(`Cleared ${args[0]} messages.`).then(msg => msg.delete({ timeout: 5000 }));
+    msg.channel.send(`Cleared ${args[0]} messages.`).then(msg => msg.delete({ timeout: 5000 }));
   },
 
   help: {

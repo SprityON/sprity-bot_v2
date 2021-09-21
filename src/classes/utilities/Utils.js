@@ -2,8 +2,6 @@ const DB = require('../database/DB');
 
 module.exports = class Utils {
   static load() {
-    this.refresh()
-
     const { readdirSync, lstatSync } = require('fs');
 
     readdirSync(`./commands`).filter(selected => !selected.endsWith(
@@ -33,10 +31,11 @@ module.exports = class Utils {
         require('../../Bot').client["on"]
           (Utils.getFileName(e),
             (...args) => {
-              if ((args[0].author && args[0].author.bot) || (args[0].user && args[0].user.bot)) return
               require(`../../events/${e}`).execute(...args);
             })
       })
+      
+    this.refresh()
   }
 
   static advancedReplace(string, searchString, replaceString) {
@@ -102,7 +101,7 @@ module.exports = class Utils {
     const me = require('../../Bot').client.guilds.cache.get(`380704827812085780`).me
 
     me.guild.members.cache.forEach(async member => {
-      const result = await DB.query(`SELECT * FROM timer_dates WHERE member_id = ${member.id}`)
+      const result = await DB.query(`SELECT * FROM timer_dates WHERE member_id = ${member.id} and type = 'mute'`)
 
       if (result[0][0]) {
         const [arr, ongoing] = this.dateDifference(result[0][0].enddate)
@@ -122,40 +121,45 @@ module.exports = class Utils {
 
     endDate = endDate.split(' ')
     let enddates = endDate[0].split('/')
-
     let endtimes = endDate[1].split(':')
 
     let month = enddates[0]
     let day = enddates[1]
     let year = enddates[2]
-
-    let hours = endtimes[0]
-    let minutes = endtimes[1]
-    let seconds = endtimes[2]
-    let milliseconds = endtimes[3]
+    let hour = endtimes[0]
+    let minute = endtimes[1]
+    let second = endtimes[2]
+    let millisecond = endtimes[3]
 
     let currentDate = new Date()
 
     let currentDateMoment = moment([currentDate.getFullYear(), currentDate.getMonth() + 1, currentDate.getDate(), ' ', currentDate.getHours(), currentDate.getMinutes(), currentDate.getSeconds(), currentDate.getMilliseconds()], 'YYYYMD H:mm:ss:SSS')
-    let endDateMoment = moment([year, month, day, hours, minutes, seconds, milliseconds], 'YYYYMD H:mm:ss:SSS')
+    let endDateMoment = moment([year, month, day, hour, minute, second, millisecond], 'YYYYMD H:mm:ss:SSS')
 
     const muteDurationYears = endDateMoment.diff(currentDateMoment, 'years')
     const muteDurationMonths = endDateMoment.diff(currentDateMoment, 'months')
     const muteDurationDays = endDateMoment.diff(currentDateMoment, 'days')
-
     const muteDurationHours = endDateMoment.diff(currentDateMoment, 'hours')
     const muteDurationMinutes = endDateMoment.diff(currentDateMoment, 'minutes')
     const muteDurationSeconds = endDateMoment.diff(currentDateMoment, 'seconds')
     const muteDurationMilliseconds = endDateMoment.diff(currentDateMoment)
 
+    const years = muteDurationYears
+    const months = years ? muteDurationMonths - (muteDurationYears * 12) : muteDurationMonths
+    const days = months ? muteDurationDays - (muteDurationMonths * 31) : muteDurationDays
+    const hours = days ? muteDurationHours - (muteDurationDays * 24) : muteDurationHours
+    const minutes = hours ? muteDurationMinutes - (muteDurationHours * 60) : muteDurationMinutes
+    const seconds = minutes ? muteDurationSeconds - (muteDurationMinutes * 60) : muteDurationSeconds
+    const milliseconds = seconds ? muteDurationMilliseconds - (muteDurationSeconds * 1000) : muteDurationMilliseconds
+
     const options = [
-      { 'y': muteDurationYears },
-      { 'mm': muteDurationMonths },
-      { 'd': muteDurationDays },
-      { 'h': muteDurationHours },
-      { 'm': muteDurationMinutes },
-      { 's': muteDurationSeconds },
-      { 'ms': muteDurationMilliseconds }
+      { 'y': years },
+      { 'mm': months },
+      { 'd': days },
+      { 'h': hours},
+      { 'm': minutes },
+      { 's': seconds },
+      { 'ms': milliseconds }
     ]
 
     let arr = []
@@ -166,12 +170,26 @@ module.exports = class Utils {
         if (o > 0) ongoing = true
         return [o, ongoing]
       } else if (!option) {
-        if (Object.values(o)[0] > 0) ongoing = true
-        arr.push(o)
+        if (Object.values(o)[0] > 0) {
+          ongoing = true
+          arr.push(o)
+        }
       }
     }
 
-    return [arr, ongoing]
+    let message = ''
+    for (let i = 0; i < arr.length; i++) {
+      const time = arr[i]
+
+      if (i + 2 === arr.length) {
+        message += `and ${Object.values(time)[0]}${Object.keys(time)[0]}`
+        break
+      } else {
+        message += `${Object.values(time)[0]}${Object.keys(time)[0]}, `
+      }
+    }
+
+    return [arr, ongoing, message]
   }
 
   static commandCooldown = {

@@ -3,7 +3,7 @@ const Bot = require('../../Bot')
 module.exports = class DB {
   static connect() {
     return new Promise((resolve, reject) => {
-      require('mysql').createConnection({
+      require('mysql2').createConnection({
         host: process.env.DB_HOST,
         user: process.env.DB_USER,
         password: process.env.DB_PASS,
@@ -17,8 +17,7 @@ module.exports = class DB {
   }
 
   static get pool() {
-    return require('mysql').createPool({
-      timeout: 10000,
+    return require('mysql2').createPool({
       connectionLimit: 50,
       host: process.env.DB_HOST,
       user: process.env.DB_USER,

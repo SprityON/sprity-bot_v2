@@ -9,7 +9,8 @@ module.exports = {
   timeout: 1000,
 
   execute(msg, args) {
-    if (!args[0] || isNaN(args[0])) return msg.inlineReply(`That is not a valid number.`);
+    if (!args[0] || isNaN(args[0])) 
+      return msg.inlineReply(`That is not a valid number.`).then(msg => msg.delete({ timeout: 5000 }));
 
     if (args[0] > 100) 
       return msg.inlineReply(`I can only delete up to 100 messages.`).then(msg => msg.delete({ timeout: 5000 }));
@@ -17,13 +18,15 @@ module.exports = {
     if (args[0] < 1) 
       return msg.inlineReply(`I can only delete messages starting from 1.`).then(msg => msg.delete({ timeout: 5000 }))
 
+    msg.delete()
+
     msg.channel.bulkDelete(args[0])
 
     msg.channel.send(`Cleared ${args[0]} messages.`).then(msg => msg.delete({ timeout: 5000 }));
   },
 
   help: {
-    enabled: false,
+    enabled: true,
     title: '',
     description: ``,
   }

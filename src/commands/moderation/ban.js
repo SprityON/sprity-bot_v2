@@ -10,19 +10,21 @@ module.exports = {
 
   execute(msg, args) {
     const member = msg.mentions.members.first()
-    if (!member) return msg.inlineReply(`You have to mention a member!`)
+    if (!member) return msg.replyEmbed(`You have to mention a member!`)
 
     if (args[0] == member.id && args[0].startsWith('<@') && args[0].endsWith('>')) {
       if (member.bannable) {
         let argsWithoutMention = args.splice(1)
         let reason = argsWithoutMention.join(' ')
-        if (!reason) return msg.inlineReply(`please provide a reason!`)
+        if (!reason) return msg.replyEmbed(`Please provide a reason!`)
 
         member.ban(reason)
 
-        msg.inlineReply(`${member.user.username} was banned for: ${reason}`)
-      } else return msg.inlineReply('You cannot ban this member.')
-    } else return msg.inlineReply(`You have to provide a reason.`)
+        msg.replyEmbed([
+          [`${member.user.username} was banned for:`],[`${reason}`]
+        ])
+      } else return msg.replyEmbed('You cannot ban this member.')
+    } else return msg.replyEmbed(`You have to provide a reason.`)
   },
 
   help: {

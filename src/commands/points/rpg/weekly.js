@@ -28,7 +28,7 @@ module.exports = {
 
   help: {
     enabled: true,
-    title: '',
-    description: ``,
+    title: 'Weekly',
+    description: `Get your weekly points!`,
   }
 }

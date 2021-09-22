@@ -10,15 +10,9 @@ module.exports = {
 
   execute(msg, args) {
     msg.delete()
-    msg.channel.send(
-      Utils.createEmbed(
-        [
-          [
-            `${msg.author.username} said:`, 
-            `\`\`\`` + msg.content.slice(msg.content.split(" ")[0].length + 1) + `\`\`\``
-          ]
+    msg.sendEmbed([
+          [`${msg.author.username} said:`, `\`\`\`` + msg.content.slice(msg.content.split(" ")[0].length + 1) + `\`\`\``]
         ], { color: Utils.randomColor() }
-      )
     );
   },
 

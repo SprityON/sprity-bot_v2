@@ -27,8 +27,8 @@ module.exports = {
   },
 
   help: {
-    enabled: false,
-    title: '',
-    description: ``,
+    enabled: true,
+    title: 'Monthly',
+    description: `Get your Monthly points!`,
   }
 }

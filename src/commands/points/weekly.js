@@ -1,6 +1,6 @@
-const DB = require('../../../classes/database/DB')
-const RPG = require('../../../classes/utilities/RPG')
-const Utils = require('../../../classes/utilities/Utils')
+const DB = require('../../classes/database/DB')
+const RPG = require('../../classes/utilities/RPG')
+const Utils = require('../../classes/utilities/Utils')
 const moment = require('moment')
 
 module.exports = {
@@ -22,7 +22,7 @@ module.exports = {
       inventory[0].points += 2000
       DB.query(`update rpg set inventory = '${JSON.stringify(inventory)}' where member_id = '${msg.member.id}'`)
 
-      return msg.replyEmbed(`You have received your 2000 weekly points!`)
+      return msg.replyEmbed(`You have received your **2000** weekly points!`)
     } else msg.replyEmbed(`You cannot claim your weekly yet.\nPlease wait: **${overTimeMessage}**`)
   },
 

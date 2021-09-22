@@ -38,6 +38,10 @@ module.exports = class Utils {
     this.refresh()
   }
 
+  static normalizePrice(n) {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumSignificantDigits: 1 }).format(n).replace('$', ' ')
+  }
+
   static advancedReplace(string, searchString, replaceString) {
     let newString = ''
 

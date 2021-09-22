@@ -35,11 +35,10 @@ module.exports.execute = async (msg) => {
         try {
           cmdFile = require(`../commands/${cmd.category}/${cmd.name}`);
         } catch (error) {
-          return msg.inlineReply(Utils.createEmbed(
-            [
-              [`ERROR`, `Command \`${command}\` does not exist!`]
-            ], { footer: true, status: 'error' }
-          ))
+          return msg.replyEmbed([
+            [`ERROR`, `That command does not exist!`]
+          ], { footer: '$help for more info', color: 'ff0000' }
+          )
         }
 
         let files = readdirSync(`./commands/${cmd.category}`)

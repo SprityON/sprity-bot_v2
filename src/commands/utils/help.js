@@ -16,6 +16,7 @@ module.exports = {
     let categories = require(`../categories.json`)
     const commandCategoryFolders = readdirSync('commands').filter(file => !file.includes('.'))
     let embed = new Bot.Discord.MessageEmbed()
+    .setColor(require('../../config.json').embedColor)
     if (!args[0]) {
         embed.setTitle(`Commands`)
         .setFooter(`For more specific information: help (category/command)`)
@@ -60,8 +61,14 @@ module.exports = {
       if (isCategory) {
         embed.setTitle(`${args[0].slice(0,1).toUpperCase() + args[0].slice(1,args[0].length)} Commands`)
 
-        let i = 1
+        let i = 0
         const files = readdirSync(`commands/${args[0]}`)
+
+        let files_length = 0
+        files.forEach(file => {
+          const command = require(`../${args[0]}/${file}`)
+          if (!command.handler && command.help.enabled === true) files_length++
+        })
 
         for (const file of files) {
           if (lstatSync(`commands/${args[0]}/${file}`).isDirectory()) {
@@ -69,24 +76,27 @@ module.exports = {
 
             commands.forEach(cmd => {
               let command = require(`../${args[0]}/${file}/${cmd}`)
+
               if (!command.handler && command.help.enabled === true) {
                 cmd = cmd.slice(0, -3)
 
-                i === commands.length
+                i + 1 === commands.length
                   ? text += `\`${cmd}\``
                   : text += `\`${cmd}\`, `
               }
-              i++
             })
-
-            break
           } else {
-            i === files.length
-              ? text += `\`${file.slice(0, -3)}\``
-              : text += `\`${file.slice(0, -3)}\`, `
+            const command = require(`../${args[0]}/${file}`)
+
+            if (!command.handler && command.help.enabled === true) {
+              i + 1 === files_length
+                ? text += `\`${file.slice(0, -3)}\``
+                : text += `\`${file.slice(0, -3)}\`, `
+            }
           }
 
-          i++
+          const command = require(`../${args[0]}/${file}`)
+          if (!command.handler && command.help.enabled === true) i++
         }
 
         embed.setDescription(text)

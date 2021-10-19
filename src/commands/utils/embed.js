@@ -15,9 +15,9 @@ module.exports = {
       case 'create':
         let embed = new Discord.MessageEmbed()
 
-        msg.inlineReply(Utils.createEmbed(
-          [[]], { title: 'Choose your embed title', description: 'Cancel this process with **cancel**.' }
-        )).then(message1 => {
+        msg.replyEmbed([], 
+          { title: 'Choose your embed title', description: 'Cancel this process with **cancel**.' }
+        ).then(message1 => {
           const filter = m => m.author.id === msg.author.id
 
           message1.channel.awaitMessages(filter, {

@@ -17,7 +17,7 @@ module.exports = {
 
     if (member.roles.cache.find(r => r.name == role.name)) {
       member.roles.remove(role)
-      msg.inlineReply(`**${msg.member.user.username}** has been unmuted!`)
+      msg.inlineReply(`**${member.user.username}** has been unmuted!`)
       DB.query(`DELETE FROM timer_dates WHERE member_id = ${member.id} AND type = 'mute'`)
     } else {
       msg.inlineReply(`**${member.user.username}** is already unmuted.`)

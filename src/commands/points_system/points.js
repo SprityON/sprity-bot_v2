@@ -17,8 +17,8 @@ module.exports = {
   },
 
   help: {
-    enabled: false,
-    title: '',
-    description: ``,
+    enabled: true,
+    title: 'Points',
+    description: `See how many points you currently have.`,
   }
 }

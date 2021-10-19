@@ -50,14 +50,14 @@ module.exports = {
     DB.query(`INSERT INTO timer_dates(member_id, begindate, enddate, type) VALUES ('${member.id}', '${beginDate}', '${endDate}', 'mute')`)
     member.roles.add(role)
 
+    msg.inlineReply(`**${member.user.username}** has been muted for ${ms(ms(time), { long: true })}!`)
+
     setTimeout(() => {
       member.roles.remove(role)
       msg.inlineReply(`**${member.displayName}** has been unmuted!`)
 
       DB.query(`DELETE FROM timer_dates WHERE member_id = ${member.id} AND type = mute`)
     }, ms(time));
-
-    msg.inlineReply(`**${member.user.username}** has been muted for ${ms(ms(time), { long: true })}!`)
   },
 
   help: {

@@ -103,16 +103,17 @@ module.exports = class Utils {
     // check if there is a member who must be unmuted
 
     const me = require('../../Bot').client.guilds.cache.get(`380704827812085780`).me
+    const role = member.guild.roles.cache.find(role => role.name === "Muted")
 
     me.guild.members.cache.forEach(async member => {
       const result = await DB.query(`SELECT * FROM timer_dates WHERE member_id = ${member.id} and type = 'mute'`)
 
-      if (result[0][0]) {
+      if (result[0][0] || member.roles.cache.find(r => r.id === role.id)) {
         const [arr, ongoing] = this.dateDifference(result[0][0].enddate)
 
         if (!ongoing) {
           console.log(`${member.user.username} was unmuted.`)
-          member.roles.remove(member.guild.roles.cache.find(role => role.name === "Muted"))
+          member.roles.remove(role)
 
           DB.query(`DELETE FROM timer_dates WHERE member_id = ${member.id}`)
         }

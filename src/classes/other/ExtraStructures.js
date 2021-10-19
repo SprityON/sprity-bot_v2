@@ -39,19 +39,20 @@ class Message extends Structures.get("Message") {
       const fields = content
 
       if (options.title) embed.setTitle(options.title)
-      if (options.description) embed.setTitle(options.description)
-      if (options.footer) embed.setTitle(options.footer)
+      if (options.description) embed.setDescription(options.description)
+      if (options.footer) embed.setFooter(options.footer)
       if (options.color) embed.setColor(options.color)
       if (options.author) embed.setAuthor(options.author)
 
-      fields.forEach(field => {
-        if (field.length !== 2) throw new Error(`One or more fields do not have a name and a value`)
+      if (fields.length !== 0)
+        fields.forEach(field => {
+          if (field.length !== 2) throw new Error(`One or more fields do not have a name and a value`)
 
-        const name = field[0]
-        const value = field[1]
+          const name = field[0]
+          const value = field[1]
 
-        embed.addField(name, value, options.inline)
-      })
+          embed.addField(name, value, options.inline)
+        })
     }
 
     return this.inlineReply(embed)
@@ -76,19 +77,20 @@ class Message extends Structures.get("Message") {
       const fields = content
 
       if (options.title) embed.setTitle(options.title)
-      if (options.description) embed.setTitle(options.description)
-      if (options.footer) embed.setTitle(options.footer)
+      if (options.description) embed.setDescription(options.description)
+      if (options.footer) embed.setFooter(options.footer)
       if (options.color) embed.setColor(options.color)
       if (options.author) embed.setAuthor(options.author)
 
-      fields.forEach(field => {
-        if (field.length !== 2) throw new Error(`One or more fields do not have a name and a value`)
+      if (fields.length !== 0)
+        fields.forEach(field => {
+          if (field.length !== 2) throw new Error(`One or more fields do not have a name and a value`)
 
-        const name = field[0]
-        const value = field[1]
+          const name = field[0]
+          const value = field[1]
 
-        embed.addField(name, value, options.inline)
-      })
+          embed.addField(name, value, options.inline)
+        })
     }
     
     this.channel.send(embed)

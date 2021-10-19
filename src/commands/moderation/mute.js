@@ -56,7 +56,7 @@ module.exports = {
       member.roles.remove(role)
       msg.inlineReply(`**${member.displayName}** has been unmuted!`)
 
-      DB.query(`DELETE FROM timer_dates WHERE member_id = ${member.id} AND type = mute`)
+      DB.query(`DELETE FROM timer_dates WHERE member_id = ${member.id} AND 'type' = 'mute'`)
     }, ms(time));
   },
 

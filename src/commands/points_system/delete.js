@@ -8,6 +8,7 @@ module.exports = {
   aliases: [],
   permissions: ['SEND_MESSAGES'],
   timeout: 1000,
+  points: true,
 
   execute(msg, args) {
     const player = new RPG(msg.member.id)

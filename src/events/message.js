@@ -67,11 +67,13 @@ module.exports.execute = async (msg) => {
 
           enoughPermissions
             ? (async () => {
-              const player = new RPG(msg.member)
-            
-              await player.hasAccount()
-                ? cmdFile.execute(msg, args)
-                : (player.create(msg))
+              if (cmdFile.points) {
+                const player = new RPG(msg.member)
+
+                await player.hasAccount()
+                  ? cmdFile.execute(msg, args)
+                  : player.create(msg)
+              } else cmdFile.execute(msg, args)
             })()
             : msg.inlineReply(`**${msg.author.username}**, you do not have enough permissions to use this command!`)
         })

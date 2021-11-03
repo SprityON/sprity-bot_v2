@@ -12,12 +12,11 @@ module.exports = {
   timeout: 1000,
 
   async execute(msg, args) {
+    return msg.sendEmbed(`Unavailable.`)
     const player = new RPG(msg.member)
     
     if (await player.hasAccount(msg)) {
       const command = args.splice(0,1)[0]
-       
-      if (command === 'delete') return player.delete(msg)
 
       fs.readdirSync(`${Utils.advancedReplace(__dirname, '\\', '/')}/rpg`)
       .forEach(file => {

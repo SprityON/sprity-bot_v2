@@ -34,6 +34,12 @@ class Message extends Structures.get("Message") {
     if (!content) throw new Error('Contents are required for method sendEmbed')
     if (typeof content !== 'object' && typeof content !== 'string') throw new Error(`Content must be an object`)
     if (typeof content === 'string') {
+      if (options.description) throw new Error('Cannot add another description.')
+      if (options.title) embed.setTitle(options.title)
+      if (options.footer) embed.setFooter(options.footer)
+      if (options.color) embed.setColor(options.color)
+      if (options.author) embed.setAuthor(options.author)
+      
       embed.setDescription(content)
     } else {
       const fields = content
@@ -72,6 +78,12 @@ class Message extends Structures.get("Message") {
     if (!content) throw new Error('Fields are required for method sendEmbed')
     if (typeof content !== 'object' && typeof content !== 'string') throw new Error(`Fields must be an object`)
     if (typeof content === 'string') {
+      if (options.description) throw new Error('Cannot add another description.')
+      if (options.title) embed.setTitle(options.title)
+      if (options.footer) embed.setFooter(options.footer)
+      if (options.color) embed.setColor(options.color)
+      if (options.author) embed.setAuthor(options.author)
+
       embed.setDescription(content)
     } else {
       const fields = content

@@ -22,24 +22,24 @@ module.exports = class RPG {
       time: 30000 
     }).then(collected => {
       collected.first().content.toLowerCase() === 'y'
-        ? msg.replyEmbed(`What will your username be?`)
+        ? collected.first().replyEmbed(`What will your username be?`)
           .then(async msg => {
             const collected = await msg.channel.awaitMessages(filter, { 
               max: 1, 
               timeout: 120000 
+            }).then(collected => {
+              const username = collected.first().content
+
+              collected.first().replyEmbed(`Your account was created!`)
+              DB.query(`insert into rpg (member_id, username, inventory) values ('${this.member.id}', '${username}', '[{"gold": 0}, {}]')`)
+              DB.query(`insert into timer_dates (member_id, enddate, type) values ('${this.member.id}', '${moment().clone().format('M/D/YYYY H:mm:ss:SSS')}', 'daily')`)
+              DB.query(`insert into timer_dates (member_id, enddate, type) values ('${this.member.id}', '${moment().clone().format('M/D/YYYY H:mm:ss:SSS')}', 'weekly')`)
+              DB.query(`insert into timer_dates (member_id, enddate, type) values ('${this.member.id}', '${moment().clone().format('M/D/YYYY H:mm:ss:SSS')}', 'monthly')`)
             }).catch(collected => {
               console.log(collected);
 
-              msg.channel.send(`You were too late!`)
+              collected.first().replyEmbed(`You were too late!`)
             })
-
-            const username = collected.first().content
-
-            msg.replyEmbed(`Your account was created!`)
-            DB.query(`insert into rpg (member_id, username, inventory) values ('${this.member.id}', '${username}', '[{"points": 0}, {}]')`)
-            DB.query(`insert into timer_dates (member_id, enddate, type) values ('${this.member.id}', '${moment().clone().format('M/D/YYYY H:mm:ss:SSS')}', 'daily')`)
-            DB.query(`insert into timer_dates (member_id, enddate, type) values ('${this.member.id}', '${moment().clone().format('M/D/YYYY H:mm:ss:SSS')}', 'weekly')`)
-            DB.query(`insert into timer_dates (member_id, enddate, type) values ('${this.member.id}', '${moment().clone().format('M/D/YYYY H:mm:ss:SSS')}', 'monthly')`)
           })
         : msg.replyEmbed(`Cancelled!`)
     }).catch(collected => {
@@ -66,9 +66,9 @@ module.exports = class RPG {
         (() => {
           DB.query(`delete from rpg where member_id = ${msg.member.id}`)
           DB.query(`delete from timer_dates where member_id = ${msg.member.id}`)
-          msg.replyEmbed(`Your account was deleted!`)
+          collected.first().replyEmbed(`Your account was deleted!`)
         })()
-        : msg.replyEmbed(`Cancelled!`)
+        : collected.first().replyEmbed(`Cancelled!`)
     })
     DB.query(`delete from rpg where member_id = ${this.member.id}`)
   }
@@ -76,9 +76,14 @@ module.exports = class RPG {
   hasAccount(msg) {
     return new Promise(async (resolve, reject) => {
       const result = await DB.query(`SELECT * FROM rpg WHERE member_id = ${this.member.id}`)
-      result[0][0]
-        ? resolve(true)
-        : (resolve(false), this.create(msg))
+
+      if (result[0][0]) {
+        resolve(true)
+      } else {
+        msg
+          ? (resolve(false), this.create(msg))
+          : (resolve(false))
+      }
     })
   }
 
@@ -86,6 +91,14 @@ module.exports = class RPG {
     return new Promise(async (resolve, reject) => {
       const result = await DB.query(`select * from rpg where member_id = ${this.member.id}`)
       resolve(JSON.parse(result[0][0].inventory))
+    })
+  }
+
+  get points() {
+    return new Promise(async (resolve, reject) => {
+      const result = await DB.query(`select points from members where member_id = ${this.member.id}`)
+      const points = result[0][0].points
+      resolve(points)
     })
   }
 

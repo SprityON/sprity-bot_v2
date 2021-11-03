@@ -10,19 +10,18 @@ module.exports = {
   aliases: [],
   permissions: ['SEND_MESSAGES'],
   timeout: 1000,
+  points: true,
 
   async execute(msg, args) {
     const player = new RPG(msg.member)
-    const inventory = await player.inventory
+    let points = await player.points
     const [overTime, arr, overTimeMessage] = await player.getWeekly()
 
     if (overTime) {
       DB.query(`update timer_dates set enddate = '${moment().clone().add(7, 'days').format('M/D/YYYY H:mm:ss:SSS')}' where member_id = ${msg.member.id} and type = 'weekly'`)
 
-      inventory[0].points += 2000
-      DB.query(`update rpg set inventory = '${JSON.stringify(inventory)}' where member_id = '${msg.member.id}'`)
-
-      return msg.replyEmbed(`You have received your **2000** weekly points!`)
+      DB.query(`update members set points = '${points += 1000}' where member_id = '${msg.member.id}'`)
+      return msg.replyEmbed(`You have received your **${Utils.normalizePrice(1000)}** weekly points!`)
     } else msg.replyEmbed(`You cannot claim your weekly yet.\nPlease wait: **${overTimeMessage}**`)
   },
 

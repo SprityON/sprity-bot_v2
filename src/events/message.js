@@ -1,5 +1,6 @@
 const Bot = require('../Bot');
 const DB = require('../classes/database/DB');
+const RPG = require('../classes/utilities/RPG');
 const Utils = require('../classes/utilities/Utils');
 
 module.exports.execute = async (msg) => {
@@ -15,11 +16,21 @@ module.exports.execute = async (msg) => {
       if (cmd.aliases)
         cmd.aliases.forEach(a => {
           if (command.includes(a)) {
-            if (command.indexOf(a) + 1 == command.length) {
+            const startNumber = command[command.indexOf(a)]
+
+            const assumedPrefix = () => {
+              let temp = ''
+              for (i = 0; i < startNumber.length; i++) {
+                temp += command.charAt(i)
+              }
+              return temp
+            }
+            if (command.replace(assumedPrefix(), '').length == a.length) {
               alias = a
             }
           }
         })
+
 
       if (command.includes(cmd.name) || alias) {
         const prefix = await DB.guild.getPrefix()
@@ -47,7 +58,7 @@ module.exports.execute = async (msg) => {
 
         Utils.commandCooldown.execute(msg.member, cmdFile).then(([onCooldown, seconds]) => {
           if (onCooldown)
-            return msg.inlineReply(`You have to wait ${seconds} seconds before using this command again!`);
+            return msg.replyEmbed(`You have to wait ${seconds} seconds before using this command again!`);
 
           let enoughPermissions = true;
           cmdFile.permissions.forEach(perm => {
@@ -55,20 +66,23 @@ module.exports.execute = async (msg) => {
           })
 
           enoughPermissions
-            ? cmdFile.execute(msg, args)
+            ? (async () => {
+              const player = new RPG(msg.member)
+            
+              await player.hasAccount()
+                ? cmdFile.execute(msg, args)
+                : (player.create(msg))
+            })()
             : msg.inlineReply(`**${msg.author.username}**, you do not have enough permissions to use this command!`)
         })
-
-        return
       }
     }
   } catch (err) {
     if (err) console.log(err)
 
-    msg.channel.send(Utils.createEmbed(
-      [
-        [`ERROR`, `Command \`${command}\` does not exist!`]
-      ], { footer: true, status: 'error' }
-    ))
+    msg.replyEmbed(`Command \`${command}\` does not exist!`, { 
+      title: 'ERROR', 
+      color: 'ff0000' 
+    })
   }
 }

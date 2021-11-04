@@ -21,41 +21,34 @@ module.exports = {
 
     const reason = args.filter(arg => !Bot.Discord.MessageMentions.USERS_PATTERN.test(arg)).join(' ')
 
-    if (warns == 0 || warns == 3) {
-
-    } else if (warns == 1 || warns == 4) {
-
-    } else if (warns == 2 || warns == 5) {}
-
     switch (warns) {
-      case 0: case 3:
+      case 0:
         member.roles.add(warning1)
 
         warns++
         DB.query(`UPDATE members SET warning_reason_one = ?, warns = ${warns} WHERE member_id = ${member.id}`, [reason])
 
         break;
-      case 1: case 4:
+      case 1:
         member.roles.add(warning2)
 
         warns++
         DB.query(`UPDATE members SET warning_reason_two = ?, warns = ${warns} WHERE member_id = ${member.id}`, [reason])
 
         break;
-      case 2: case 5:
-        warns++
-        DB.query(`UPDATE members SET warning_reason_two = ?, warns = ${warns} WHERE member_id = ${member.id}`, [reason])
+      case 2:
+        DB.query(`UPDATE members SET warns = 0 WHERE member_id = ${member.id}`)
 
         member.roles.cache.find(role => role.name === "Kicked")
-          ? (() => { 
-            msg.inlineReply(`**${member.user.username}** Banned by warning system.\n\nReason:\n\`${reason}\``)
+          ? (
+            msg.inlineReply(`**${member.user.username}** Banned by warning system.\n\nReason:\n\`${reason}\``),
             member.ban(reason)
-          })()
-          : (() => {
-            msg.inlineReply(`**${member.user.username}** kicked by warning system.\n\nReason:\n\`${reason}\``)
-            DB.query(`update members set kicked = 1 where member_id = ${member.id}`)
+          )
+          : (
+            msg.inlineReply(`**${member.user.username}** kicked by warning system.\n\nReason:\n\`${reason}\``),
+            DB.query(`update members set kicked = 1 where member_id = ${member.id}`),
             member.kick(reason)
-          })()
+          )
         break;
     }
 

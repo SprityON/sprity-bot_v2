@@ -77,6 +77,7 @@ module.exports.execute = async (msg) => {
             })()
             : msg.inlineReply(`**${msg.author.username}**, you do not have enough permissions to use this command!`)
         })
+        return
       }
     }
   } catch (err) {

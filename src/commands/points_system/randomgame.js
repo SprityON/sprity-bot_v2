@@ -15,46 +15,55 @@ module.exports = {
     const player = new RPG(msg.member)
     let points = await player.points
 
-    // wordgame
-    const sentences = [
-      `type this in or you are dead`,
-      `suggest sentences with my suggestion command`,
-      `lets play minecraft on my server`,
-      `mrbeast is a good guy`,
-      `all for the points...`,
-      `work, work, work`,
-      `type, type, type`,
-      `i love my staff`,
-      `hello i am made of computer code`,
-      `the matrix is a great movie`,
-      `created in javascript`,
-      `made by Sprity`
-    ]
+    const random = Math.floor(Math.random() * 1.99)
+    switch (random) {
+        // wordgame
+      case 0:
+        const sentences = [
+          `type this in or you are dead`,
+          `suggest sentences with my suggestion command`,
+          `lets play minecraft on my server`,
+          `mrbeast is a good guy`,
+          `all for the points...`,
+          `work, work, work`,
+          `type, type, type`,
+          `i love my staff`,
+          `hello i am made of computer code`,
+          `the matrix is a great movie`,
+          `created in javascript`,
+          `made by Sprity`
+        ]
 
-    const sentence = sentences[Math.floor(Math.random() * sentences.length)]
-    const time = (sentence.length + 0.5) * 0.2
-    msg.replyEmbed(`**Hurry!** Type in:\n\`${sentence}\``, { title: `Game: Wordgame (${time.toFixed(1)}s)`, color: 'ffff00' })
+        const sentence = sentences[Math.floor(Math.random() * sentences.length)]
+        const time = (sentence.length * 0.2) + 0.5
+        msg.replyEmbed(`**Hurry!** Type in:\n\`${sentence}\``, { title: `Game: Wordgame (${time.toFixed(1)}s)`, color: 'ffff00' })
 
-    const filter = m => m.author.id === msg.author.id
-    msg.channel.awaitMessages(filter, {time: time * 1000, max: 1})
-    .then(collected => {
-      if (collected.first().content === sentence) {
-        const won = Math.floor(Math.random() * 175) + 25
-        collected.first().replyEmbed(`What a typer you are. You won **${won}** points!`, { color: '00ff00' })
+        const filter = m => m.author.id === msg.author.id
+        msg.channel.awaitMessages(filter, { time: time * 1000, max: 1 })
+          .then(collected => {
+            if (collected.first().content.toLowerCase() === sentence) {
+              const won = Math.floor(Math.random() * 175) + 25
+              collected.first().replyEmbed(`What a typer you are. You won **${won}** points!`, { color: '00ff00' })
 
-        DB.query(`update members set points = ${points += won} where member_id = ${msg.member.id}`)
-      } else {
-        const lost = Math.floor(Math.random() * 450) + 50
-        collected.first().replyEmbed(`You typed in the wrong sentence and lost **${lost}** points!`, { color: 'ff0000' })
+              DB.query(`update members set points = ${points += won} where member_id = ${msg.member.id}`)
+            } else {
+              const lost = Math.floor(Math.random() * 450) + 50
+              collected.first().replyEmbed(`You typed in the wrong sentence and lost **${lost}** points!`, { color: 'ff0000' })
 
-        DB.query(`update members set points = ${points -= lost} where member_id = ${msg.member.id}`)
-      }
-    }).catch(collected => {
-      const lost = Math.floor(Math.random() * 450) + 50
-      collected.first().replyEmbed(`You were too late and lost **${lost}** points!`, { color: 'ff0000' })
+              DB.query(`update members set points = ${points -= lost} where member_id = ${msg.member.id}`)
+            }
+          }).catch(collected => {
+            const lost = Math.floor(Math.random() * 450) + 50
+            msg.replyEmbed(`You were too late and lost **${lost}** points!`, { color: 'ff0000' })
 
-      DB.query(`update members set points = ${points -= lost} where member_id = ${msg.member.id}`)
-    })
+            DB.query(`update members set points = ${points -= lost} where member_id = ${msg.member.id}`)
+          })
+        break;
+        
+      case 1:
+
+        break;
+    }
   },
 
   help: {

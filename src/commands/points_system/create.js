@@ -12,12 +12,11 @@ module.exports = {
   execute(msg, args) {
     const player = new RPG(msg.member.id)
     if (player.hasAccount(msg)) return msg.replyEmbed(`You already have an account!`)
-    player.create(msg)
   },
 
   help: {
-    enabled: false,
-    title: '',
-    description: ``,
+    enabled: true,
+    title: 'Create Account',
+    description: `Create an account for the points system!`,
   }
 }

@@ -13,64 +13,30 @@ module.exports = {
   execute(msg, args) {
     let member = msg.mentions.members.first()
     if (!member) return msg.inlineReply(`You have to mention a member.`)
+    const embed = new Bot.Discord.MessageEmbed()
+      .setTitle(`${member.user.username}'s warnings`)
+      .setColor(require('../../config.json').embedColor)
+      .setFooter(`use '$warns help' for more information about this command`)
+      .setThumbnail(member.user.avatarURL({dynamic: true}))
 
     DB.query(`SELECT * FROM members WHERE member_id = ${member.id}`, data => {
       if (!data) return msg.inlineReply(`**${member.user.username}** does not have any warnings.`)
       for (let row_one of data[0]) {
-        if (!args[0] || args[0].startsWith('<@') && args[0].endsWith('>')) {
-          let reason = ''
-          if (row_one.warns == 0) { reason += 'No warns' }
-          else if (row_one.warns == 1) {
-            reason += `Warns: ${row_one.warns}\n\n**Reasons:**\n1. ${row_one.warning_reason_one}`
-          } else if (row_one.warns == 2) {
-            reason += `Warns: ${row_one.warns}\n\n**Reasons:**\n1. ${row_one.warning_reason_one}\n2. ${row_one.warning_reason_two}`
-          }
+        if (Utils.advancedReplace(args[0], '<@!>', '', { charOnly: true }).length === 18) {
 
-          let kicked = ''
-          if (row_one.kicked == 1) {
-            kicked += `Kicked: yes`
-          } else if (row_one.kicked == 0) {
-            kicked += `Kicked: no`
-          }
+          let pos = 0
+          JSON.parse(row_one.warns).length === 0
+            ? embed.setDescription('This member has no warnings.')
+            : JSON.parse(row_one.warns).forEach(warning => {
+              pos++
+              embed.addField(`#${pos}`, `${warning}`, true)
+            })
 
-          if (member) {
-            const embed = new Bot.Discord.MessageEmbed()
-              .setColor(require('../../config.json').embedColor)
-              .addField(`All warnings of: ${member.displayName}`, `${reason}`, true)
-              .addField(`\u200b`, `${kicked}`, true)
-              .setFooter(`use '$warns help' for more information about this command`)
+          row_one.kicked == 0
+            ? embed.addField(`Kicked?`, 'No')
+            : embed.addField(`Kicked?`, 'Yes')
 
-            msg.channel.send(embed)
-          }
-
-          return
-        } else if (!args[0] && !isNaN(args[0])) {
-          let reason = ''
-          if (row_one.warns == 0) { reason += 'No warns' }
-          else if (row_one.warns == 1) {
-            reason += `Warns: ${row_one.warns}\n\n**Reasons:**\n1. ${row_one.warning_reason_one}`
-          } else if (row_one.warns == 2) {
-            reason += `Warns: ${row_one.warns}\n\n**Reasons:**\n1. ${row_one.warning_reason_one}\n2. ${row_one.warning_reason_two}`
-          }
-
-          let kicked = ''
-          if (row_one.kicked == 1) {
-            kicked += `Kicked: yes`
-          } else if (row_one.kicked == 0) {
-            kicked += `Kicked: no`
-          }
-
-          if (member) {
-            const embed = new Bot.Discord.MessageEmbed()
-              .setColor(require('../../config.json').embedColor)
-              .addField(`All warnings of: ${member.displayName}`, `${reason}`, true)
-              .addField(`\u200b`, `${kicked}`, true)
-              .setFooter(`use '$warns help' for more information about this command`)
-
-            msg.channel.send(embed)
-          }
-
-          return
+          return msg.channel.send(embed)
         }
 
         if (args[0] == 'clear') {

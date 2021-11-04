@@ -16,8 +16,8 @@ module.exports = {
   },
 
   help: {
-    enabled: false,
-    title: '',
-    description: ``,
+    enabled: true,
+    title: 'Delete Account',
+    description: `Delete your account from the points system.`,
   }
 }

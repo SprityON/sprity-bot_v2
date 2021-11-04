@@ -42,21 +42,43 @@ module.exports = class Utils {
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumSignificantDigits: 1 }).format(n).replace('$', ' ')
   }
 
-  static advancedReplace(string, searchString, replaceString) {
-    let newString = ''
+  /**
+   *
+   * Set charOnly to true if you want the searchString to search EVERY char in the string and replace it with the replaceString
+   * @param {*} string 
+   * @param {*} searchString
+   * @param {*} replaceString 
+   * @param {*} options 
+   * @returns
+   */
+  static advancedReplace(string, searchString, replaceString, options = {
+    charOnly: false
+  }) {
+    if (options.charOnly) {
+      const replaceChars = Array.from(searchString)
 
-    for (let i = 0; i < string.length; i++) {
-      const char = string[i];
-      
-      if (char === searchString) {
-        newString += replaceString
-        continue
+      let newString = ''
+
+      for (let i = 0; i < string.length; i++) 
+        if (replaceChars.includes(string[i])) { continue } else newString += string[i]
+
+      return newString
+    } else {
+      let newString = ''
+
+      for (let i = 0; i < string.length; i++) {
+        const char = string[i];
+
+        if (char === searchString) {
+          newString += replaceString
+          continue
+        }
+
+        newString += char
       }
 
-      newString += char
+      return newString
     }
-
-    return newString
   }
 
   static getFileName(path) {

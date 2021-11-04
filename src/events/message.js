@@ -1,6 +1,6 @@
 const Bot = require('../Bot');
 const DB = require('../classes/database/DB');
-const RPG = require('../classes/utilities/RPG');
+const Player = require('../classes/utilities/Player');
 const Utils = require('../classes/utilities/Utils');
 
 module.exports.execute = async (msg) => {
@@ -68,7 +68,7 @@ module.exports.execute = async (msg) => {
           enoughPermissions
             ? (async () => {
               if (cmdFile.points) {
-                const player = new RPG(msg.member)
+                const player = new Player(msg.member)
 
                 await player.hasAccount()
                   ? cmdFile.execute(msg, args)

@@ -1,9 +1,9 @@
 [
 	{
-		"category": "points_system",
-		"title": "Points System",
+		"category": "points",
+		"title": "Points",
 		"emote": ":game_die:",
-		"usage": "help points_system"
+		"usage": "help points"
 	},
 	{
 		"category": "moderation",

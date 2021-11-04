@@ -1,5 +1,5 @@
 const DB = require('../../classes/database/DB')
-const RPG = require('../../classes/utilities/RPG')
+const Player = require('../../classes/utilities/Player')
 const Utils = require('../../classes/utilities/Utils')
 const fs = require('fs')
 
@@ -13,7 +13,7 @@ module.exports = {
 
   async execute(msg, args) {
     return msg.sendEmbed(`Unavailable.`)
-    const player = new RPG(msg.member)
+    const player = new Player(msg.member)
     
     if (await player.hasAccount(msg)) {
       const command = args.splice(0,1)[0]

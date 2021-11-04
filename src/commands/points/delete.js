@@ -1,5 +1,5 @@
 const Utils = require('../../classes/utilities/Utils')
-const RPG = require('../../classes/utilities/RPG')
+const Player = require('../../classes/utilities/Player')
 
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
@@ -11,7 +11,7 @@ module.exports = {
   points: true,
 
   execute(msg, args) {
-    const player = new RPG(msg.member.id)
+    const player = new Player(msg.member.id)
     player.delete(msg)
   },
 

@@ -2,7 +2,7 @@ const DB = require("../database/DB")
 const Utils = require("./Utils")
 const moment = require('moment')
 
-module.exports = class RPG {
+module.exports = class Player {
   constructor (member) {
     member
     ? this.member = member
@@ -10,7 +10,7 @@ module.exports = class RPG {
   }
 
   /** 
-   * Creates RPG account for member
+   * Creates account for member
    * @param {object} member 
    */
   create(msg) {
@@ -50,7 +50,7 @@ module.exports = class RPG {
   }
 
   /**
-   * Deletes RPG account for member
+   * Deletes account for member
    * @param {object} member 
    */
   delete(msg) {
@@ -89,7 +89,7 @@ module.exports = class RPG {
 
   get inventory() {
     return new Promise(async (resolve, reject) => {
-      const result = await DB.query(`select * from rpg where member_id = ${this.member.id}`)
+      const result = await DB.query(`select * from members where member_id = ${this.member.id}`)
       resolve(JSON.parse(result[0][0].inventory))
     })
   }

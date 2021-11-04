@@ -1,0 +1,10 @@
+[
+  {
+    "id": "ad_ticket",
+    "emoji": "🎫",
+    "uploaded": "true",
+    "name": "Ad Ticket",
+    "description": "Use this ticket to advertise in <#818558571410096148>",
+    "price": 5000
+  }
+]

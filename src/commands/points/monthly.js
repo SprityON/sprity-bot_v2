@@ -1,4 +1,4 @@
-const RPG = require('../../classes/utilities/RPG')
+const Player = require('../../classes/utilities/Player')
 const Utils = require('../../classes/utilities/Utils')
 const moment = require('moment')
 const DB = require('../../classes/database/DB')
@@ -13,7 +13,7 @@ module.exports = {
   points: true,
 
   async execute(msg, args) {
-    const player = new RPG(msg.member)
+    const player = new Player(msg.member)
     let points = await player.points
     const [overTime, arr, overTimeMessage] = await player.getMonthly()
 

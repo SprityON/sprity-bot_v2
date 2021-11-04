@@ -18,7 +18,7 @@ module.exports = class DB {
 
   static get pool() {
     return require('mysql2').createPool({
-      connectionLimit: 50,
+      connectionLimit: 100,
       host: process.env.DB_HOST,
       user: process.env.DB_USER,
       password: process.env.DB_PASS,

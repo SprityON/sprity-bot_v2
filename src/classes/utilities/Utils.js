@@ -2,7 +2,7 @@ const DB = require('../database/DB');
 const Player = require('./Player');
 
 module.exports = class Utils {
-  static load() {
+  static async load() {
     const { readdirSync, lstatSync } = require('fs');
 
     readdirSync(`./commands`).filter(selected => !selected.endsWith(
@@ -123,31 +123,38 @@ module.exports = class Utils {
   }
 
   static async refresh() {
-    // check if there is a member who must be unmuted
-
     const me = require('../../Bot').client.guilds.cache.get(`380704827812085780`).me
-    const role = me.guild.roles.cache.find(role => role.name === "Muted")
-
+    // check if there is a member who is not in the db
     me.guild.members.cache.forEach(async member => {
-      const result = await DB.query(`SELECT * FROM timer_dates WHERE member_id = ${member.id} and 'type' = 'mute'`)
-
-      if (result[0][0] || member.roles.cache.find(r => r.id === role.id)) {
-        if (result[0][0]) {
-          const [arr, ongoing] = this.dateDifference(result[0][0].enddate)
-
-          if (!ongoing) {
-            console.log(`${member.user.username} was unmuted.`)
-            member.roles.remove(role)
-
-            DB.query(`DELETE FROM timer_dates WHERE member_id = ${member.id}`)
-          }
-        } else {
-          console.log(`${member.user.username} was unmuted.`)
-          member.roles.remove(role)
-
-          DB.query(`DELETE FROM timer_dates WHERE member_id = ${member.id}`)
+      DB.query(`select member_id from members where member_id = ${member.id}`).then(async result => {
+        if (!result[0][0]) {
+          const memberRole = me.guild.roles.cache.find(role => role.name === "Member")
+          member.roles.add(memberRole)
+          return DB.query(`insert into members (member_id, warns, inventory) values (${member.id}, '[]', '[]')`)
         }
-      }
+
+        const role = me.guild.roles.cache.find(role => role.name === "Muted")
+
+        DB.query(`SELECT * FROM timer_dates WHERE member_id = ${member.id} and 'type' = 'mute'`).then(result2 => {
+          if (result2[0][0] || member.roles.cache.find(r => r.id === role.id)) {
+            if (result2[0][0]) {
+              const [arr, ongoing] = this.dateDifference(result2[0][0].enddate)
+
+              if (!ongoing) {
+                console.log(`${member.user.username} was unmuted.`)
+                member.roles.remove(role)
+
+                DB.query(`DELETE FROM timer_dates WHERE member_id = ${member.id}`)
+              }
+            } else {
+              console.log(`${member.user.username} was unmuted.`)
+              member.roles.remove(role)
+
+              DB.query(`DELETE FROM timer_dates WHERE member_id = ${member.id}`)
+            }
+          }
+        })
+      })
     })
   }
 

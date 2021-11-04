@@ -13,7 +13,7 @@ module.exports = {
   async execute(msg, args) {
     const member = msg.mentions.members.first()
     if (!member) return msg.inlineReply(`You have to mention a member.`)
-    let warns = await DB.member.getWarns(member)
+    let warns = JSON.parse(await DB.member.getWarns(member))
     if (!args[1]) return msg.inlineReply(`You have to provide a reason.`)
 
     const warning1 = msg.guild.roles.cache.find(role => role.name === 'Warning 1')
@@ -21,39 +21,38 @@ module.exports = {
 
     const reason = args.filter(arg => !Bot.Discord.MessageMentions.USERS_PATTERN.test(arg)).join(' ')
 
-    switch (warns) {
+    warns.push(reason)
+
+    switch (warns.length) {
       case 0:
         member.roles.add(warning1)
 
-        warns++
-        DB.query(`UPDATE members SET warning_reason_one = ?, warns = ${warns} WHERE member_id = ${member.id}`, [reason])
+        DB.query(`UPDATE members SET warns = '${JSON.stringify(warns)}' WHERE member_id = ${member.id}`)
 
         break;
       case 1:
         member.roles.add(warning2)
 
-        warns++
-        DB.query(`UPDATE members SET warning_reason_two = ?, warns = ${warns} WHERE member_id = ${member.id}`, [reason])
+        DB.query(`UPDATE members SET warns = '${JSON.stringify(warns)}' WHERE member_id = ${member.id}`)
 
         break;
       case 2:
-        DB.query(`UPDATE members SET warns = 0 WHERE member_id = ${member.id}`)
+        DB.query(`UPDATE members SET warns = [] WHERE member_id = ${member.id}`)
 
         member.roles.cache.find(role => role.name === "Kicked")
           ? (
-            msg.inlineReply(`**${member.user.username}** Banned by warning system.\n\nReason:\n\`${reason}\``),
+            msg.inlineReply(`**${member.user.username}** Banned by warning system.`),
             member.ban(reason)
           )
           : (
-            msg.inlineReply(`**${member.user.username}** kicked by warning system.\n\nReason:\n\`${reason}\``),
+            msg.inlineReply(`**${member.user.username}** kicked by warning system.`),
             DB.query(`update members set kicked = 1 where member_id = ${member.id}`),
             member.kick(reason)
           )
         break;
     }
 
-    msg.channel.send(new Bot.Discord.MessageEmbed()
-      .addField(`${member.user.username} was warned by ${msg.member.user.username}`, `Warns: ${warns}\nReason: ${reason}`))
+    msg.replyEmbed([], { title: `${member.user.username} was warned by ${msg.member.user.username} for:`, description: `\`${reason}\`` })
   },
 
   help: {

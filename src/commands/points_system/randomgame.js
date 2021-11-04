@@ -35,7 +35,7 @@ module.exports = {
         ]
 
         const sentence = sentences[Math.floor(Math.random() * sentences.length)]
-        const time = (sentence.length * 0.2) + 0.5
+        const time = (sentence.length * 0.25) + 0.5
         msg.replyEmbed(`**Hurry!** Type in:\n\`${sentence}\``, { title: `Game: Wordgame (${time.toFixed(1)}s)`, color: 'ffff00' })
 
         const filter = m => m.author.id === msg.author.id

@@ -1,5 +1,4 @@
 const DB = require('../database/DB');
-const Player = require('./Player');
 
 module.exports = class Utils {
   static async load() {
@@ -21,7 +20,8 @@ module.exports = class Utils {
                   require('../../Bot').Commands.set(command.name, command);
                 }
               })
-          } else require('../../Bot').Commands.set(command.name, command);
+          } else if (commandFile.endsWith('.js')) require('../../Bot').Commands.set(command.name, command);
+          
         })
     })
 
@@ -123,7 +123,7 @@ module.exports = class Utils {
   }
 
   static async refresh() {
-    const me = require('../../Bot').client.guilds.cache.get(`380704827812085780`).me
+    const me = require('../../Bot').client.guilds.cache.get(process.env.GUILD_ID).me
     // check if there is a member who is not in the db
     me.guild.members.cache.forEach(async member => {
       DB.query(`select member_id from members where member_id = ${member.id}`).then(async result => {
@@ -244,6 +244,7 @@ module.exports = class Utils {
     showAmountOfItems,
     filter
   }, callback) {
+    const Player = require('./Player');
     const Utils = this
     const Bot = require('../../Bot');
 

@@ -4,6 +4,10 @@ const Player = require('../classes/utilities/Player');
 const Utils = require('../classes/utilities/Utils');
 
 module.exports.execute = async (msg) => {
+  if (msg.once) {
+    
+  }
+
   const command = msg.content.trim().split(/ +/)[0].toLowerCase();
   const args = msg.content.trim().split(/ +/).slice(1, msg.content.length);
 

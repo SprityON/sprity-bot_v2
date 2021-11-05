@@ -8,16 +8,11 @@ module.exports = class Utils {
       selected.split(".")[1]
     )).forEach(category => {
 
-      console.log(category);
-      console.log('--');
-
       readdirSync(`./commands/${category}`)
         .forEach(commandFile => {
-          console.log(commandFile);
           if (lstatSync(`./commands/${category}/${commandFile}`).isDirectory()) {
             readdirSync(`./commands/${category}/${commandFile}`)
               .forEach(scndCommandFile => {
-                console.log(scndCommandFile);
                 if (scndCommandFile.endsWith('.js')) {
                   let command = require(`../../commands/${category}/${commandFile}/${scndCommandFile}`)
                   require('../../Bot').Commands.set(command.name, command);
@@ -34,14 +29,14 @@ module.exports = class Utils {
     readdirSync(`./events`)
       .filter(selected => selected.endsWith('.js'))
       .forEach(e => {
-
+        
         require('../../Bot').client["on"]
           (Utils.getFileName(e),
             (...args) => {
               require(`../../events/${e}`).execute(...args);
             })
       })
-      
+
     this.refresh()
   }
 
@@ -138,7 +133,6 @@ module.exports = class Utils {
           member.roles.add(botRole)
         return
       }
-
 
       DB.query(`select member_id from members where member_id = ${member.id}`).then(async result => {
         const memberRole = me.guild.roles.cache.find(role => role.name === "Member")

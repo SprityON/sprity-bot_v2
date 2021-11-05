@@ -1,4 +1,5 @@
 const { APIMessage, Structures, MessageEmbed } = require('discord.js');
+const DB = require('../database/DB');
 
 class ExtAPIMessage extends APIMessage {
   resolveData() {
@@ -31,7 +32,7 @@ class Message extends Structures.get("Message") {
     const embed = new MessageEmbed()
       .setColor(require('../../config.json').embedColor)
 
-    if (!content) throw new Error('Contents are required for method sendEmbed')
+    if (!content) throw new Error('Contents are required for method replyEmbed')
     if (typeof content !== 'object' && typeof content !== 'string') throw new Error(`Content must be an object`)
     if (typeof content === 'string') {
       if (options.description) throw new Error('Cannot add another description.')

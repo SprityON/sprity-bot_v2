@@ -10,6 +10,7 @@ module.exports = {
   aliases: [],
   permissions: ['SEND_MESSAGES'],
   timeout: 1000,
+  points: true,
 
   async execute(msg, args) {
     if (!args[0] || !isNaN(args[0])) return msg.replyEmbed(`You have to provide a valid item ID!`)

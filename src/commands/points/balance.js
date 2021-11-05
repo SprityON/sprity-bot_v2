@@ -1,3 +1,4 @@
+const Bot = require('../../Bot')
 const Player = require('../../classes/utilities/Player')
 const Utils = require('../../classes/utilities/Utils')
 
@@ -14,7 +15,9 @@ module.exports = {
     const player = new Player(msg.member)
     const points = await player.points
 
-    msg.replyEmbed(`You have :yellow_circle: **${Utils.normalizePrice(points)}** points!`)
+    const point = Bot.client.emojis.cache.find(e => e.name === 'pointdiscord')
+
+    msg.replyEmbed(`You have ${point} **${Utils.normalizePrice(points)}** points!`)
   },
 
   help: {

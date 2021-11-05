@@ -8,19 +8,25 @@ module.exports = class Utils {
       selected.split(".")[1]
     )).forEach(category => {
 
+      console.log(category);
+      console.log('--');
+
       readdirSync(`./commands/${category}`)
         .forEach(commandFile => {
-          let command = require(`../../commands/${category}/${commandFile}`);
-
+          console.log(commandFile);
           if (lstatSync(`./commands/${category}/${commandFile}`).isDirectory()) {
             readdirSync(`./commands/${category}/${commandFile}`)
               .forEach(scndCommandFile => {
+                console.log(scndCommandFile);
                 if (scndCommandFile.endsWith('.js')) {
-                  command = require(`../../commands/${category}/${commandFile}/${scndCommandFile}`)
+                  let command = require(`../../commands/${category}/${commandFile}/${scndCommandFile}`)
                   require('../../Bot').Commands.set(command.name, command);
                 }
               })
-          } else if (commandFile.endsWith('.js')) require('../../Bot').Commands.set(command.name, command);
+          } else if (commandFile.endsWith('.js')) {
+            let command = require(`../../commands/${category}/${commandFile}`);
+            require('../../Bot').Commands.set(command.name, command);
+          }
           
         })
     })
@@ -126,6 +132,9 @@ module.exports = class Utils {
     const me = require('../../Bot').client.guilds.cache.get(process.env.GUILD_ID).me
     // check if there is a member who is not in the db
     me.guild.members.cache.forEach(async member => {
+      const botRole = me.guild.roles.cache.find(role => role.name === "Bot")
+      if (member.user.bot && !member.roles.cache.find(role => role.name === "Bot")) return member.roles.add(botRole)
+
       DB.query(`select member_id from members where member_id = ${member.id}`).then(async result => {
         const memberRole = me.guild.roles.cache.find(role => role.name === "Member")
         if (!member.roles.cache.find(r => r.name === "Member")) member.roles.add(memberRole)

@@ -128,7 +128,7 @@ module.exports = class Utils {
     me.guild.members.cache.forEach(async member => {
       DB.query(`select member_id from members where member_id = ${member.id}`).then(async result => {
         const memberRole = me.guild.roles.cache.find(role => role.name === "Member")
-        if (!member.roles.cache.get(memberRole.id)) member.roles.add(memberRole)
+        if (!member.roles.cache.find(r => r.name === "Member")) member.roles.add(memberRole)
         if (!result[0][0]) {
           return DB.query(`insert into members (member_id, warns, inventory) values (${member.id}, '[]', '[]')`)
         }

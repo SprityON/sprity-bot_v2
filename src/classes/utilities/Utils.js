@@ -296,7 +296,7 @@ module.exports = class Utils {
               }
 
               const invItem = inventory.find(i => i.id === item.id)
-              if (invItem.amount > 0)
+              if (invItem && invItem.amount > 0)
                 text += `${emote} **${item.name} ─ ${invItem.amount}**\n*ID* \`${item.id}\`\n\n`
 
               testI++

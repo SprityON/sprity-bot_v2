@@ -127,9 +127,9 @@ module.exports = class Utils {
     // check if there is a member who is not in the db
     me.guild.members.cache.forEach(async member => {
       DB.query(`select member_id from members where member_id = ${member.id}`).then(async result => {
+        const memberRole = me.guild.roles.cache.find(role => role.name === "Member")
+        if (!member.roles.cache.get(memberRole.id)) member.roles.add(memberRole)
         if (!result[0][0]) {
-          const memberRole = me.guild.roles.cache.find(role => role.name === "Member")
-          member.roles.add(memberRole)
           return DB.query(`insert into members (member_id, warns, inventory) values (${member.id}, '[]', '[]')`)
         }
 

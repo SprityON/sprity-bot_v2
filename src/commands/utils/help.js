@@ -62,7 +62,7 @@ module.exports = {
         embed.setTitle(`${args[0].slice(0,1).toUpperCase() + args[0].slice(1,args[0].length)} Commands`)
 
         let i = 0
-        const files = readdirSync(`commands/${args[0]}`)
+        const files = readdirSync(`commands/${args[0]}`).filter(f => f.endsWith('.js'))
 
         let files_length = 0
         files.forEach(file => {

@@ -4,7 +4,7 @@ const Utils = require('../../classes/utilities/Utils')
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
   category: Utils.getCmdCategory(__filename),
-  usage: 'points',
+  usage: 'balance',
   aliases: ['bal'],
   permissions: ['SEND_MESSAGES'],
   timeout: 1000,
@@ -19,7 +19,7 @@ module.exports = {
 
   help: {
     enabled: true,
-    title: 'Points',
+    title: 'Balance',
     description: `See how many points you currently have.`,
   }
 }

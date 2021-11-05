@@ -15,7 +15,7 @@ module.exports = {
     const player = new Player(msg.member)
     let points = await player.points
 
-    const random = Math.floor(Math.random() * 1.99)
+    const random = 0
     switch (random) {
         // wordgame
       case 0:

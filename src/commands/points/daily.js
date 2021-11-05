@@ -20,7 +20,7 @@ module.exports = {
     if (overTime) {
       DB.query(`update timer_dates set enddate = '${moment().clone().add(12, 'hour').format('M/D/YYYY H:mm:ss:SSS')}' where member_id = ${msg.member.id} and type = 'daily'`)
 
-      DB.query(`update members set points = '${points += 100}' where member_id = '${msg.member.id}'`)
+      DB.query(`update members set points = '${points += 250}' where member_id = '${msg.member.id}'`)
  
       return msg.replyEmbed(`You have received your **100** daily points!`)
     } else msg.replyEmbed(`You cannot claim your daily yet.\nPlease wait: **${overTimeMessage}**`)

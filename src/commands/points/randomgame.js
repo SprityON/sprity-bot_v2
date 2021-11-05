@@ -41,19 +41,19 @@ module.exports = {
         const filter = m => m.author.id === msg.author.id
         msg.channel.awaitMessages(filter, { time: time * 1000, max: 1 })
           .then(collected => {
-            if (collected.first().content.toLowerCase() === sentence) {
-              const won = Math.floor(Math.random() * 175) + 25
+            if (collected.first().content === sentence) {
+              const won = Math.floor(Math.random() * 25) + 25
               collected.first().replyEmbed(`What a typer you are. You won **${won}** points!`, { color: '00ff00' })
 
               DB.query(`update members set points = ${points += won} where member_id = ${msg.member.id}`)
             } else {
-              const lost = Math.floor(Math.random() * 450) + 50
+              const lost = Math.floor(Math.random() * 25) + 25
               collected.first().replyEmbed(`You typed in the wrong sentence and lost **${lost}** points!`, { color: 'ff0000' })
 
               DB.query(`update members set points = ${points -= lost} where member_id = ${msg.member.id}`)
             }
           }).catch(collected => {
-            const lost = Math.floor(Math.random() * 450) + 50
+            const lost = Math.floor(Math.random() * 25) + 25
             msg.replyEmbed(`You were too late and lost **${lost}** points!`, { color: 'ff0000' })
 
             DB.query(`update members set points = ${points -= lost} where member_id = ${msg.member.id}`)

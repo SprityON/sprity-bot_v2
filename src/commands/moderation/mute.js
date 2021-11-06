@@ -15,7 +15,6 @@ module.exports = {
     const role = msg.guild.roles.cache.find(role => role.name === "Muted")
     const member = msg.mentions.members.first()
 
-    console.log('hi');
     if (!member) return msg.inlineReply('You have to mention a member!')
     if (member.roles.cache.find(r => r.name === role.name)) return msg.inlineReply(`**${member.user.username}** has already been muted!`)
 
@@ -44,7 +43,6 @@ module.exports = {
     
     if (accepted == false) return msg.inlineReply(`Invalid time unit!\nAccepted units: \`ms\` \`s\` \`m\` \`h\` \`d\` \`w\` \`y\``)
 
-    const beginDate = moment().format(require('../../config.json').dateFormat)
     const endDate = moment().add(`${timeINT}`, `${unit}`).format('M/D/YYYY H:mm:ss:SSS')
 
     DB.query(`INSERT INTO timer_dates(member_id, enddate, type) VALUES ('${member.id}', '${endDate}', 'mute')`)

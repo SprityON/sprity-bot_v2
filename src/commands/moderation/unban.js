@@ -5,7 +5,7 @@ module.exports = {
   category: Utils.getCmdCategory(__filename),
   usage: 'unban <memberID>',
   aliases: [],
-  permissions: ['SEND_MESSAGES'],
+  permissions: ['BAN_MEMBERS'],
   timeout: 1000,
 
   execute(msg, args) {

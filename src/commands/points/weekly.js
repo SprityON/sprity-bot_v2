@@ -2,6 +2,7 @@ const DB = require('../../classes/database/DB')
 const Player = require('../../classes/utilities/Player')
 const Utils = require('../../classes/utilities/Utils')
 const moment = require('moment')
+const Bot = require('../../Bot')
 
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),

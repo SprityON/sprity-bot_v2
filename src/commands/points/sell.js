@@ -28,7 +28,7 @@ module.exports = {
     const player = new Player(msg.member)
     let inventory = await player.inventory
     let points = await player.points
-    const points = Bot.client.emojis.cache.find(e => e.name === 'pointdiscord')
+    const point = Bot.client.emojis.cache.find(e => e.name === 'pointdiscord')
 
     const invItem = inventory.find(i => i.id === itemID)
     if (invItem && invItem.amount >= amount) {

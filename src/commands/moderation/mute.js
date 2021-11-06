@@ -6,7 +6,7 @@ const DB = require("../../classes/database/DB")
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
   category: Utils.getCmdCategory(__filename),
-  usage: '<member> <duration> <reason>',
+  usage: 'mute <member> <duration> <reason>',
   aliases: [],
   permissions: ['MANAGE_MESSAGES'],
   timeout: 1000,
@@ -15,6 +15,7 @@ module.exports = {
     const role = msg.guild.roles.cache.find(role => role.name === "Muted")
     const member = msg.mentions.members.first()
 
+    console.log('hi');
     if (!member) return msg.inlineReply('You have to mention a member!')
     if (member.roles.cache.find(r => r.name === role.name)) return msg.inlineReply(`**${member.user.username}** has already been muted!`)
 
@@ -35,7 +36,6 @@ module.exports = {
         timeINT = time.replace(char, '')
       }
     }
-
     let accepted = false
     acceptableUnits.forEach(au => {
       if (unit == au) 
@@ -47,7 +47,7 @@ module.exports = {
     const beginDate = moment().format(require('../../config.json').dateFormat)
     const endDate = moment().add(`${timeINT}`, `${unit}`).format('M/D/YYYY H:mm:ss:SSS')
 
-    DB.query(`INSERT INTO timer_dates(member_id, begindate, enddate, type) VALUES ('${member.id}', '${beginDate}', '${endDate}', 'mute')`)
+    DB.query(`INSERT INTO timer_dates(member_id, enddate, type) VALUES ('${member.id}', '${endDate}', 'mute')`)
     member.roles.add(role)
 
     msg.inlineReply(`**${member.user.username}** has been muted for ${ms(ms(time), { long: true })}!`)

@@ -19,9 +19,10 @@ module.exports = {
 
     if (overTime) {
       DB.query(`update timer_dates set enddate = '${moment().clone().add(1, 'month').format('M/D/YYYY H:mm:ss:SSS')}' where member_id = ${msg.member.id} and type = 'monthly'`)
-
       DB.query(`update members set points = '${points += 5000}' where member_id = '${msg.member.id}'`)
-      return msg.replyEmbed(`You have received your **${Utils.normalizePrice(5000)}** monthly points!`)
+
+      const point = Bot.client.emojis.cache.find(e => e.name === 'pointdiscord')
+      return msg.replyEmbed(`You have received your ${point} **${Utils.normalizePrice(5000)}** monthly points!`)
     } else msg.replyEmbed(`You cannot claim your monthly yet.\nPlease wait: **${overTimeMessage}**`)
   },
 

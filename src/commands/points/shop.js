@@ -1,5 +1,6 @@
 const Player = require('../../classes/utilities/Player');
 const Utils = require('../../classes/utilities/Utils')
+const Bot = require('../../Bot')
 
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
@@ -22,9 +23,10 @@ module.exports = {
 
     const player = new Player(msg.member)
     const points = await player.points
+    const point = Bot.client.emojis.cache.find(e => e.name === 'pointdiscord')
 
     Utils.embedList({
-      title: `**SHOP ──────────────────────── :yellow_circle: ${Utils.normalizePrice(points)}**`,
+      title: `**SHOP ──────────────────────── ${point} ${Utils.normalizePrice(points)}**`,
       type: 'shop',
       JSONlist: shop,
       member: msg.member,

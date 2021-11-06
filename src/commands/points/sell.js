@@ -1,6 +1,7 @@
 const DB = require('../../classes/database/DB')
 const Player = require('../../classes/utilities/Player')
 const Utils = require('../../classes/utilities/Utils')
+const Bot = require('../../Bot')
 
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
@@ -27,6 +28,7 @@ module.exports = {
     const player = new Player(msg.member)
     let inventory = await player.inventory
     let points = await player.points
+    const points = Bot.client.emojis.cache.find(e => e.name === 'pointdiscord')
 
     const invItem = inventory.find(i => i.id === itemID)
     if (invItem && invItem.amount >= amount) {
@@ -35,7 +37,7 @@ module.exports = {
       
       DB.query(`update members set inventory = '${JSON.stringify(inventory)}', points = ${points} where member_id = ${msg.member.id}`)
         .then(() => {
-          msg.replyEmbed(`You successfully sold ${emoji} **${amount} ${item.name}**`)
+          msg.replyEmbed(`You successfully sold ${emoji} **${amount} ${item.name}**! You now have ${point} ${points} points.`)
         })
     } else return msg.replyEmbed(`You do not have that many ${emoji} **${item.name}**`)
   },

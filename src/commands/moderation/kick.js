@@ -5,7 +5,7 @@ module.exports = {
   category: Utils.getCmdCategory(__filename),
   usage: 'kick <member> <reason>',
   aliases: [],
-  permissions: ['SEND_MESSAGES'],
+  permissions: ['KICK_MEMBERS'],
   timeout: 1000,
 
   execute(msg, args) {

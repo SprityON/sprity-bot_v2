@@ -1,10 +1,58 @@
 [
   {
     "id": "ad_ticket",
-    "emoji": "🎫",
-    "uploaded": "true",
+    "emoji": ":ticket:",
+    "uploaded": false,
     "name": "Ad Ticket",
     "description": "Use this ticket to advertise in <#818558571410096148>",
     "price": 5000
+  },
+
+  {
+    "id": "renamer",
+    "emoji": ":pencil2:",
+    "uploaded": false,
+    "name": "Renamer",
+    "description": "Ever wanted to have a different name?",
+    "price": 2500
+  },
+
+  {
+    "id": "sprityfan",
+    "type": "role",
+    "role": "Sprity Fan",
+    "emoji": ":bell:",
+    "uploaded": false,
+    "name": "Sprity Fan Role",
+    "description": "A role only for true fans.",
+    "price": 2500
+  },
+
+  {
+    "id": "converter",
+    "type": "tool",
+    "emoji": ":arrows_counterclockwise:",
+    "uploaded": false,
+    "name": "Converter",
+    "description": "Converts your messages into points (+25% extra points).",
+    "price": 10000
+  },
+
+  {
+    "id": "private_channel",
+    "emoji": ":lock:",
+    "uploaded": false,
+    "name": "Private Channel (in development)",
+    "description": "Creates a private channel just for you!\nInvite people so they can chat in your channel.",
+    "price": 25000
+  },
+
+  {
+    "id": "rich_role",
+    "emoji": ":money_with_wings:",
+    "uploaded": false,
+    "name": "Rich Role",
+    "description": "Flex with your richness :money_mouth:\nOnce bought, you can enable to show this role or not.",
+    "price": 1000000
   }
 ]

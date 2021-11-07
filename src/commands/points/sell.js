@@ -6,7 +6,7 @@ const Bot = require('../../Bot')
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
   category: Utils.getCmdCategory(__filename),
-  usage: '',
+  usage: 'sell <item_id>',
   aliases: [],
   permissions: ['SEND_MESSAGES'],
   timeout: 1000,
@@ -21,7 +21,7 @@ module.exports = {
 
     const shop = require('./shop.json')
     const item = shop.find(i => i.id === itemID)
-    const emoji = item.uploaded ? item.emoji : Bot.client.emojis.cache.find(e => e.name === item.id)
+    const emoji = item.uploaded ? Bot.client.emojis.cache.find(e => e.name === item.id) : item.emoji
 
     if (!item) return msg.replyEmbed(`That item was not found!`)
 
@@ -32,19 +32,24 @@ module.exports = {
 
     const invItem = inventory.find(i => i.id === itemID)
     if (invItem && invItem.amount >= amount) {
-      points += item.price * amount
+      points += ((item.price * amount) / 100) * 60
       inventory[invItem.pos].amount -= amount
       
       DB.query(`update members set inventory = '${JSON.stringify(inventory)}', points = ${points} where member_id = ${msg.member.id}`)
         .then(() => {
-          msg.replyEmbed(`You successfully sold ${emoji} **${amount} ${item.name}**! You now have ${point} ${points} points.`)
+          msg.replyEmbed(`You successfully sold **${amount} ${emoji} ${item.name}**! You now have ${point} **${Utils.normalizePrice(points)}** points.`)
+
+          if (item.role) {
+            const role = msg.guild.roles.cache.find(e => e.name === item.role)
+            msg.member.roles.remove(role)
+          }
         })
     } else return msg.replyEmbed(`You do not have that many ${emoji} **${item.name}**`)
   },
 
   help: {
-    enabled: false,
-    title: '',
-    description: ``,
+    enabled: true,
+    title: 'Sell an item',
+    description: `Selling items will give you 60% of the original price back.`,
   }
 }

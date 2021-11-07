@@ -29,13 +29,19 @@ module.exports = {
     const invItem = inventory.find(item => item.id === item_id)
     if (!invItem || invItem.amount <= 0) return msg.replyEmbed(`You do not have that item!`)
 
-    const [bool, message] = await item.execute(msg, args)
-    if (bool === true) {
-      inventory[invItem.pos].amount -= 1
-      msg.replyEmbed(`You have used the item \`${shopItem.name}\``)
-    } else return msg.replyEmbed(message)
-    
-    DB.query(`update members set inventory = '${JSON.stringify(inventory)}' where member_id = ${msg.member.id}`)
+    item.execute(msg, args)
+    .then(([bool, message]) => {
+      if (bool === true) {
+        if (!item.role && !item.tool) {
+          inventory[invItem.pos].amount -= 1
+          DB.query(`update members set inventory = '${JSON.stringify(inventory)}' where member_id = ${msg.member.id}`)
+          msg.replyEmbed(`You have used the item **${shopItem.name}**`)
+        }
+      } else return msg.replyEmbed(message)
+    }).catch((err) => {
+      console.log(err);
+      return msg.replyEmbed(`Something went wrong. Do I have enough permissions?`)
+    })
   },
 
   help: {

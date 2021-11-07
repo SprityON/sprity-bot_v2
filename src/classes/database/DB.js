@@ -74,6 +74,14 @@ module.exports = class DB {
         if (!result[0][0]) return this.member.addToDB(member)
         resolve(result[0][0].warns)
       })
+    },
+
+    countMessage: async (member) => {
+      this.query(`select messages from members where member_id = ${member.id}`)
+      .then(data => {
+        const messages = data[0][0].messages
+        this.query(`update members set messages = ${messages + 1} where member_id = ${member.id}`)
+      })
     }
   }
 

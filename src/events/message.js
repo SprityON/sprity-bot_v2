@@ -4,10 +4,8 @@ const Player = require('../classes/utilities/Player');
 const Utils = require('../classes/utilities/Utils');
 
 module.exports.execute = async (msg) => {
-  if (msg.once) {
-    
-  }
-
+  DB.member.countMessage(msg.member)
+  
   const command = msg.content.trim().split(/ +/)[0].toLowerCase();
   const args = msg.content.trim().split(/ +/).slice(1, msg.content.length);
 
@@ -24,11 +22,11 @@ module.exports.execute = async (msg) => {
 
             const assumedPrefix = () => {
               let temp = ''
-              for (i = 0; i < startNumber.length; i++) {
+              for (i = 0; i < startNumber.length; i++) 
                 temp += command.charAt(i)
-              }
               return temp
             }
+
             if (command.replace(assumedPrefix(), '').length == a.length) {
               alias = a
             }
@@ -50,10 +48,7 @@ module.exports.execute = async (msg) => {
         try {
           cmdFile = require(`../commands/${cmd.category}/${cmd.name}`);
         } catch (error) {
-          return msg.replyEmbed([
-            [`ERROR`, `That command does not exist!`]
-          ], { footer: '$help for more info', color: 'ff0000' }
-          )
+          return
         }
 
         let files = readdirSync(`./commands/${cmd.category}`)

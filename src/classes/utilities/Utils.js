@@ -270,7 +270,7 @@ module.exports = class Utils {
         let testI = 0;
 
         let embed = new Bot.Discord.MessageEmbed()
-          .setColor(process.env.EMBEDCOLOR)
+          .setColor('#3E4BDD')
 
         if (!currPage) currPage = 1;
 
@@ -289,8 +289,6 @@ module.exports = class Utils {
         let Continue = true
         for (let item of allJSON) {
 
-          totalItemsAmount++
-
           if (Continue == true) {
             if (testI !== i) { testI++ } else {
               pageItemsAmount++
@@ -299,18 +297,18 @@ module.exports = class Utils {
 
               let emote
               if (item.uploaded) {
-                emote = item.emoji
-              } else {
                 emote = Bot.client.emojis.cache.find(e => e.name === item.emoji)
+              } else {
+                emote = item.emoji
               }
 
               const invItem = inventory.find(i => i.id === item.id)
-              if (invItem && invItem.amount > 0)
+              if (invItem && invItem.amount > 0) {
+                totalItemsAmount++
                 text += `${emote} **${item.name} ─ ${invItem.amount}**\n*ID* \`${item.id}\`\n\n`
-
-              testI++
-              i++
-
+                testI++
+                i++
+              }
             }
           }
         }
@@ -318,7 +316,7 @@ module.exports = class Utils {
         let lastPage;
         let totalItemsAmount_temp = totalItemsAmount / showAmountOfItems;
         totalItemsAmount_temp < 1 ? lastPage = 1 : lastPage = Math.ceil(totalItemsAmount_temp);
-
+        
         if (currPage > lastPage) {
           if (lastPage == 1) {
             return callback(`**${member.user.username}**, there is only 1 page!`);
@@ -330,80 +328,7 @@ module.exports = class Utils {
         embed.setDescription(`${title.toString()}\n\n${text}`)
           .setFooter(`Page ${currPage}/${lastPage} | Use ${await DB.guild.getPrefix()}help for more info`)
 
-        callback(embed)
-        break;
-
-      case 'craftables':
-        (function () {
-          if (filter) callback(member.lastMessage.inlineReply(`There can be no filters!`))
-          let pageItemsAmount = 0;
-          let totalItemsAmount = 0;
-
-          let text = '';
-
-          let i = 0;
-          let testI = 0;
-
-          let embed = new Bot.Discord.MessageEmbed()
-            .setColor(process.env.EMBEDCOLOR)
-
-          if (!currPage) currPage = 1;
-
-          if (currPage > 1) { i = (currPage * showAmountOfItems) - showAmountOfItems }
-
-          let allJSON = JSONlist;
-
-          if (filter && isNaN(filter)) {
-            try {
-              allJSON = Array.from(require(`./commands/game/rpg/${filter}/${filter}.json`));
-            } catch (error) {
-              filter = '';
-            }
-          }
-
-          for (let item of allJSON) {
-            const recipeText = item.recipe
-              .map(item => {
-                const emote = Bot.client.findEmoji(Object.keys(item)[0])
-                return `${emote} ${Object.values(item)[0]}`
-              })
-              .join(", ")
-
-            totalItemsAmount++
-
-            let emote = Bot.client.Functions.findEmoji(item.id)
-
-            if (testI !== i) { testI++ } else {
-              pageItemsAmount++
-
-              if (pageItemsAmount > showAmountOfItems) { continue }
-
-              text += `${emote} **${item.name}**\n*You need:* **${recipeText}**\n*ID* \`${item.id}\`\n\n`
-
-              testI++
-              i++
-
-            }
-          }
-
-          let lastPage;
-          let totalItemsAmount_temp = totalItemsAmount / showAmountOfItems;
-          totalItemsAmount_temp < 1 ? lastPage = 1 : lastPage = Math.ceil(totalItemsAmount_temp);
-
-          if (currPage > lastPage) {
-            if (lastPage == 1) {
-              return callback(`**${member.user.username}**, there is only 1 page!`);
-            } else {
-              return callback(`**${member.user.username}**, there are only ${lastPage} pages!`);
-            }
-          }
-
-          embed.setDescription(`${title.toString()} ──── **Page ${currPage}/${lastPage}**\n\n${text}`)
-            .setFooter(`To craft, do: rpg craft <id>`)
-
-          callback(embed)
-        })()
-
+        text ? callback(embed) : callback(new Bot.Discord.MessageEmbed().setColor('#3E4BDD').setDescription(`Your inventory is empty. Buy something!`))
         break;
 
       case 'shop':
@@ -417,7 +342,7 @@ module.exports = class Utils {
           let testI = 0;
 
           let embed = new Bot.Discord.MessageEmbed()
-            .setColor(process.env.EMBEDCOLOR)
+            .setColor('#3E4BDD')
 
           if (!currPage) currPage = 1;
 
@@ -444,15 +369,17 @@ module.exports = class Utils {
                 pageItemsAmount++
 
                 if (pageItemsAmount > showAmountOfItems) { Continue = false; continue; }
-
-                let emote 
-                if (item.uploaded) {
-                  emote = item.emoji
-                } else {
-                  emote = Bot.client.emojis.cache.find(e => e.name === item.emoji)
-                }
                 
-                text += `${emote} **${item.name} *─ :yellow_circle: ${Utils.normalizePrice(item.price)}***\n${item.description}\n*ID* \`${item.id}\`\n\n`
+                let emote
+                if (item.uploaded) {
+                  emote = Bot.client.emojis.cache.find(e => e.name === item.emoji)
+                } else {
+                  emote = item.emoji
+                }
+
+                const point = Bot.client.emojis.cache.find(e => e.name === "pointdiscord")
+                
+                text += `${emote} **${item.name} *─ ${point} ${Utils.normalizePrice(item.price)}***\n${item.description}\n*ID* \`${item.id}\`\n\n`
 
                 testI++
                 i++

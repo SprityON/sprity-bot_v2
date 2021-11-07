@@ -16,6 +16,7 @@ module.exports = {
     const player = new Player(msg.member)
     let points = await player.points
 
+    // tapper game w/ button
     const random = 0
     switch (random) {
         // wordgame
@@ -43,7 +44,7 @@ module.exports = {
         const filter = m => m.author.id === msg.author.id
         msg.channel.awaitMessages(filter, { time: time * 1000, max: 1 })
           .then(collected => {
-            if (collected.first().content === sentence) {
+            if ((collected.first().content.charAt(0).toLowerCase() + collected.first().content.slice(1)) === sentence) {
               const won = Math.floor(Math.random() * 25) + 25
               collected.first().replyEmbed(`What a typer you are. You won ${point} **${won}** points!`, { color: '00ff00' })
 

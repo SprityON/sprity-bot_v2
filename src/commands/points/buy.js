@@ -21,15 +21,16 @@ module.exports = {
 
     const shop = require('./shop.json')
     const item = shop.find(i => i.id === itemID)
-    const emoji = item.uploaded ? item.emoji : Bot.client.emojis.cache.find(e => e.name === item.id)
+    const emoji = item.uploaded ? Bot.client.emojis.cache.find(e => e.name === item.id) :item.emoji
 
     if (!item) return msg.replyEmbed(`That item was not found!`)
 
     const player = new Player(msg.member)
     let inventory = await player.inventory
     let points = await player.points
+    const point = Bot.client.emojis.cache.find(e => e.name === 'pointdiscord')
 
-    if ((item.price * amount) > points) return msg.replyEmbed(`You do not have enough **:yellow_circle: Points** to buy this item!`)
+    if ((item.price * amount) > points) return msg.replyEmbed(`You do not have enough **${point} Points** to buy this item!`)
 
     points -= (item.price * amount)
     const foundItem = inventory.find(i => i.id === item.id)
@@ -39,7 +40,7 @@ module.exports = {
 
     DB.query(`update members set points = ${points}, inventory = '${JSON.stringify(inventory)}' where member_id = ${msg.member.id}`)
     .then(() => {
-      msg.replyEmbed(`You successfully bought ${emoji} **${amount} ${item.name}**`)
+      msg.replyEmbed(`You successfully bought **${amount} ${emoji} ${item.name}**. You now have ${point} **${Utils.normalizePrice(points)}** points.`)
     })
   },
 

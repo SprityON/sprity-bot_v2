@@ -27,7 +27,7 @@ module.exports = {
         )
 
         resolve([true])
-      })
+      }).catch(() => resolve([false, 'Out of time!']))
     })
   },
 

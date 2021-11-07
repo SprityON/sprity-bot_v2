@@ -17,6 +17,7 @@ module.exports = {
         .then(collected => {
           if (collected.first().content.toLowerCase() === 'cancel') return resolve([false, 'Cancelled!'])
 
+          if (!msg.member.managable) return msg.replyEmbed(`I cannot congigure your profile!`)
           msg.member.setNickname(collected.first().content, 'Renamer tool')
 
           resolve([true])

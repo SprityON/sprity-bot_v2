@@ -8,7 +8,7 @@ module.exports = {
   permissions: ['SEND_MESSAGES'],
   timeout: 1000,
 
-  async execute(msg, args) {
+  async execute(msg, args, item) {
     return new Promise((resolve, reject) => {
       msg.replyEmbed(`Please type in your new nickname.`, { footer: 'type cancel to cancel' })
 

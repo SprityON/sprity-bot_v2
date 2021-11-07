@@ -70,7 +70,7 @@ module.exports = class Player {
         })()
         : collected.first().replyEmbed(`Cancelled!`)
     })
-    DB.query(`delete from rpg where member_id = ${this.member.id}`)
+    DB.query(`delete from rpg where member_id = ${msg.member.id}`)
   }
 
   hasAccount(msg) {

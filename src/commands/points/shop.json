@@ -9,12 +9,21 @@
   },
 
   {
+    "id": "nickname",
+    "emoji": ":pencil2:",
+    "uploaded": false,
+    "name": "Change Nickname (1 Use)",
+    "description": "Change your nickname once!",
+    "price": 1000
+  },
+
+  {
     "id": "renamer",
     "emoji": ":pencil2:",
     "uploaded": false,
     "name": "Renamer",
-    "description": "Ever wanted to have a different name?",
-    "price": 2500
+    "description": "Instead of buying new nicknames again and again,\nyou can use this tool to rename your nickname whenever you like!",
+    "price": 10000
   },
 
   {
@@ -52,7 +61,7 @@
     "emoji": ":money_with_wings:",
     "uploaded": false,
     "name": "Rich Role",
-    "description": "Flex with your richness :money_mouth:\nOnce bought, you can enable to show this role or not.",
+    "description": "Flex with your richness :money_mouth:",
     "price": 1000000
   }
 ]

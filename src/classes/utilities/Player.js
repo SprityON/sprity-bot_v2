@@ -66,6 +66,7 @@ module.exports = class Player {
         (() => {
           DB.query(`delete from rpg where member_id = ${msg.member.id}`)
           DB.query(`delete from timer_dates where member_id = ${msg.member.id}`)
+          DB.query(`update members set points = 0 where member_id = ${msg.member.id}`)
           collected.first().replyEmbed(`Your account was deleted!`)
         })()
         : collected.first().replyEmbed(`Cancelled!`)

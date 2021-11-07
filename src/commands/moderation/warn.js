@@ -23,7 +23,7 @@ module.exports = {
 
     warns.push(reason)
 
-    switch (warns.length) {
+    switch (warns.length - 1) {
       case 0:
         member.roles.add(warning1)
 
@@ -37,8 +37,6 @@ module.exports = {
 
         break;
       case 2:
-        DB.query(`UPDATE members SET warns = [] WHERE member_id = ${member.id}`)
-
         member.roles.cache.find(role => role.name === "Kicked")
           ? (
             msg.inlineReply(`**${member.user.username}** Banned by warning system.`),
@@ -46,7 +44,7 @@ module.exports = {
           )
           : (
             msg.inlineReply(`**${member.user.username}** kicked by warning system.`),
-            DB.query(`update members set kicked = 1 where member_id = ${member.id}`),
+            DB.query(`update members set kicked = 1, warns = '[]' where member_id = ${member.id}`),
             member.kick(reason)
           )
         break;

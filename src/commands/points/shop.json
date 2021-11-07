@@ -19,6 +19,7 @@
 
   {
     "id": "renamer",
+    "type": "tool",
     "emoji": ":pencil2:",
     "uploaded": false,
     "name": "Renamer",

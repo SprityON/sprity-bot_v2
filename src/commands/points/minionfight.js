@@ -1,5 +1,6 @@
 const Bot = require('../../Bot')
 const DB = require('../../classes/database/DB')
+const Player = require('../../classes/utilities/Player')
 const Utils = require('../../classes/utilities/Utils')
 
 module.exports = {

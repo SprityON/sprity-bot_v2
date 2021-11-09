@@ -9,10 +9,10 @@
   },
 
   {
-    "id": "nickname",
+    "id": "rename",
     "emoji": ":pencil2:",
     "uploaded": false,
-    "name": "Change Nickname (1 Use)",
+    "name": "Rename (1 Use)",
     "description": "Change your nickname once!",
     "price": 1000
   },

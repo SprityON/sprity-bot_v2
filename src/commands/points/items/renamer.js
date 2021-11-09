@@ -8,7 +8,7 @@ module.exports = {
   permissions: ['SEND_MESSAGES'],
   timeout: 1000,
 
-  async execute(msg, args, item) {
+  async execute(msg, args) {
     return new Promise((resolve, reject) => {
       msg.replyEmbed(`Please type in your new nickname.`, { footer: 'type cancel to cancel' })
 
@@ -17,7 +17,7 @@ module.exports = {
         .then(collected => {
           if (collected.first().content.toLowerCase() === 'cancel') return resolve([false, 'Cancelled!'])
 
-          if (!msg.member.managable) return msg.replyEmbed(`I cannot congigure your profile!`)
+          if (!msg.member.managable) return msg.replyEmbed(`I cannot configure your profile!`)
           msg.member.setNickname(collected.first().content, 'Renamer tool')
 
           resolve([true])

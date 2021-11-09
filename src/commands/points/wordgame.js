@@ -1,5 +1,6 @@
 const Bot = require('../../Bot')
 const DB = require('../../classes/database/DB')
+const Player = require('../../classes/utilities/Player')
 const Utils = require('../../classes/utilities/Utils')
 
 module.exports = {
@@ -27,6 +28,8 @@ module.exports = {
       `made by Sprity`
     ]
 
+    const player = new Player(msg.member)
+    const points = await player.points
     const sentence = sentences[Math.floor(Math.random() * sentences.length)]
     const time = (sentence.length * 0.25) + 0.5
     msg.replyEmbed(`**Hurry!** Type in:\n\`${sentence}\``, { title: `Game: Wordgame (${time.toFixed(1)}s)`, color: 'ffff00' })

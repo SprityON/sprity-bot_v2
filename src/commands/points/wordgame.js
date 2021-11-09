@@ -55,8 +55,8 @@ module.exports = {
   },
 
   help: {
-    enabled: false,
-    title: '',
-    description: ``,
+    enabled: true,
+    title: 'Wordgame',
+    description: `Type the world correctly to receive points!`,
   }
 }

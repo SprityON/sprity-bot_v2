@@ -111,8 +111,8 @@ module.exports = {
   },
 
   help: {
-    enabled: false,
-    title: '',
-    description: ``,
+    enabled: true,
+    title: 'Guess',
+    description: `Guess a number and if right, earn points!`,
   }
 }

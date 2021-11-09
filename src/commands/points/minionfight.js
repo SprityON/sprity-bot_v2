@@ -99,8 +99,8 @@ module.exports = {
   },
 
   help: {
-    enabled: false,
-    title: '',
-    description: ``,
+    enabled: true,
+    title: 'Fight a Minion',
+    description: `Fight one of my Minions and receive points!`,
   }
 }

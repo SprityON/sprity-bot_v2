@@ -44,8 +44,8 @@ module.exports = {
   },
 
   help: {
-    enabled: false,
-    title: '',
-    description: ``,
+    enabled: true,
+    title: 'Bet',
+    description: `Roll a dice and earn points!`,
   }
 }

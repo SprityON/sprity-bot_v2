@@ -6,9 +6,11 @@ const Utils = require('../classes/utilities/Utils');
 let isUsing = false
 
 module.exports.execute = async (msg) => {
-  if (isUsing) return
 
   DB.member.countMessage(msg.member)
+
+  console.log(process.memoryUsage().heapUsed / 1024 / 1024)
+  if (isUsing) return
   
   const command = msg.content.trim().split(/ +/)[0].toLowerCase();
   const args = msg.content.trim().split(/ +/).slice(1, msg.content.length);

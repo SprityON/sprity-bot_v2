@@ -91,8 +91,6 @@ module.exports = {
         await timer()
       }
     }
-
-    return
   },
 
   help: {

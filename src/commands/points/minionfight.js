@@ -46,7 +46,7 @@ module.exports = {
         if (runChance == 1) {
           points -= lostPoints
           DB.query(`update members set points = ${points} where member_id = ${msg.member.id}`)
-          return msg.replyEmbed(`You coudln't run away and lost ${point} **${lostPoints}** points!`, { color: 'ff0000' })
+          return msg.replyEmbed(`You couldn't run away and lost ${point} **${lostPoints}** points!`, { color: 'ff0000' })
         } else {
           return msg.replyEmbed(`You successfully ran away from **${minionName}**!`, { color: '00ff00' })
         }
@@ -76,7 +76,7 @@ module.exports = {
           playerHealth -= damage
 
           if (playerHealth < 1) {
-            return msg.replyEmbed(`**${minionName}** did **${damage}** damage and you died with **${playerHealth}** HP! You lost ${point} **${lostPoints}** points.`, { color: 'ff0000' })
+            msg.replyEmbed(`**${minionName}** did **${damage}** damage and you died with **${playerHealth}** HP! You lost ${point} **${lostPoints}** points.`, { color: 'ff0000' })
           } else {
             msg.replyEmbed(`**${minionName}** did **${damage}** damage. ***Your* HP: ${playerHealth}/${playerMaxHealth}**\n\nType \`fight\` or \`run\``, { color: 'ffff00' })
           }

@@ -3,7 +3,11 @@ const DB = require('../classes/database/DB');
 const Player = require('../classes/utilities/Player');
 const Utils = require('../classes/utilities/Utils');
 
+let isUsing = false
+
 module.exports.execute = async (msg) => {
+  if (isUsing) return
+
   DB.member.countMessage(msg.member)
   
   const command = msg.content.trim().split(/ +/)[0].toLowerCase();
@@ -69,14 +73,17 @@ module.exports.execute = async (msg) => {
               if (cmdFile.points) {
                 const player = new Player(msg.member)
 
-                await player.hasAccount()
-                  ? cmdFile.execute(msg, args)
-                  : player.create(msg)
-              } else cmdFile.execute(msg, args)
+                if (!await player.hasAccount()) return player.create(msg)
+              }
+
+              isUsing = true
+              cmdFile.execute(msg, args).then(() => {
+                isUsing = false
+              })
             })()
             : msg.inlineReply(`**${msg.author.username}**, you do not have enough permissions to use this command!`)
         })
-        return
+        return 
       }
     }
   } catch (err) {

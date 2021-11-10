@@ -35,7 +35,7 @@ module.exports = {
     msg.replyEmbed(`**Hurry!** Type in:\n\`${sentence}\``, { title: `Game: Wordgame (${time.toFixed(1)}s)`, color: 'ffff00' })
 
     const filter = m => m.author.id === msg.author.id
-    msg.channel.awaitMessages(filter, { time: time * 1000, max: 1 })
+    await msg.channel.awaitMessages(filter, { time: time * 1000, max: 1 })
       .then(async collected => {
         let points = await player.points
         if ((collected.first().content.charAt(0).toLowerCase() + collected.first().content.slice(1)) === sentence) {
@@ -49,11 +49,13 @@ module.exports = {
 
           DB.query(`update members set points = ${points -= lost} where member_id = ${msg.member.id}`)
         }
+
+
       }).catch(collected => {
         const lost = Math.floor(Math.random() * 25) + 25
         msg.replyEmbed(`You were too late and lost ${point} **${lost}** points!`, { color: 'ff0000' })
 
-        DB.query(`update members set points = ${points -= lost} where member_id = ${msg.member.id}`)
+        DB.query(`update members set points = ${points - lost} where member_id = ${msg.member.id}`)
       })
   },
 

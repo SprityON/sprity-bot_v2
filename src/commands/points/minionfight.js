@@ -12,7 +12,6 @@ module.exports = {
   timeout: 1000,
 
   async execute(msg, args) {
-    // fight Sprity Bot minion
     const point = Bot.client.emojis.cache.find(e => e.name === 'pointdiscord')
     const randomNumber = Math.floor(Math.random() * 998) + 1
     const minionName = `🤖 Minion #${randomNumber}`
@@ -32,69 +31,63 @@ module.exports = {
     const player = new Player(msg.member)
     let points = await player.points
 
-    const lostPoints = Math.floor(Math.random() * 200) + 50
+    const lostPoints = Math.floor(Math.random() * 100) + 50
 
-    filter = m => m.author.id === msg.author.id
+    const filter = m => m.author.id === msg.author.id
 
-    playerTurn()
-    function playerTurn() {
-      msg.channel.awaitMessages(filter, { timeout: time * 1000, max: 1 })
-        .then(collected => {
-          const answer = collected.first().content.toLowerCase()
+    while (true) {
+      // player
+      const collected = await msg.channel.awaitMessages(filter, { timeout: time * 1000, max: 1 })
+      const answer = collected.first().content.toLowerCase()
 
-          if (answer === 'run') {
-            const runChance = Math.floor(Math.random() * 3) + 1
+      if (answer === 'run') {
+        const runChance = Math.floor(Math.random() * 3) + 1
 
-            if (runChance == 1) {
-              points -= lostPoints
-              DB.query(`update members set points = ${points} where member_id = ${msg.member.id}`)
-              return msg.replyEmbed(`You coudln't run away and lost ${point} **${lostPoints}** points!`, { color: 'ff0000' })
-            } else {
-              return msg.replyEmbed(`You successfully ran away from **${minionName}**!`, { color: '00ff00' })
-            }
+        if (runChance == 1) {
+          points -= lostPoints
+          DB.query(`update members set points = ${points} where member_id = ${msg.member.id}`)
+          return msg.replyEmbed(`You coudln't run away and lost ${point} **${lostPoints}** points!`, { color: 'ff0000' })
+        } else {
+          return msg.replyEmbed(`You successfully ran away from **${minionName}**!`, { color: '00ff00' })
+        }
+      }
+
+      if (answer === 'fight') {
+        const damage = Math.floor(Math.random() * 15) + 10
+
+        minionHealth -= damage
+
+        if (minionHealth < 1) {
+          const runChance = Math.floor(Math.random() * 3) + 1
+
+          if (runChance == 1) {
+            return msg.replyEmbed(`Oh no, **${minionName}** ran away from you!`, { color: 'ff0000' })
+          } else {
+            points += receivablePoints
+            DB.query(`update members set points = ${points} where member_id = ${msg.member.id}`)
+            return msg.replyEmbed(`You received ${point} **${receivablePoints}** points because you killed **${minionName}**!`, { color: '00ff00' })
           }
+        }
 
-          if (answer === 'fight') {
-            const damage = Math.floor(Math.random() * 15) + 10
+        msg.replyEmbed(`You did **${damage}** damage! ***${minionName}'s* HP: ${minionHealth}/${maxMinionHealth}**`, { color: 'ffff00' })
 
-            minionHealth -= damage
+        const timer = async() => setTimeout(() => {
+          const damage = Math.floor(Math.random() * 15) + 10
+          playerHealth -= damage
 
-            if (minionHealth < 1) {
-              const runChance = Math.floor(Math.random() * 3) + 1
+          if (playerHealth < 1) {
+            return msg.replyEmbed(`**${minionName}** did **${damage}** damage and you died with ${playerHealth} HP! You lost ${point} **${lostPoints}** points.`, { color: 'ff0000' })
+          } else {
+            msg.replyEmbed(`**${minionName}** did **${damage}** damage. ***Your* HP: ${playerHealth}/${playerMaxHealth}**\n\nType \`fight\` or \`run\``, { color: 'ffff00' })
+          }
+        }, 1000);
 
-              if (runChance == 1) {
-                return msg.replyEmbed(`Oh no, **${minionName}** ran away from you!`, { color: 'ff0000' })
-              } else {
-                points += receivablePoints
-                DB.query(`update members set points = ${points} where member_id = ${msg.member.id}`)
-                return msg.replyEmbed(`You received ${point} **${receivablePoints}** points because you killed **${minionName}**!`, { color: '00ff00' })
-              }
-            }
+        if (playerHealth < 1) {
+          points -= lostPoints
+          DB.query(`update members set points = ${points} where member_id = ${msg.member.id}`)
+        }
 
-            msg.replyEmbed(`You did **${damage}** damage! ***${minionName}'s* HP: ${minionHealth}/${maxMinionHealth}**`, { color: 'ffff00' })
-
-            setTimeout(() => {
-              enemyTurn()
-            }, 1000);
-          } else playerRepeat()
-        })
-    }
-
-    function playerRepeat() {
-      playerTurn()
-    }
-
-    function enemyTurn() {
-      const damage = Math.floor(Math.random() * 15) + 10
-      playerHealth -= damage
-
-      if (playerHealth < 1) {
-        points -= lostPoints
-        DB.query(`update members set points = ${points} where member_id = ${msg.member.id}`)
-        msg.replyEmbed(`**${minionName}** did **${damage}** damage and you died with -${playerHealth} HP! You lost ${point} **${lostPoints}** points.`, { color: 'ff0000' })
-      } else {
-        msg.replyEmbed(`**${minionName}** did **${damage}** damage. ***Your* HP: ${playerHealth}/${playerMaxHealth}**\n\nType \`fight\` or \`run\``, { color: 'ffff00' })
-        playerRepeat()
+        await timer()
       }
     }
   },

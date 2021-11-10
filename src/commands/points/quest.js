@@ -8,7 +8,7 @@ module.exports = {
   permissions: ['SEND_MESSAGES'],
   timeout: 1000,
 
-  execute(msg, args) {
+  async execute(msg, args) {
     // code
   },
 

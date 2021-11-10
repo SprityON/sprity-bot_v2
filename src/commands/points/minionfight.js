@@ -7,7 +7,7 @@ module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
   category: Utils.getCmdCategory(__filename),
   usage: '',
-  aliases: [],
+  aliases: ['mf'],
   permissions: ['SEND_MESSAGES'],
   timeout: 1000,
 
@@ -76,7 +76,7 @@ module.exports = {
           playerHealth -= damage
 
           if (playerHealth < 1) {
-            return msg.replyEmbed(`**${minionName}** did **${damage}** damage and you died with ${playerHealth} HP! You lost ${point} **${lostPoints}** points.`, { color: 'ff0000' })
+            return msg.replyEmbed(`**${minionName}** did **${damage}** damage and you died with **${playerHealth}** HP! You lost ${point} **${lostPoints}** points.`, { color: 'ff0000' })
           } else {
             msg.replyEmbed(`**${minionName}** did **${damage}** damage. ***Your* HP: ${playerHealth}/${playerMaxHealth}**\n\nType \`fight\` or \`run\``, { color: 'ffff00' })
           }
@@ -85,11 +85,14 @@ module.exports = {
         if (playerHealth < 1) {
           points -= lostPoints
           DB.query(`update members set points = ${points} where member_id = ${msg.member.id}`)
+          return
         }
 
         await timer()
       }
     }
+
+    return
   },
 
   help: {

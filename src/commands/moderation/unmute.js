@@ -9,7 +9,7 @@ module.exports = {
   permissions: ['MANAGE_MESSAGES'],
   timeout: 1000,
 
-  execute(msg, args) {
+  async execute(msg, args) {
     const member = msg.mentions.members.first()
     if (!member) return msg.inlineReply(`You did not mention a member.`)
 

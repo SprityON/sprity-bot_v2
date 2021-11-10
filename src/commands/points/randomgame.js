@@ -13,8 +13,6 @@ module.exports = {
   points: true,
 
   async execute(msg, args) {
-    const player = new Player(msg.member)
-
     // tapper game w/ button
     const random = Math.floor(Math.random() * 2.99)
     switch (random) {

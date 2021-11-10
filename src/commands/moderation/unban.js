@@ -8,7 +8,7 @@ module.exports = {
   permissions: ['BAN_MEMBERS'],
   timeout: 1000,
 
-  execute(msg, args) {
+  async execute(msg, args) {
     let member = msg.mentions.members.first()
     if (member) return msg.inlineReply('Unban Members with their Member ID.')
     

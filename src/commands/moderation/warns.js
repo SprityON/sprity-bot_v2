@@ -10,7 +10,7 @@ module.exports = {
   permissions: ['SEND_MESSAGES'],
   timeout: 1000,
 
-  execute(msg, args) {
+  async execute(msg, args) {
     let member = msg.mentions.members.first()
     if (!member) return msg.inlineReply(`You have to mention a member.`)
     const embed = new Bot.Discord.MessageEmbed()

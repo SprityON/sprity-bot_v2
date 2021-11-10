@@ -11,7 +11,7 @@ module.exports = {
   permissions: ['MANAGE_MESSAGES'],
   timeout: 1000,
 
-  execute(msg, args) {
+  async execute(msg, args) {
     const role = msg.guild.roles.cache.find(role => role.name === "Muted")
     const member = msg.mentions.members.first()
 

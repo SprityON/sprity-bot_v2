@@ -7,7 +7,7 @@ module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
   category: Utils.getCmdCategory(__filename),
   usage: '',
-  aliases: [],
+  aliases: ['wg'],
   permissions: ['SEND_MESSAGES'],
   timeout: 1000,
 

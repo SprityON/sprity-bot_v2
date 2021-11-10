@@ -8,7 +8,7 @@ module.exports = {
   permissions: ['SEND_MESSAGES'],
   timeout: 1000,
 
-  execute(msg, args) {
+  async execute(msg, args) {
     msg.delete()
     msg.sendEmbed([
           [`${msg.author.username} said:`, `\`\`\`` + msg.content.slice(msg.content.split(" ")[0].length + 1) + `\`\`\``]

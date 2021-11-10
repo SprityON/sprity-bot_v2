@@ -8,7 +8,7 @@ module.exports = {
   permissions: ['BAN_MEMBERS'],
   timeout: 1000,
 
-  execute(msg, args) {
+  async execute(msg, args) {
     const member = msg.mentions.members.first()
     if (!member) return msg.replyEmbed(`You have to mention a member!`)
 

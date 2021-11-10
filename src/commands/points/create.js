@@ -9,7 +9,7 @@ module.exports = {
   permissions: ['SEND_MESSAGES'],
   timeout: 1000,
 
-  execute(msg, args) {
+  async execute(msg, args) {
     const player = new Player(msg.member.id)
     if (player.hasAccount(msg)) return msg.replyEmbed(`You already have an account!`)
   },

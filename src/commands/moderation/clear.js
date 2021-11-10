@@ -8,7 +8,7 @@ module.exports = {
   permissions: ['MANAGE_MESSAGES'],
   timeout: 1000,
 
-  execute(msg, args) {
+  async execute(msg, args) {
     if (!args[0] || isNaN(args[0])) 
       return msg.inlineReply(`That is not a valid number.`).then(msg => msg.delete({ timeout: 5000 }));
 

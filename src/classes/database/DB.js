@@ -37,14 +37,7 @@ module.exports = class DB {
               err
                 ? (() => { throw err })()
                 : bindings([result, fields, err]);
-            })
-            break;
-            
-          case 'array': 
-            conn.query(sql, bindings, (err, result, fields) => {
-              err
-                ? (() => { throw err })()
-                : resolve([result, fields, err]);
+              conn.release();
             })
             break;
         
@@ -53,10 +46,10 @@ module.exports = class DB {
               err
                 ? (() => { throw err })()
                 : resolve([result, fields, err]);
+              conn.release();
             })
             break;
         }
-        conn.release();
       })
     })
   }

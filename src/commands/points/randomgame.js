@@ -10,7 +10,6 @@ module.exports = {
   aliases: ['rg'],
   permissions: ['SEND_MESSAGES'],
   timeout: 5000,
-  points: true,
 
   async execute(msg, args) {
     // tapper game w/ button
@@ -19,7 +18,7 @@ module.exports = {
       case 0: require('./wordgame').execute(msg, args);     break;
       case 1: require('./minionfight').execute(msg, args);  break;
       case 2: require('./guess').execute(msg, args);        break;
-      // case 99: fight Sprity Bot break;
+      case 3: require('./bossfight').execute(msg, args);    break;
       }
   },
 

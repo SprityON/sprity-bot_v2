@@ -12,7 +12,7 @@ module.exports = {
   timeout: 1000,
 
   async execute(msg, args) {
-    if (!args[0] || isNaN(args[0])) msg.replyEmbed(`Please type a number to bet!`)
+    if (!args[0] || isNaN(args[0])) return msg.replyEmbed(`Please type a number to bet!`)
 
     const player = new Player(msg.member)
     const points = await player.points

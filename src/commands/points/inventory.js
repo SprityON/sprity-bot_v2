@@ -9,7 +9,6 @@ module.exports = {
   aliases: ['inv'],
   permissions: ['SEND_MESSAGES'],
   timeout: 5000,
-  points: true,
 
   async execute(msg, args) {
     let page, filter;

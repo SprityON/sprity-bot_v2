@@ -1,6 +1,7 @@
 [
   {
     "id": "ad_ticket",
+    "type": "usable",
     "emoji": ":ticket:",
     "uploaded": false,
     "name": "Ad Ticket",
@@ -10,6 +11,7 @@
 
   {
     "id": "rename",
+    "type": "usable",
     "emoji": ":pencil2:",
     "uploaded": false,
     "name": "Rename (1 Use)",
@@ -50,6 +52,7 @@
 
   {
     "id": "private_channel",
+    "type": "tool",
     "emoji": ":lock:",
     "uploaded": false,
     "name": "Private Channel (in development)",
@@ -59,10 +62,31 @@
 
   {
     "id": "rich_role",
+    "type": "usable",
     "emoji": ":money_with_wings:",
     "uploaded": false,
     "name": "Rich Role",
     "description": "Flex with your richness :money_mouth:",
     "price": 1000000
+  },
+
+  {
+    "id": "health_potion_10",
+    "type": "rpg",
+    "emoji": ":lock:",
+    "uploaded": false,
+    "name": "Health Potion (10%)",
+    "description": "Using this potion will restore 10% of your HP.",
+    "price": 250
+  },
+
+  {
+    "id": "bomb",
+    "type": "rpg",
+    "emoji": ":bomb:",
+    "uploaded": false,
+    "name": "Bomb",
+    "description": "Throw this bomb while fighting!",
+    "price": 500
   }
 ]

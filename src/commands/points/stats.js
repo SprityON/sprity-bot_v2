@@ -1,4 +1,4 @@
-const Utils = require('../../../classes/utilities/Utils')
+const Utils = require('../../classes/utilities/Utils')
 
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
@@ -8,7 +8,7 @@ module.exports = {
   permissions: ['SEND_MESSAGES'],
   timeout: 1000,
 
-  execute(msg, args) {
+  async execute(msg, args) {
     // code
   },
 

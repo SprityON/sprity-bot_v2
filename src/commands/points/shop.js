@@ -9,7 +9,6 @@ module.exports = {
   aliases: [],
   permissions: ['SEND_MESSAGES'],
   timeout: 1000,
-  points: true,
 
   async execute(msg, args) {
     const shop = require('./shop.json')

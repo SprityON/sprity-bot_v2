@@ -8,8 +8,6 @@ let isUsing = false
 module.exports.execute = async (msg) => {
 
   DB.member.countMessage(msg.member)
-
-  console.log(process.memoryUsage().heapUsed / 1024 / 1024)
   if (isUsing) return
   
   const command = msg.content.trim().split(/ +/)[0].toLowerCase();
@@ -24,11 +22,11 @@ module.exports.execute = async (msg) => {
       if (cmd.aliases)
         cmd.aliases.forEach(a => {
           if (command.includes(a)) {
-            const startNumber = command[command.indexOf(a)]
+            const startNumber = command.indexOf(a)
 
             const assumedPrefix = () => {
               let temp = ''
-              for (i = 0; i < startNumber.length; i++) 
+              for (i = 0; i < startNumber; i++) 
                 temp += command.charAt(i)
               return temp
             }
@@ -72,11 +70,10 @@ module.exports.execute = async (msg) => {
 
           enoughPermissions
             ? (async () => {
-              if (cmdFile.points) {
-                const player = new Player(msg.member)
+              const player = new Player(msg.member)
 
-                if (!await player.hasAccount()) return player.create(msg)
-              }
+              if (!await player.hasAccount()) 
+                await player.create()
 
               isUsing = true
               cmdFile.execute(msg, args).then(() => {

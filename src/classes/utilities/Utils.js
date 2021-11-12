@@ -1,3 +1,4 @@
+const ms = require('ms');
 const DB = require('../database/DB');
 
 module.exports = class Utils {
@@ -143,7 +144,7 @@ module.exports = class Utils {
 
         const role = me.guild.roles.cache.find(role => role.name === "Muted")
 
-        DB.query(`SELECT * FROM timer_dates WHERE member_id = ${member.id} and 'type' = 'mute'`).then(result2 => {
+        DB.query(`SELECT * FROM timer_dates WHERE member_id = ${member.id} and type = 'mute'`).then(result2 => {
           if (result2[0][0] || member.roles.cache.find(r => r.id === role.id)) {
             if (result2[0][0]) {
               const [arr, ongoing] = this.dateDifference(result2[0][0].enddate)
@@ -153,6 +154,11 @@ module.exports = class Utils {
                 member.roles.remove(role)
 
                 DB.query(`DELETE FROM timer_dates WHERE member_id = ${member.id}`)
+              } else {
+                const ms = this.dateDifference(result2[0][0].enddate, 'full')
+                setTimeout(() => {
+                  member.roles.remove(role)
+                }, ms);
               }
             } else {
               console.log(`${member.user.username} was unmuted.`)
@@ -211,6 +217,8 @@ module.exports = class Utils {
       { 's': seconds },
       { 'ms': milliseconds }
     ]
+
+    if (option === 'full') return muteDurationMilliseconds
 
     let arr = []
     let ongoing = false

@@ -1,5 +1,3 @@
-const DB = require('../../classes/database/DB')
-const Player = require('../../classes/utilities/Player')
 const Utils = require('../../classes/utilities/Utils')
 const Bot = require('../../Bot')
 
@@ -18,7 +16,6 @@ module.exports = {
       case 0: require('./wordgame').execute(msg, args);     break;
       case 1: require('./minionfight').execute(msg, args);  break;
       case 2: require('./guess').execute(msg, args);        break;
-      case 3: require('./bossfight').execute(msg, args);    break;
       }
   },
 

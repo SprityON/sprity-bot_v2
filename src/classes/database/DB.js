@@ -18,7 +18,6 @@ module.exports = class DB {
 
   static get pool() {
     return require('mysql2').createPool({
-      connectionLimit: 100,
       host: process.env.DB_HOST,
       user: process.env.DB_USER,
       password: process.env.DB_PASS,
@@ -57,14 +56,13 @@ module.exports = class DB {
   static member = {
     addToDB: async (member) => {
       this.query(`select member_id from members where member_id = ${member.id}`, data => {
-        if (!data[0][0]) this.query(`insert into members (member_id, warns) values (${member.id}, '[]')`)
+        if (!data[0][0]) this.query(`insert into members (member_id, warns, stats, inventory) values (${member.id}, '[]', '{"health": 100, "attack": 20, "defense": 0}', '[]')`)
       })
     },
 
     getWarns: async (member) => {
       return new Promise(async (resolve, reject) => {
         const result = await this.query(`select * from members where member_id = ${member.id}`)
-        if (!result[0][0]) return this.member.addToDB(member)
         resolve(result[0][0].warns)
       })
     },

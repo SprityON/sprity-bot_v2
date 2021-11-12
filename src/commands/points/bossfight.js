@@ -7,7 +7,7 @@ module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
   category: Utils.getCmdCategory(__filename),
   usage: '',
-  aliases: ['mf'],
+  aliases: ['bf'],
   permissions: ['SEND_MESSAGES'],
   timeout: 1000,
 
@@ -19,10 +19,13 @@ module.exports = {
     const minionName = `🤖 Minion #${randomNumber}`
     const receivablePoints = Math.floor(Math.random() * 800) + 200
 
+    const experience = Math.floor(Math.random() * 400) + 100
+    const newExperience = await player.experience + experience
+
     const time = 5
 
-    let botHealth = 250
-    let maxBotHealth = 250
+    let botHealth = 25000
+    let maxBotHealth = 25000
 
     let playerHealth = 100
     let playerMaxHealth = 100
@@ -66,8 +69,9 @@ module.exports = {
             return msg.replyEmbed(`Oh no, **${bossName}** ran away from you!`, { color: 'ff0000' })
           } else {
             points += receivablePoints
+            player.levelUp(experience, msg)
             DB.query(`update members set points = ${points} where member_id = ${msg.member.id}`)
-            return msg.replyEmbed(`You received ${point} **${receivablePoints}** points because you killed **${bossName}**!`, { color: '00ff00' })
+            return msg.replyEmbed(`You received ${point} **${receivablePoints}** points and got **${experience}** XP because you killed **${bossName}**!`, { color: '00ff00' })
           }
         }
 

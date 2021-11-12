@@ -6,8 +6,10 @@ const Utils = require('../classes/utilities/Utils');
 let isUsing = false
 
 module.exports.execute = async (msg) => {
-
+  if (msg.member.user.bot) return
+  
   DB.member.countMessage(msg.member)
+
   if (isUsing) return
   
   const command = msg.content.trim().split(/ +/)[0].toLowerCase();

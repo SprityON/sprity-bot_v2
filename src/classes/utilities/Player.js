@@ -29,9 +29,82 @@ module.exports = class Player {
     })
   }
 
+  async levelUp(amount, msg) {
+    const level = await this.level
+    const experience = amount ? await this.experience + amount : await this.experience
+    let levelExperience = 0
+
+    for (let i = 0; i <= level; i++) 
+      levelExperience += ((i + 1) * 125) + i * 125
+
+    if (experience >= levelExperience) {
+      const attributes = (await DB.query(`select attributes from members where member_id = ${this.member.id}`))[0][0].attributes
+      msg.replyEmbed(`You leveled up! You are now level **${level + 1}**.`)
+      DB.query(`update members set level = ${level + 1}, experience = ${experience}, attributes = ${attributes + 3} where member_id = ${this.member.id}`)
+    } else {
+      DB.query(`update members set experience = ${experience} where member_id = ${this.member.id}`)
+    }
+  }
+
+  get difficulty() {
+    return new Promise(async (resolve, reject) => {
+      const result = await DB.query(`select difficulty from members where member_id = ${this.member.id}`)
+      resolve(result[0][0].difficulty)
+    })
+  }
+
+  get health() {
+    return new Promise(async (resolve, reject) => {
+      const result = await DB.query(`select stats from members where member_id = ${this.member.id}`)
+      resolve(JSON.parse(result[0][0].stats).health)
+    })
+  }
+
+  get attack() {
+    return new Promise(async (resolve, reject) => {
+      const result = await DB.query(`select stats from members where member_id = ${this.member.id}`)
+      resolve(JSON.parse(result[0][0].stats).attack)
+    })
+  }
+
+  get defense() {
+    return new Promise(async (resolve, reject) => {
+      const result = await DB.query(`select stats from members where member_id = ${this.member.id}`)
+      resolve(JSON.parse(result[0][0].stats).defense)
+    })
+  }
+
+  get throwable() {
+    return new Promise(async (resolve, reject) => {
+      const result = await DB.query(`select throwable from members where member_id = ${this.member.id}`)
+      resolve(result[0][0].throwable)
+    })
+  }
+
+  get potion() {
+    return new Promise(async (resolve, reject) => {
+      const result = await DB.query(`select potion from members where member_id = ${this.member.id}`)
+      resolve(result[0][0].potion)
+    })
+  }
+
+  get level() {
+    return new Promise(async (resolve, reject) => {
+      const result = await DB.query(`select level from members where member_id = ${this.member.id}`)
+      resolve(result[0][0].level)
+    })
+  }
+
+  get experience() {
+    return new Promise(async (resolve, reject) => {
+      const result = await DB.query(`select experience from members where member_id = ${this.member.id}`)
+      resolve(result[0][0].experience)
+    })
+  }
+
   get inventory() {
     return new Promise(async (resolve, reject) => {
-      const result = await DB.query(`select * from members where member_id = ${this.member.id}`)
+      const result = await DB.query(`select inventory from members where member_id = ${this.member.id}`)
       resolve(JSON.parse(result[0][0].inventory))
     })
   }

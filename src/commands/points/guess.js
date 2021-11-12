@@ -14,13 +14,15 @@ module.exports = {
 
   async execute(msg, args) {
     let tries = 3
-    let hints = 1
-    const lostPoints = Math.floor(Math.random() * 25) + 25
-    const winPoints = Math.floor(Math.random() * 50) + 50
+    let hints =  await player.difficulty < 1 ? 2 : 1
+    const lostPoints = (Math.floor(Math.random() * 25) + 25) * await player.difficulty
+    const winPoints = (Math.floor(Math.random() * 50) + 50) * await player.difficulty
     const random = Math.floor(Math.random() * 10) + 1
     const player = new Player(msg.member)
     const points = await player.points
     const point = Bot.client.emojis.cache.find(e => e.name === 'pointdiscord')
+
+    const experience = (Math.floor(Math.random() * 100) + 100) * await player.difficulty
 
     msg.replyEmbed(`Guess my number between **1 - 10** for ${point} **${winPoints}**. \n\nYou got **${tries}** tries and **1** hint!\nType \`stop\` to stop the game.`)
 
@@ -70,7 +72,8 @@ module.exports = {
           message.edit(embed.setDescription(`Your given number: **${answer}**\nYou guessed... right!`).setColor('00ff00'))
 
           const timer2 = async() => setTimeout(async() => {
-            return message.edit(embed.setDescription(`Your given number: **${answer}**\nYou guessed... right!\n\nYou received ${point} **${winPoints}** points.`))
+            message.edit(embed.setDescription(`Your given number: **${answer}**\nYou guessed... right!\n\nYou received ${point} **${winPoints}** points and **${experience}** XP.`))
+            return player.levelUp(experience, msg)
           }, 250);
 
           await timer2()

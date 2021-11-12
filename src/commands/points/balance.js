@@ -16,7 +16,7 @@ module.exports = {
 
     const point = Bot.client.emojis.cache.find(e => e.name === 'pointdiscord')
 
-    msg.replyEmbed(`You have ${point} **${Utils.normalizePrice(points)}** points!`)
+    msg.replyEmbed(`You have ${point} **${Utils.normalizePrice(points)}** points!`, { footer: 'you can also view your full profile!' })
   },
 
   help: {

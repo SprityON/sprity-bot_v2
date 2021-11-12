@@ -21,25 +21,18 @@ module.exports = new class Bot {
 		require("./classes/other/ExtraStructures")
 		client.login(process.env.TOKEN);
 		client.once('ready', this.ready.bind(this, client))
-			.on('guildCreate', this.guildCreate.bind(this))
 	}
 
-	ready(client) {
+	async ready(client) {
 		console.log(`Ready as ${client.user.tag}!`)
 
 		DB.connect().then(
 			resolved => console.log(resolved),
 			rejected => console.log(rejected))
 
-		client.user.setActivity(`$help`, { type: 'WATCHING' })
-		Utils.load();
-	}
+		const prefix = await DB.guild.getPrefix()
 
-	guildCreate(guild) {
-		guild.channels.cache.find(channel => channel.id === guild.channels.cache.filter(chan => chan.name.includes('welcome')).first().id).send(
-			Utils.createEmbed([
-				['Thanks for adding me to your server!',
-					'Need help? Use `$help`']
-			]))
+		client.user.setActivity(`${prefix}help`, { type: 'WATCHING' })
+		Utils.load();
 	}
 }

@@ -77,14 +77,18 @@ module.exports = class Player {
   get throwable() {
     return new Promise(async (resolve, reject) => {
       const result = await DB.query(`select throwable from members where member_id = ${this.member.id}`)
-      resolve(result[0][0].throwable)
+      const throwable = result[0][0].throwable
+
+      resolve(throwable ? JSON.parse(throwable)[0] : '')
     })
   }
 
   get potion() {
     return new Promise(async (resolve, reject) => {
       const result = await DB.query(`select potion from members where member_id = ${this.member.id}`)
-      resolve(result[0][0].potion)
+      const potion = result[0][0].potion
+
+      resolve(potion ? JSON.parse(potion)[0] : '')
     })
   }
 

@@ -71,22 +71,35 @@
   },
 
   {
-    "id": "health_potion_10",
+    "id": "hp_pot10",
     "type": "rpg",
-    "emoji": ":lock:",
-    "uploaded": false,
+    "emoji": "health_potion",
+    "uploaded": true,
     "name": "Health Potion (10%)",
     "description": "Using this potion will restore 10% of your HP.",
-    "price": 250
+    "price": 250,
+    "heal_percentage": 10
   },
 
   {
-    "id": "bomb",
+    "id": "xs_bomb",
     "type": "rpg",
     "emoji": ":bomb:",
     "uploaded": false,
-    "name": "Bomb",
-    "description": "Throw this bomb while fighting!",
-    "price": 500
+    "name": "XS Bomb",
+    "description": "Does **25** damage.",
+    "price": 250,
+    "damage": 25
+  },
+
+  {
+    "id": "m_bomb",
+    "type": "rpg",
+    "emoji": ":bomb:",
+    "uploaded": false,
+    "name": "M Bomb",
+    "description": "Does **100** damage.",
+    "price": 1000,
+    "damage": 100
   }
 ]

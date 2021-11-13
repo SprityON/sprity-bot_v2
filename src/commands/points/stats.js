@@ -1,3 +1,4 @@
+const Bot = require('../../Bot')
 const { Discord } = require('../../Bot')
 const DB = require('../../classes/database/DB')
 const Player = require('../../classes/utilities/Player')
@@ -23,16 +24,24 @@ module.exports = {
     previousExperience -= await player.experience
     const currExperience = nextLevelExperience - previousExperience
 
+    const throwable = await player.throwable
+    const potion = await player.potion
+
+    const shop = require('./shop.json')
+    const shopThrowable = shop.find(item => item.id === throwable.id)
+
+    const shopPotion = shop.find(item => item.id === potion.id)
+
     if (!args[0]) {
       const embed = new Discord.MessageEmbed().setColor('#3E4BDD')
-        .setTitle(`${msg.author.username}'s stats | LVL: ${await player.level} (${currExperience}/${nextLevelExperience})`)
+      .setTitle(`${msg.author.username}'s stats | LVL: ${await player.level} (${currExperience}/${nextLevelExperience})`)
       .setThumbnail(msg.author.avatarURL({dynamic: true}))
       .setDescription(`You have **${result[0][0].attributes}** attributes.`)
       .addField(`HP`, await player.health, true)
       .addField(`ATT`, await player.attack, true)
       .addField(`DEF`, await player.defense, true)
-      .addField(`THROWABLE`, await player.throwable ? player.throwable : `NONE`, true)
-      .addField(`POTION`, await player.potion ? player.potion : `NONE`, true)
+      .addField(`THROWABLE`, throwable ? `${shopThrowable.uploaded ? Bot.client.emojis.cache.find(e => e.name === shopThrowable.emoji) : shopThrowable.emoji} ${shopThrowable.name} (${throwable.amount})` : `:x: NONE`, true)
+        .addField(`POTION`, potion ? `${shopPotion.uploaded ? Bot.client.emojis.cache.find(e => e.name === shopPotion.emoji) : shopPotion.emoji} ${shopPotion.name} (${potion.amount})` : `:x: NONE`, true)
       .setFooter(`to upgrade: ${await DB.guild.getPrefix()}stats upgrade <stat> <amount>`)
       
       msg.inlineReply(embed)

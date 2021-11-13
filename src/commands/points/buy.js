@@ -20,9 +20,11 @@ module.exports = {
 
     const shop = require('./shop.json')
     const item = shop.find(i => i.id === itemID)
-    const emoji = item.uploaded ? Bot.client.emojis.cache.find(e => e.name === item.id) :item.emoji
 
     if (!item) return msg.replyEmbed(`That item was not found!`)
+    
+    const emoji = item.uploaded ? Bot.client.emojis.cache.find(e => e.name === item.emoji) : item.emoji
+
 
     const player = new Player(msg.member)
     let inventory = await player.inventory

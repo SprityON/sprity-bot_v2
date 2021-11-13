@@ -14,11 +14,11 @@ module.exports = {
 
   async execute(msg, args) {
     let tries = 3
-    let hints =  await player.difficulty < 1 ? 2 : 1
-    const lostPoints = (Math.floor(Math.random() * 25) + 25) * await player.difficulty
-    const winPoints = (Math.floor(Math.random() * 50) + 50) * await player.difficulty
     const random = Math.floor(Math.random() * 10) + 1
     const player = new Player(msg.member)
+    const lostPoints = (Math.floor(Math.random() * 25) + 25) * await player.difficulty
+    const winPoints = (Math.floor(Math.random() * 50) + 50) * await player.difficulty
+    let hints = await player.difficulty < 1 ? 2 : 1
     const points = await player.points
     const point = Bot.client.emojis.cache.find(e => e.name === 'pointdiscord')
 

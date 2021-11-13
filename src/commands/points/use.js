@@ -7,7 +7,7 @@ module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
   category: Utils.getCmdCategory(__filename),
   usage: 'use <item_id>',
-  aliases: [],
+  aliases: ['equip'],
   permissions: ['SEND_MESSAGES'],
   timeout: 1000,
 
@@ -31,7 +31,7 @@ module.exports = {
     item.execute(msg, args)
     .then(([bool, message]) => {
       if (bool === true) {
-        if (!item.role && !item.tool) {
+        if (!item.role && !item.tool && !item.rpg) {
           inventory[invItem.pos].amount -= 1
           DB.query(`update members set inventory = '${JSON.stringify(inventory)}' where member_id = ${msg.member.id}`)
           msg.replyEmbed(`You have used the item **${shopItem.name}**`)

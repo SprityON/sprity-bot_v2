@@ -284,39 +284,24 @@ module.exports = class Utils {
 
         if (currPage > 1) { i = (currPage * showAmountOfItems) - showAmountOfItems }
 
-        let allJSON = JSONlist;
-
-        if (filter && isNaN(filter)) {
-          try {
-            allJSON = Array.from(require(`./commands/game/rpg/${filter}/${filter}.json`));
-          } catch (error) {
-            filter = '';
-          }
-        }
-
         let Continue = true
-        for (let item of allJSON) {
+        for (let invItem of inventory) {
+          if (invItem.amount > 0) { totalItemsAmount++; } else { continue; }
 
-          if (Continue == true) {
-            if (testI !== i) { testI++ } else {
+          if (Continue) {
+            if (testI !== i) { testI++; } else {
+
               pageItemsAmount++
 
               if (pageItemsAmount > showAmountOfItems) { Continue = false; continue; }
 
-              let emote
-              if (item.uploaded) {
-                emote = Bot.client.emojis.cache.find(e => e.name === item.emoji)
-              } else {
-                emote = item.emoji
-              }
+              const item = JSONlist.find(item => item.id === invItem.id)
+              const emote = item.uploaded ? Bot.client.emojis.cache.find(e => e.name === item.emoji) : item.emoji
 
-              const invItem = inventory.find(i => i.id === item.id)
-              if (invItem && invItem.amount > 0) {
-                totalItemsAmount++
-                text += `${emote} **${item.name} ─ ${invItem.amount}**\n*ID* \`${item.id}\`\n\n`
-                testI++
-                i++
-              }
+              text += `${emote} **${item.name} ─ ${invItem.amount}**\n*ID* \`${item.id}\`\n\n`
+
+              i++
+              testI++
             }
           }
         }
@@ -378,12 +363,7 @@ module.exports = class Utils {
 
                 if (pageItemsAmount > showAmountOfItems) { Continue = false; continue; }
                 
-                let emote
-                if (item.uploaded) {
-                  emote = Bot.client.emojis.cache.find(e => e.name === item.emoji)
-                } else {
-                  emote = item.emoji
-                }
+                let emote = item.uploaded ? Bot.client.emojis.cache.find(e => e.name === item.emoji) : item.emoji
 
                 const point = Bot.client.emojis.cache.find(e => e.name === "pointdiscord")
                 

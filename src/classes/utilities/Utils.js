@@ -268,6 +268,7 @@ module.exports = class Utils {
       case 'inventory':
         const player = new Player(member)
         const inventory = await player.inventory
+        const shop = require('../../commands/points/shop.json')
 
         let pageItemsAmount = 0;
         let totalItemsAmount = 0;

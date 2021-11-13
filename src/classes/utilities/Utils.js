@@ -295,7 +295,7 @@ module.exports = class Utils {
 
               if (pageItemsAmount > showAmountOfItems) { Continue = false; continue; }
 
-              const item = JSONlist.find(item => item.id === invItem.id)
+              const item = shop.find(item => item.id === invItem.id)
               const emote = item.uploaded ? Bot.client.emojis.cache.find(e => e.name === item.emoji) : item.emoji
 
               text += `${emote} **${item.name} ─ ${invItem.amount}**\n*ID* \`${item.id}\`\n\n`

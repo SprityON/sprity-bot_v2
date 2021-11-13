@@ -11,7 +11,6 @@ module.exports.execute = async(msg, item_id, type) => {
   const shopThrowable = weapon ? shop.find(item => item.id === weapon.id) : null
   const throwableEmote = weapon ? (shopThrowable.uploaded ? Bot.client.emojis.cache.find(e => e.name === shopThrowable.emoji) : shopThrowable.emoji) : null
   const newShopThrowable = shop.find(item => item.id === item_id)
-  console.log(newShopThrowable);
   const newThrowableEmote = newShopThrowable.uploaded ? Bot.client.emojis.cache.find(e => e.name === newShopThrowable.emoji) : newShopThrowable.emoji
 
   if (weapon && weapon.id == item_id) {
@@ -37,6 +36,7 @@ module.exports.execute = async(msg, item_id, type) => {
   } else {
     msg.replyEmbed(`You are now using ${newThrowableEmote} **${newShopThrowable.name}** as a ${type}.`)
     const item = inventory.find(item => item.id === item_id)
+    console.log(item);
     const invItemAmount = item.amount
     inventory[item.pos].amount -= item.amount
     DB.query(`update members set ${type} = '[{"id": "${item_id}", "amount": ${invItemAmount}}]', inventory = '${JSON.stringify(inventory)}' where member_id = ${msg.member.id}`)

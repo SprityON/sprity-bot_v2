@@ -51,7 +51,7 @@ module.exports = {
       }
 
       return msg.channel.send(embed)
-    } else if (args[0]) {
+    } else if (args[0] && isNaN(args[0])) {
       let text = ''
       let isCategory = false
       for (const cat of categories) 

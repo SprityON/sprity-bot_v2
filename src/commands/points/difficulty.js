@@ -5,22 +5,24 @@ const Utils = require('../../classes/utilities/Utils')
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
   category: Utils.getCmdCategory(__filename),
-  usage: '<easy/medium/hard/impossible>',
+  usage: 'difficulty <easy/medium/hard/impossible>',
   aliases: ['diff'],
   permissions: ['SEND_MESSAGES'],
   timeout: 1000,
 
   async execute(msg, args) {
-    const player = new Player(msg.member)
+    const mention = msg.mentions.members.first()
+    const player = mention ? new Player(mention) : new Player(msg.member)
 
     let difficulty = async() => {
       if (Number(await player.difficulty) === 0.75) return 'easy'
       if (Number(await player.difficulty) === 1) return 'medium'
       if (Number(await player.difficulty) === 1.25) return 'hard'
-      if (Number(await player.difficulty) === 3) return '*impossible*'
+      if (Number(await player.difficulty) === 1.50) return '*insane*'
+      if (Number(await player.difficulty) === 2) return '*impossible*'
     }
 
-    if (!args[0]) return msg.replyEmbed(`Your current difficulty is set to **${await difficulty()}**.`, { 
+    if (!args[0] || mention) return msg.replyEmbed(`${mention ? mention.author.username + '\'s' : 'Your'} current difficulty is set to **${await difficulty()}**.`, { 
       footer: `to change difficulty: ${await DB.guild.getPrefix()}difficulty <easy/medium/hard/impossible>`
     })
 
@@ -46,17 +48,24 @@ module.exports = {
       return msg.replyEmbed(`Your difficulty was set to **hard**.`)
     }
 
-    else if (args[0].toLowerCase() === 'impossible') {
-      if (player.difficulty === 3) return msg.replyEmbed(`You already have your difficulty set to impossible!`)
+    else if (args[0].toLowerCase() === 'insane') {
+      if (player.difficulty === 1.50) return msg.replyEmbed(`You already have your difficulty set to hard!`)
 
-      DB.query(`update members set difficulty = 3 where member_id = ${msg.member.id}`)
-      return msg.replyEmbed(`Your difficulty was set to **impossible**.\n\nNOTE: YOU WILL LOSE MORE POINTS IF YOU LOSE!`)
+      DB.query(`update members set difficulty = 1.50 where member_id = ${msg.member.id}`)
+      return msg.replyEmbed(`Your difficulty was set to **insane**.`)
+    }
+
+    else if (args[0].toLowerCase() === 'impossible') {
+      if (player.difficulty === 2) return msg.replyEmbed(`You already have your difficulty set to impossible!`)
+
+      DB.query(`update members set difficulty = 2 where member_id = ${msg.member.id}`)
+      return msg.replyEmbed(`Your difficulty was set to **impossible**.`)
     }
   },
 
   help: {
-    enabled: false,
-    title: '',
-    description: ``,
+    enabled: true,
+    title: 'Set Difficulty',
+    description: `Changes the difficulty of your battles. (gain = in points & EXP)\n\n**Easy:** -25% gain\n**Medium:** 0% gain/loss\n**Hard:** 25% gain\n**Insane:** 50% gain\n***Impossible:*** 100% gain`,
   }
 }

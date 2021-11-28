@@ -10,7 +10,7 @@ module.exports = {
   timeout: 1000,
 
   async execute(msg, args) {
-    const player = new Player(msg.member.id)
+    const player = new Player(msg.member)
     player.delete(msg)
   },
 

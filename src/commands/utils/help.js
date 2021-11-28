@@ -27,8 +27,7 @@ module.exports = {
 
         categories.forEach(c => {
           if (f == c.category) {
-            let emote = c.emote
-            if (!c.emote.includes(':')) emote = Bot.client.emojis.cache.find(e => e.name === c.emote)
+            const emote = c.emote.includes(':') ? c.emote : Bot.client.emojis.cache.find(e => e.name === c.emote)
             embed.addField(`${emote} ${c.title.charAt(0).toUpperCase() + c.title.slice(1)}`, `\`${c.usage}\``, true)
           }
         })

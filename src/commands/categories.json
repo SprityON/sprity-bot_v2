@@ -1,15 +1,21 @@
 [
 	{
-		"category": "points",
-		"title": "Points",
-		"emote": ":game_die:",
-		"usage": "help points"
-	},
-	{
 		"category": "moderation",
 		"title": "Moderation",
 		"emote": ":bookmark:",
 		"usage": "help moderation"
+	},
+	{
+		"category": "points",
+		"title": "Points",
+		"emote": "pointdiscord",
+		"usage": "help points"
+	},
+	{
+		"category": "fun",
+		"title": "Fun",
+		"emote": ":game_die:",
+		"usage": "help fun"
 	},
 	{
 		"category": "utils",

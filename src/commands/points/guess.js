@@ -24,7 +24,7 @@ module.exports = {
 
     const experience = Math.floor((Math.floor(Math.random() * 100) + 100) * await player.difficulty)
 
-    msg.replyEmbed(`Guess my number between **1 - 10** for ${point} **${winPoints}**. \n\nYou got **${tries}** tries and **1** hint!\nType \`stop\` to stop the game.`)
+    msg.replyEmbed(`Guess my number between **1 - 10** for ${point} **${winPoints}**. \n\nYou got **${tries}** tries and **${hints}** hint!\nType \`stop\` to stop the game.`)
 
     const embed = new Discord.MessageEmbed().setColor('ffff00')
 
@@ -36,8 +36,6 @@ module.exports = {
 
       const collected = await msg.channel.awaitMessages(filter, { timeout: 60000, max: 1 })
       const answer = collected.first().content
-
-      // HINTS
 
       if (answer.toLowerCase() == 'stop') {
         return msg.replyEmbed(`Stopped the game.`)
@@ -73,15 +71,13 @@ module.exports = {
 
           const timer2 = async() => setTimeout(async() => {
             message.edit(embed.setDescription(`Your given number: **${answer}**\nYou guessed... right!\n\nYou received ${point} **${winPoints}** points and **${experience}** XP.`))
-            return player.levelUp(experience, msg)
           }, 250);
 
           await timer2()
         }, 1000);
 
         await timer1()
-
-        return 
+        return player.levelUp(experience, msg)
       } else {
         tries--
 

@@ -5,13 +5,14 @@ const Utils = require('../../classes/utilities/Utils')
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
   category: Utils.getCmdCategory(__filename),
-  usage: 'balance',
+  usage: 'balance <member>',
   aliases: ['bal'],
   permissions: ['SEND_MESSAGES'],
   timeout: 1000,
 
   async execute(msg, args) {
-    const player = new Player(msg.member)
+    const mention = msg.mentions.members.first()
+    const player = mention ? new Player(mention) : new Player(msg.member)
     const points = await player.points
 
     const point = Bot.client.emojis.cache.find(e => e.name === 'pointdiscord')

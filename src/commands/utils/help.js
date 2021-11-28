@@ -101,7 +101,7 @@ module.exports = {
         embed.setDescription(text)
         msg.channel.send(embed)
       } else {
-        const command = Bot.Commands.find(cmd => cmd.name === args[0] || cmd.aliases.find(alias => alias === args[0]))
+        const command = Bot.Commands.find(cmd => cmd.name === args[0] || cmd.aliases && cmd.aliases.find(alias => alias === args[0]))
 
         if (!command || !command.help.enabled) return
 

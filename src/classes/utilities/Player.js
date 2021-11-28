@@ -53,6 +53,13 @@ module.exports = class Player {
     })
   }
 
+  get stats() {
+    return new Promise(async (resolve, reject) => {
+      const result = await DB.query(`select stats from members where member_id = ${this.member.id}`)
+      resolve(JSON.parse(result[0][0].stats))
+    })
+  }
+
   get health() {
     return new Promise(async (resolve, reject) => {
       const result = await DB.query(`select stats from members where member_id = ${this.member.id}`)

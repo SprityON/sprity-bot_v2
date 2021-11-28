@@ -101,5 +101,15 @@
     "description": "Does **100** damage.",
     "price": 1000,
     "damage": 100
+  },
+
+  {
+    "id": "reset",
+    "type": "usable",
+    "emoji": ":arrows_counterclockwise:",
+    "uploaded": false,
+    "name": "Reset",
+    "description": "Reset your attributes",
+    "price": 10000
   }
 ]

@@ -17,7 +17,7 @@ module.exports = {
     const minionName = `🤖 Minion #${randomNumber}`
 
     const player = new Player(msg.member)
-    const receivablePoints = (Math.floor(Math.random() * 200) + 50) * await player.difficulty
+    const receivablePoints = Math.floor((Math.floor(Math.random() * 50) + 50) * await player.difficulty)
 
     const shop = require('./shop.json')
     let throwable = await player.throwable
@@ -30,7 +30,7 @@ module.exports = {
 
     let points = await player.points
 
-    const experience = Math.floor(Math.random() * 150) + 100
+    const experience = Math.floor(Math.random() * 100) + 50
     const time = 10
 
     let minionHealth = await player.health * await player.difficulty
@@ -42,7 +42,7 @@ module.exports = {
     msg.replyEmbed(`Kill **${minionName}** (**${minionHealth}/${maxMinionHealth}**) to receive ${point} **${receivablePoints}**\n\nType \`attack\`, \`throw\`, \`potion\` or \`run\``,
       { title: `You encountered ${minionName}!)`, color: 'ff0000' })
 
-    const lostPoints = (Math.floor(Math.random() * 100) + 50) * await player.difficulty
+    const lostPoints = (Math.floor(Math.random() * 50) + 50) * await player.difficulty
 
     const filter = m => m.author.id === msg.author.id
 

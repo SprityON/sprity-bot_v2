@@ -30,7 +30,7 @@ module.exports = {
 
     const player = new Player(msg.member)
 
-    const experience = (Math.floor(Math.random() * 50) + 15) * await player.difficulty
+    const experience = Math.floor((Math.floor(Math.random() * 35) + 15) * await player.difficulty)
 
     const points = await player.points
     const sentence = sentences[Math.floor(Math.random() * sentences.length)]
@@ -42,13 +42,13 @@ module.exports = {
       .then(async collected => {
         let points = await player.points
         if ((collected.first().content.charAt(0).toLowerCase() + collected.first().content.slice(1)) === sentence) {
-          const won = (Math.floor(Math.random() * 25) + 25) * await player.difficulty
+          const won = Math.floor((Math.floor(Math.random() * 25) + 25) * await player.difficulty)
           collected.first().replyEmbed(`What a typer you are. You won ${point} **${won}** points and got **${experience}** XP!`, { color: '00ff00' })
 
           DB.query(`update members set points = ${points += won} where member_id = ${msg.member.id}`)
           player.levelUp(experience, msg)
         } else {
-          const lost = (Math.floor(Math.random() * 25) + 25) * await player.difficulty
+          const lost = Math.floor((Math.floor(Math.random() * 25) + 25) * await player.difficulty)
           collected.first().replyEmbed(`You typed in the wrong sentence and lost ${point} **${lost}** points!`, { color: 'ff0000' })
 
           DB.query(`update members set points = ${points -= lost} where member_id = ${msg.member.id}`)
@@ -56,7 +56,7 @@ module.exports = {
 
 
       }).catch(async collected => {
-        const lost = (Math.floor(Math.random() * 25) + 25) * await player.difficulty
+        const lost = Math.floor((Math.floor(Math.random() * 25) + 25) * await player.difficulty)
         msg.replyEmbed(`You were too late and lost ${point} **${lost}** points!`, { color: 'ff0000' })
 
         DB.query(`update members set points = ${points - lost} where member_id = ${msg.member.id}`)

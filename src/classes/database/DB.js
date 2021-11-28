@@ -27,29 +27,23 @@ module.exports = class DB {
   
   static async query(sql, bindings) {
     return new Promise((resolve) => {
-      this.pool.getConnection((err, conn) => {
-        if (err) throw err
+      switch (typeof bindings) {
+        case 'function':
+          this.pool.query(sql, [], (err, result, fields) => {
+            err
+              ? (() => { throw err })()
+              : bindings([result, fields, err]);
+          })
+          break;
 
-        switch (typeof bindings) {
-          case 'function':
-            conn.query(sql, [], (err, result, fields) => {
-              err
-                ? (() => { throw err })()
-                : bindings([result, fields, err]);
-              conn.release();
-            })
-            break;
-        
-          default:
-            conn.query(sql, bindings, (err, result, fields) => {
-              err
-                ? (() => { throw err })()
-                : resolve([result, fields, err]);
-              conn.release();
-            })
-            break;
-        }
-      })
+        default:
+          this.pool.query(sql, bindings, (err, result, fields) => {
+            err
+              ? (() => { throw err })()
+              : resolve([result, fields, err]);
+          })
+          break;
+      }
     })
   }
 

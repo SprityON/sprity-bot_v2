@@ -16,13 +16,13 @@ module.exports = {
     let tries = 3
     const random = Math.floor(Math.random() * 10) + 1
     const player = new Player(msg.member)
-    const lostPoints = (Math.floor(Math.random() * 25) + 25) * await player.difficulty
-    const winPoints = (Math.floor(Math.random() * 50) + 50) * await player.difficulty
+    const lostPoints = Math.floor((Math.floor(Math.random() * 25) + 25) * await player.difficulty)
+    const winPoints = Math.floor((Math.floor(Math.random() * 50) + 50) * await player.difficulty)
     let hints = await player.difficulty < 1 ? 2 : 1
     const points = await player.points
     const point = Bot.client.emojis.cache.find(e => e.name === 'pointdiscord')
 
-    const experience = (Math.floor(Math.random() * 100) + 100) * await player.difficulty
+    const experience = Math.floor((Math.floor(Math.random() * 100) + 100) * await player.difficulty)
 
     msg.replyEmbed(`Guess my number between **1 - 10** for ${point} **${winPoints}**. \n\nYou got **${tries}** tries and **1** hint!\nType \`stop\` to stop the game.`)
 

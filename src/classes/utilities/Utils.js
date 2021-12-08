@@ -45,6 +45,22 @@ module.exports = class Utils {
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumSignificantDigits: 1 }).format(n).replace('$', ' ')
   }
 
+  static concatArrays(...args) {
+    args = args[0]
+    
+    let arr = []
+    args.forEach(arg => {
+      arr.push(Object.values(arg)[0]);
+    })
+
+    let newArr = []
+    const arrLength = arr.length
+    for (let o = 0; o < arrLength; o++) 
+      newArr = newArr.concat(arr.splice(0, 1)[0])
+
+    return newArr
+  }
+
   /**
    *
    * Set charOnly to true if you want the searchString to search EVERY char in the string and replace it with the replaceString
@@ -57,7 +73,7 @@ module.exports = class Utils {
   static advancedReplace(string, searchString, replaceString, options = {
     charOnly: false
   }) {
-    if (options.charOnly) {
+    if (options.charOnly === true) {
       const replaceChars = Array.from(searchString)
 
       let newString = ''
@@ -268,7 +284,6 @@ module.exports = class Utils {
       case 'inventory':
         const player = new Player(member)
         const inventory = await player.inventory
-        const shop = require('../../commands/points/shop.json')
 
         let pageItemsAmount = 0;
         let totalItemsAmount = 0;
@@ -296,7 +311,7 @@ module.exports = class Utils {
 
               if (pageItemsAmount > showAmountOfItems) { Continue = false; continue; }
 
-              const item = shop.find(item => item.id === invItem.id)
+              const item = JSONlist.find(item => item.id === invItem.id)
               const emote = item.uploaded ? Bot.client.emojis.cache.find(e => e.name === item.emoji) : item.emoji
 
               text += `${emote} **${item.name} ─ ${invItem.amount}**\n*ID* \`${item.id}\`\n\n`

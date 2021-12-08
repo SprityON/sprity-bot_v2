@@ -20,7 +20,7 @@ module.exports = new class Bot {
 	run(client) {
 		require("./classes/other/ExtraStructures")
 		client.login(process.env.TOKEN);
-		client.once('ready', this.ready.bind(this, client))
+		client.on('ready', this.ready.bind(this, client))
 	}
 
 	async ready(client) {

@@ -1,0 +1,133 @@
+[ 
+  {
+    "id": "iron_ingot",
+    "name": "Iron Ingot",
+    "emoji": "iron_ingot",
+    "price": 3,
+    "uploaded": true
+  },
+
+  {
+    "id": "wood",
+    "name": "Wood",
+    "emoji": "wood",
+    "price": 1,
+    "uploaded": true
+  },
+
+  {
+    "id": "stone",
+    "name": "Stone",
+    "emoji": "stone",
+    "price": 1,
+    "uploaded": true
+  },
+
+  {
+    "id": "copper_ore",
+    "name": "Copper Ore",
+    "emoji": "copper_ore",
+    "price": 1,
+    "uploaded": true
+  },
+
+  {
+    "id": "iron_ore",
+    "name": "Iron Ore",
+    "emoji": "iron_ore",
+    "price": 1,
+    "uploaded": true
+  },
+
+  {
+    "id": "coal_ore",
+    "name": "Coal Ore",
+    "emoji": "coal_ore",
+    "price": 1,
+    "uploaded": true
+  },
+
+  {
+    "id": "gold_ore",
+    "name": "Gold Ore",
+    "emoji": "gold_ore",
+    "price": 2,
+    "uploaded": true
+  },
+
+  {
+    "id": "basic_chest",
+    "name": "Basic Chest",
+    "emoji": "basic_chest",
+    "price": 100,
+    "uploaded": true
+  },
+
+  {
+    "id": "rare_chest",
+    "name": "Rare Chest",
+    "emoji": "rare_chest",
+    "price": 250,
+    "uploaded": true
+  },
+
+  {
+    "id": "epic_chest",
+    "name": "Epic Chest",
+    "emoji": "epic_chest",
+    "price": 2000,
+    "uploaded": true
+  },
+
+  {
+    "id": "legendary_chest",
+    "name": "Legendary Chest",
+    "emoji": "legendary_chest",
+    "price": 10000,
+    "uploaded": true
+  },
+
+  {
+    "id": "fish",
+    "name": "Fish",
+    "type": "aquatic",
+    "emoji": ":fish:",
+    "uploaded": false,
+    "chance": 9999,
+    "price": 2,
+    "amountNultiplier": 0.5
+  },
+
+  {
+    "id": "crab",
+    "name": "Crab",
+    "type": "aquatic",
+    "emoji": ":crab:",
+    "uploaded": false,
+    "chance": 2500,
+    "price": 3,
+    "amountNultiplier": 0.4
+  },
+
+  {
+    "id": "octopus",
+    "name": "Octopus",
+    "type": "aquatic",
+    "emoji": ":octopus:",
+    "uploaded": false,
+    "chance": 2500,
+    "price": 3,
+    "amountNultiplier": 0.2
+  },
+
+  {
+    "id": "shark",
+    "name": "Shark",
+    "type": "aquatic",
+    "emoji": ":shark:",
+    "uploaded": false,
+    "chance": 25,
+    "price": 300,
+    "amountNultiplier": 0.1
+  }
+]

@@ -128,6 +128,14 @@ module.exports = class Player {
     })
   }
 
+  get experience() {
+    return new Promise(async (resolve, reject) => {
+      const result = await DB.query(`select experience from members where member_id = ${this.member.id}`)
+      const experience = result[0][0].experience
+      resolve(experience)
+    })
+  }
+
   getDaily() {
     return new Promise(async (resolve, reject) => {
       const result = await DB.query(`select enddate from timer_dates where member_id = ${this.member.id} and type = 'daily'`)

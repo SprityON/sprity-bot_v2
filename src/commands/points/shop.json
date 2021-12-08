@@ -109,7 +109,7 @@
     "emoji": ":arrows_counterclockwise:",
     "uploaded": false,
     "name": "Reset",
-    "description": "Reset your attributes",
+    "description": "Resets your stats. You receive all of your used (and unused) attributes.",
     "price": 10000
   }
 ]

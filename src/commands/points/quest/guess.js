@@ -1,8 +1,8 @@
-const Utils = require('../../classes/utilities/Utils')
-const Bot = require('../../Bot')
-const { Discord } = require('../../Bot')
-const DB = require('../../classes/database/DB')
-const Player = require('../../classes/utilities/Player')
+const Utils = require('../../../classes/utilities/Utils')
+const Bot = require('../../../Bot')
+const { Discord } = require('../../../Bot')
+const DB = require('../../../classes/database/DB')
+const Player = require('../../../classes/utilities/Player')
 
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
@@ -24,7 +24,7 @@ module.exports = {
 
     const experience = Math.floor((Math.floor(Math.random() * 100) + 100) * await player.difficulty)
 
-    msg.replyEmbed(`Guess my number between **1 - 10** for ${point} **${winPoints}**. \n\nYou got **${tries}** tries and **${hints}** hint!\nType \`stop\` to stop the game.`)
+    msg.replyEmbed(`Guess my number between **1 - 10** for ${point} **${winPoints}**. \n\nYou got **${tries}** tries and **${hints}** hint!`)
 
     const embed = new Discord.MessageEmbed().setColor('ffff00')
 
@@ -37,11 +37,7 @@ module.exports = {
       const collected = await msg.channel.awaitMessages(filter, { timeout: 60000, max: 1 })
       const answer = collected.first().content
 
-      if (answer.toLowerCase() == 'stop') {
-        return msg.replyEmbed(`Stopped the game.`)
-      }
-
-      else if (answer.toLowerCase() == 'hint') {
+      if (answer.toLowerCase() == 'hint') {
         if (hints == 0) {
           msg.replyEmbed(`You used all your hints!`)
         }
@@ -77,7 +73,7 @@ module.exports = {
         }, 1000);
 
         await timer1()
-        return player.levelUp(experience, msg)
+        return [true]
       } else {
         tries--
 
@@ -99,8 +95,9 @@ module.exports = {
         }, 1000);
 
         if (tries == 0) {
-          message.replyEmbed(`You couldn't guess my number, which was **${random}**, and lost ${point} **${lostPoints}**!`)
-          return DB.query(`update members set points = ${points - lostPoints} where member_id = ${msg.member.id}`)
+          message.replyEmbed(`You couldn't guess my number, which was **${random}**!`)
+          DB.query(`update members set points = ${points - lostPoints} where member_id = ${msg.member.id}`)
+          return [false]
         }
 
         await timer1()

@@ -13,6 +13,7 @@ module.exports = {
   async execute(msg, args) {
     const player = new Player(msg.member)
     const attributes = await player.level * 3
+    
     const stats = await player.stats
     stats.health = 50
     stats.attack = 20

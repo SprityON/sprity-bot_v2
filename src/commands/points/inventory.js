@@ -22,13 +22,13 @@ module.exports = {
 
     const point = Bot.client.emojis.cache.find(e => e.name === 'pointdiscord')
 
-    let shop = require(`./shop.json`)
+    let allJSON = require(`./shop.json`).concat(require('./items/items.json'))
 
     Utils.embedList({
       title: `**𝗜𝗡𝗩𝗘𝗡𝗧𝗢𝗥𝗬 ─────────── ${point} ${Utils.normalizePrice(points)}**`,
       type: 'inventory',
       selectQuery: `SELECT * FROM members WHERE member_id = ${msg.member.id}`,
-      JSONlist: shop,
+      JSONlist: allJSON,
       member: msg.member,
       currPage: page,
       showAmountOfItems: 5,

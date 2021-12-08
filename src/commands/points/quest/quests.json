@@ -1,0 +1,125 @@
+[
+  {
+    "id": 0,
+    "name": "mine",
+    "title": "Go into the mine",
+    "desc": "Explore vast caves",
+    "needs": ["pickaxe"],
+    "obtainables": [
+      { "common": [
+          {"id": "stone", "chance": 9999, "amountMultiplier": 1.5},
+          {"id": "copper_ore", "chance": 7000, "amountMultiplier": 0.8},
+          {"id": "iron_ore", "chance": 5000, "amountMultiplier": 0.8},
+          {"id": "coal_ore", "chance": 7000, "amountMultiplier": 1},
+          {"id": "gold_ore", "chance": 4000, "amountMultiplier": 0.6},
+          {"id": "basic_chest", "chance": 2500, "amountMultiplier": 0.25},
+          {"id": "rare_chest", "chance": 500, "amountMultiplier": 0.25},
+          {"id": "epic_chest", "chance": 100, "amountMultiplier": 0.01},
+          {"id": "legendary_chest", "chance": 5, "amountMultiplier": 0.01}
+        ]
+      }
+    ],
+    "exp_range": [50, 50],
+    "points_range": [50, 50]
+  },
+
+  {
+    "id": 1,
+    "name": "forest",
+    "title": "Go into the forest",
+    "desc": "Explore the forest",
+    "needs": ["axe"],
+    "obtainables": [
+      { "common": [
+          {"id": "wood", "chance": 9999, "amountMultiplier": 1}
+        ]
+      }
+    ],
+    "exp_range": [50, 50],
+    "points_range": [50, 50]
+  },
+
+  {
+    "id": 2,
+    "name": "minion_fight",
+    "title": "Fight a minion",
+    "desc": "Fight one of my minions",
+    "needs": [],
+    "obtainables": [
+      { "common": [
+          {"id": "iron_ingot", "chance": 8000, "amountMultiplier": 0.3},
+          {"id": "basic_chest", "chance": 5000, "amountMultiplier": 0.25}
+        ]
+      }, 
+
+      { "rare": [
+          {"id": "basic_chest", "chance": 2500, "amountMultiplier": 0.25},
+          {"id": "rare_chest", "chance": 500, "amountMultiplier": 0.25},
+          {"id": "epic_chest", "chance": 100, "amountMultiplier": 0.01},
+          {"id": "legendary_chest", "chance": 25, "amountMultiplier": 0.01}
+        ]
+      }
+    ],
+    "exp_range": [100, 100],
+    "points_range": [100, 100]
+  },
+
+  {
+    "id": 3,
+    "name": "guess",
+    "title": "Guess my number",
+    "desc": "Don't lose now",
+    "needs": [],
+    "obtainables": [
+      { "common": [
+        {"id": "basic_chest", "chance": 8000, "amountMultiplier": 0.25},
+        {"id": "rare_chest", "chance": 5000, "amountMultiplier": 0.25},
+        {"id": "epic_chest", "chance": 2000, "amountMultiplier": 0.01},
+        {"id": "legendary_chest", "chance": 500, "amountMultiplier": 0.01}
+      ]}
+    ],
+    "exp_range": [200, 100],
+    "points_range": [200, 100]
+  },
+
+  {
+    "id": 4,
+    "type": "fish10",
+    "name": "fish_10_times",
+    "title": "Fish 10 times",
+    "desc": "Fish **10** times to complete",
+    "tracker": true,
+    "goal": 10,
+    "needs": [],
+    "obtainables": [
+      { "common": [
+          {"id": "basic_chest", "chance": 7500, "amountMultiplier": 0.25},
+          {"id": "rare_chest", "chance": 500, "amountMultiplier": 0.25},
+          {"id": "epic_chest", "chance": 100, "amountMultiplier": 0.01},
+          {"id": "legendary_chest", "chance": 25, "amountMultiplier": 0.01}
+      ]}
+    ],
+    "exp_range": [75, 25],
+    "points_range": [75, 25]
+  },
+
+  {
+    "id": 5,
+    "type": "typing",
+    "name": "wordgame",
+    "title": "Typing challenge",
+    "desc": "Type the correct word",
+    "goal": 0,
+    "needs": [],
+    "obtainables": [
+      { "common": [
+          {"id": "basic_chest", "chance": 7500, "amountMultiplier": 0.25},
+          {"id": "rare_chest", "chance": 500, "amountMultiplier": 0.25},
+          {"id": "epic_chest", "chance": 100, "amountMultiplier": 0.01},
+          {"id": "legendary_chest", "chance": 25, "amountMultiplier": 0.01}
+      ]}
+    ],
+    "exp_range": [75, 25],
+    "points_range": [75, 25]
+  }
+]

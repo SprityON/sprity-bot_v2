@@ -25,7 +25,6 @@ module.exports = {
     
     const emoji = item.uploaded ? Bot.client.emojis.cache.find(e => e.name === item.emoji) : item.emoji
 
-
     const player = new Player(msg.member)
     let inventory = await player.inventory
     let points = await player.points

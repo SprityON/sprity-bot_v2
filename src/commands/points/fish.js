@@ -34,7 +34,6 @@ module.exports = {
           : inventory.push({ pos: inventory.length, id: obt.id, amount: amount })
       }
     })
-    console.log(inventory);
 
     if (fished.length < 1) return msg.replyEmbed(`You went fishing and got **nothing**!`)
 

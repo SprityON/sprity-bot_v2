@@ -29,7 +29,6 @@ module.exports = {
         fished.push(`${amount} ${emote}`)
         
         const invItem = inventory.find(item => item.id === obt.id)
-        // console.log(inventory[invItem.pos]);
         invItem
           ? inventory[invItem.pos].amount += amount
           : inventory.push({ pos: inventory.length, id: obt.id, amount: amount })

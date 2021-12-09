@@ -36,8 +36,11 @@ module.exports = {
           .then(async ([success, inventory, tracker]) => {
             if (success === 'skip') return
 
+            const player = new Player(msg.member)
+            const newPoints = success ? await player.points + questDB.points : await player.points - questDB.points
+            const point = Bot.client.emojis.cache.find(e => e.name === "pointdiscord")
+
             if (success) {
-              const player = new Player(msg.member)
               if (!inventory) inventory = await player.inventory
 
               let strings = []
@@ -54,19 +57,21 @@ module.exports = {
 
               strings = strings.join(", ")
 
-              const newPoints = success ? await player.points + questDB.points : await player.points - questDB.points
               const newXP = await player.experience + questDB.xp
-              const point = Bot.client.emojis.cache.find(e => e.name === "pointdiscord")
 
               for (let i = 0; i < quests.length; i++) if (questDB.id == quests[i].id) quests[i].completed = true
-              if (!success) return DB.query(`update members set points = ${newPoints}, quests = '${JSON.stringify(quests)}''`)
               player.levelUp(questDB.xp, msg)
               if (tracker) await DB.query(`delete from trackers where member_id = ${msg.member.id} and type = '${tracker.type}'`)
               
-              console.log(strings.length);
               msg.replyEmbed(`You obtained ${strings.length > 0 ? strings + ', ' : ' '}**${point} ${questDB.points}** and **${questDB.xp}** XP `)
 
               await DB.query(`update members set points = ${newPoints}, experience = ${newXP}, quests = '${JSON.stringify(quests)}', inventory = '${JSON.stringify(inventory)}' where member_id = ${msg.member.id}`)
+            }
+
+            if (!success) {
+              msg.replyEmbed(`You lost **${point} ${questDB.points}**`)
+              questDB.completed = true
+              return DB.query(`update members set points = ${newPoints}, quests = '${JSON.stringify(quests)}'`)
             }
         }).catch(err => console.log(err))
       break;

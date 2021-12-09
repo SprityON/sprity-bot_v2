@@ -27,7 +27,7 @@ module.exports.execute = async (msg, args) => {
   const filter = m => m.author.id === msg.author.id
   const collected = await msg.channel.awaitMessages(filter, { time: time * 1000, max: 1 })
 
-  if (!collected.first().content) {
+  if (!collected.first()) {
     msg.replyEmbed(`You were too late!`, { color: 'ff0000' })
     return [false]
   }

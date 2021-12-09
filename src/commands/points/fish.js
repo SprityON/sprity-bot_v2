@@ -16,6 +16,7 @@ module.exports = {
     const inventory = await player.inventory
     const obtainables = require('./items/items.json').filter(obt => obt.type === 'aquatic')
 
+    console.log(inventory);
     const fished = []
     obtainables.forEach(obt => {
       const chance = Math.floor(Math.random() * 10000)
@@ -28,11 +29,13 @@ module.exports = {
         fished.push(`${amount} ${emote}`)
         
         const invItem = inventory.find(item => item.id === obt.id)
+        // console.log(inventory[invItem.pos]);
         invItem
-          ? inventory[invItem.pos] += amount
+          ? inventory[invItem.pos].amount += amount
           : inventory.push({ pos: inventory.length, id: obt.id, amount: amount })
       }
     })
+    console.log(inventory);
 
     if (fished.length < 1) return msg.replyEmbed(`You went fishing and got **nothing**!`)
 

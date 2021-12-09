@@ -6,7 +6,7 @@ const Player = require('../../classes/utilities/Player')
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
   category: Utils.getCmdCategory(__filename),
-  usage: 'quest <choose/list/refresh>',
+  usage: 'quest <number>',
   aliases: ['q'],
   permissions: ['SEND_MESSAGES'],
   timeout: 1000,

@@ -50,7 +50,7 @@ module.exports = class DB {
   static member = {
     addToDB: async (member) => {
       this.query(`select member_id from members where member_id = ${member.id}`, data => {
-        if (!data[0][0]) this.query(`insert into members (member_id, warns, stats, inventory) values (${member.id}, '[]', '{"health": 100, "attack": 20, "defense": 0}', '[]')`)
+        if (!data[0][0]) this.query(`insert into members (member_id, warns, stats, inventory, quests) values (${member.id}, '[]', '{"health": 100, "attack": 20, "defense": 0}', '[]', '')`)
       })
     },
 

@@ -42,6 +42,7 @@ module.exports = {
 
               let strings = []
               quest.items.forEach(item => {
+                if (!item) return
                 const emoji = Bot.client.emojis.cache.find(e => e.name === item.id)
                 strings.push(`${emoji} **${item.amount}**`)
 

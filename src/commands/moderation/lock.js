@@ -9,12 +9,11 @@ module.exports = {
   timeout: 1000,
 
   async execute(msg, args) {
-    const roles = msg.guild.roles.cache
-    roles.forEach(role => {
-      msg.channel.updateOverwrite(role, {
-        SEND_MESSSAGES: false
-      })
-    })
+    const role = msg.guild.roles.cache.find(r => r.name === '@everyone')
+    console.log(role);
+    await msg.channel.updateOverwrite(role, {
+      SEND_MESSAGES: false
+    });
 
      msg.replyEmbed(`Channel locked.`)
   },

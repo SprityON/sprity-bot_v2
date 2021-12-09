@@ -154,9 +154,8 @@ module.exports = class Utils {
       await DB.query(`select member_id from members where member_id = ${member.id}`).then(async result => {
         const memberRole = me.guild.roles.cache.find(role => role.name === "Member")
         if (!member.roles.cache.find(r => r.name === "Member")) member.roles.add(memberRole)
-        if (!result[0][0]) {
-          return await DB.query(`insert into members (member_id, warns, inventory) values (${member.id}, '[]', '[]')`)
-        }
+        if (!result[0][0]) return await DB.member.addToDB(member)
+        
 
         const role = me.guild.roles.cache.find(role => role.name === "Muted")
 

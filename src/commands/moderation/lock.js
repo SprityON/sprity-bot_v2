@@ -11,7 +11,7 @@ module.exports = {
   async execute(msg, args) {
     const roles = msg.guild.roles.cache
     roles.forEach(role => {
-      channel.updateOverwrite(role, {
+      msg.channel.updateOverwrite(role, {
         SEND_MESSSAGES: false
       })
     })

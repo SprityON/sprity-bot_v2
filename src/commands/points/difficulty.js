@@ -22,7 +22,7 @@ module.exports = {
       if (Number(await player.difficulty) === 2) return '*impossible*'
     }
 
-    if (!args[0] || mention) return msg.replyEmbed(`${mention ? mention.author.username + '\'s' : 'Your'} current difficulty is set to **${await difficulty()}**.`, { 
+    if (!args[0] || mention) return msg.replyEmbed(`${mention ? mention.user.username + '\'s' : 'Your'} current difficulty is set to **${await difficulty()}**.`, { 
       footer: `to change difficulty: ${await DB.guild.getPrefix()}difficulty <easy/medium/hard/insane/impossible>`
     })
 

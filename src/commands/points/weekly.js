@@ -18,8 +18,8 @@ module.exports = {
     const [overTime, arr, overTimeMessage] = await player.getWeekly()
 
     if (overTime) {
-      DB.query(`update timer_dates set enddate = '${moment().clone().add(7, 'days').format('M/D/YYYY H:mm:ss:SSS')}' where member_id = ${msg.member.id} and type = 'weekly'`)
-      DB.query(`update members set points = '${points += 1000}' where member_id = '${msg.member.id}'`)
+      await DB.query(`update timer_dates set enddate = '${moment().clone().add(7, 'days').format('M/D/YYYY H:mm:ss:SSS')}' where member_id = ${msg.member.id} and type = 'weekly'`)
+      await DB.query(`update members set points = '${points += 1000}' where member_id = '${msg.member.id}'`)
 
       const point = Bot.client.emojis.cache.find(e => e.name === 'pointdiscord')
       return msg.replyEmbed(`You have received your ${point} **${Utils.normalizePrice(1000)}** weekly points!`)

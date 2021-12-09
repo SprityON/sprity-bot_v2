@@ -16,7 +16,7 @@ module.exports = {
       const player = new Player(msg.member)
       const points = await player.points
       const reward = messages * 1.25
-      DB.query(`update members set messages = 0, points = ${points + Math.ceil(reward)} where member_id = ${msg.member.id}`)
+      await DB.query(`update members set messages = 0, points = ${points + Math.ceil(reward)} where member_id = ${msg.member.id}`)
       msg.replyEmbed(`You converted **${messages}** messages into **${Math.ceil(reward)}** points!`)
     })
   },

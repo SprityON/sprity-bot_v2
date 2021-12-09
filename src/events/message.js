@@ -84,7 +84,7 @@ module.exports.execute = async (msg) => {
                 if (questsDB) {
                   questsDB = JSON.parse(questsDB)
                   if (!questsDB.find(q => q.completed === false))
-                    DB.query(`update members set quests = '' where member_id = ${msg.member.id}`)
+                    await DB.query(`update members set quests = '' where member_id = ${msg.member.id}`)
                 } else return isUsing = false
                 
                 const questDB = questsDB.find(q => q.active === true)

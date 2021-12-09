@@ -56,7 +56,7 @@ module.exports = {
       } else if (isNaN(answer)) {
         msg.replyEmbed(`That is not a number! Guess a number between **1 - 10**.`)
       } else if (answer == random) {
-        DB.query(`update members set points = ${points + winPoints} where member_id = ${msg.member.id}`)
+        await DB.query(`update members set points = ${points + winPoints} where member_id = ${msg.member.id}`)
 
         embed.setDescription(`Your given number: **${answer}**\nYou guessed...`)
 
@@ -96,7 +96,7 @@ module.exports = {
 
         if (tries == 0) {
           message.replyEmbed(`You couldn't guess my number, which was **${random}**!`)
-          DB.query(`update members set points = ${points - lostPoints} where member_id = ${msg.member.id}`)
+          await DB.query(`update members set points = ${points - lostPoints} where member_id = ${msg.member.id}`)
           return [false]
         }
 

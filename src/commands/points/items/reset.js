@@ -19,7 +19,7 @@ module.exports = {
     stats.attack = 20
     stats.defense = 0
 
-    DB.query(`update members set attributes = ${attributes}, stats = '${JSON.stringify(stats)}' where member_id = ${msg.member.id}`)
+    await DB.query(`update members set attributes = ${attributes}, stats = '${JSON.stringify(stats)}' where member_id = ${msg.member.id}`)
     return [true]
   },
 

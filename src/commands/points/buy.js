@@ -38,7 +38,7 @@ module.exports = {
       inventory[foundItem.pos].amount += amount
     } else inventory.push({ pos: inventory.length, id: item.id, amount: amount })
 
-    DB.query(`update members set points = ${points}, inventory = '${JSON.stringify(inventory)}' where member_id = ${msg.member.id}`)
+    await DB.query(`update members set points = ${points}, inventory = '${JSON.stringify(inventory)}' where member_id = ${msg.member.id}`)
     .then(() => {
       msg.replyEmbed(`You successfully bought **${amount} ${emoji} ${item.name}**. You now have ${point} **${Utils.normalizePrice(points)}** points.`)
     })

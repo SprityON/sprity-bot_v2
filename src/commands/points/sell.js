@@ -34,7 +34,7 @@ module.exports = {
       points += ((item.price * amount) / 100) * 60
       inventory[invItem.pos].amount -= amount
       
-      DB.query(`update members set inventory = '${JSON.stringify(inventory)}', points = ${points} where member_id = ${msg.member.id}`)
+      await DB.query(`update members set inventory = '${JSON.stringify(inventory)}', points = ${points} where member_id = ${msg.member.id}`)
         .then(() => {
           msg.replyEmbed(`You successfully sold **${amount} ${emoji} ${item.name}**! You now have ${point} **${Utils.normalizePrice(points)}** points.`)
 

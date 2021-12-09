@@ -151,16 +151,16 @@ module.exports = class Utils {
         return
       }
 
-      DB.query(`select member_id from members where member_id = ${member.id}`).then(async result => {
+      await DB.query(`select member_id from members where member_id = ${member.id}`).then(async result => {
         const memberRole = me.guild.roles.cache.find(role => role.name === "Member")
         if (!member.roles.cache.find(r => r.name === "Member")) member.roles.add(memberRole)
         if (!result[0][0]) {
-          return DB.query(`insert into members (member_id, warns, inventory) values (${member.id}, '[]', '[]')`)
+          return await DB.query(`insert into members (member_id, warns, inventory) values (${member.id}, '[]', '[]')`)
         }
 
         const role = me.guild.roles.cache.find(role => role.name === "Muted")
 
-        DB.query(`SELECT * FROM timer_dates WHERE member_id = ${member.id} and type = 'mute'`).then(result2 => {
+        await DB.query(`SELECT * FROM timer_dates WHERE member_id = ${member.id} and type = 'mute'`).then(async result2 => {
           if (result2[0][0] || member.roles.cache.find(r => r.id === role.id)) {
             if (result2[0][0]) {
               const [arr, ongoing] = this.dateDifference(result2[0][0].enddate)
@@ -169,7 +169,7 @@ module.exports = class Utils {
                 console.log(`${member.user.username} was unmuted.`)
                 member.roles.remove(role)
 
-                DB.query(`DELETE FROM timer_dates WHERE member_id = ${member.id}`)
+                await DB.query(`DELETE FROM timer_dates WHERE member_id = ${member.id}`)
               } else {
                 const ms = this.dateDifference(result2[0][0].enddate, 'full')
                 setTimeout(() => {
@@ -180,7 +180,7 @@ module.exports = class Utils {
               console.log(`${member.user.username} was unmuted.`)
               member.roles.remove(role)
 
-              DB.query(`DELETE FROM timer_dates WHERE member_id = ${member.id}`)
+              await DB.query(`DELETE FROM timer_dates WHERE member_id = ${member.id}`)
             }
           }
         })

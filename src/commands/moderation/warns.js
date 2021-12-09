@@ -19,7 +19,7 @@ module.exports = {
       .setFooter(`use '$warns help' for more information about this command`)
       .setThumbnail(member.user.avatarURL({dynamic: true}))
 
-    DB.query(`SELECT * FROM members WHERE member_id = ${member.id}`, data => {
+    await DB.query(`SELECT * FROM members WHERE member_id = ${member.id}`, data => {
       if (!data) return msg.inlineReply(`**${member.user.username}** does not have any warnings.`)
       for (let row_one of data[0]) {
         if (Utils.advancedReplace(args[0], '<@!>', '', { charOnly: true }).length === 18) {
@@ -54,7 +54,7 @@ module.exports = {
         //       return msg.inlineReply(`Clear unsuccessfull! You tried to clear ${warnsAmountText} warns from a member with 0 warns.`)
         //     }
 
-        //     DB.query(`UPDATE members SET warns = ${warnsAmount} WHERE member_id = ${member.id}`)
+        //     await DB.query(`UPDATE members SET warns = ${warnsAmount} WHERE member_id = ${member.id}`)
         //     msg.channel.send(`Succesfully removed **${row_one.warns}** warn(s) from **${member.displayName}**`)
         //     return
         //   }
@@ -89,7 +89,7 @@ module.exports = {
         //   }
 
         //   msg.channel.send(`Succesfully removed **${warnsAmountText}** warn(s) from **${member.displayName}**`)
-        //   DB.query(`UPDATE members SET warns = ${warnsAmount} WHERE member_id = ${member.id}`)
+        //   await DB.query(`UPDATE members SET warns = ${warnsAmount} WHERE member_id = ${member.id}`)
         // }
       }
     })

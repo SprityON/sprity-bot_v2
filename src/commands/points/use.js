@@ -29,11 +29,11 @@ module.exports = {
     if (!invItem || invItem.amount <= 0) return msg.replyEmbed(`You do not have that item!`)
 
     item.execute(msg, args)
-    .then(([bool, message]) => {
+    .then(async ([bool, message]) => {
       if (bool === true) {
         if (!item.role && !item.tool && !item.rpg) {
           inventory[invItem.pos].amount -= 1
-          DB.query(`update members set inventory = '${JSON.stringify(inventory)}' where member_id = ${msg.member.id}`)
+          await DB.query(`update members set inventory = '${JSON.stringify(inventory)}' where member_id = ${msg.member.id}`)
           msg.replyEmbed(`You have used the item **${shopItem.name}**`)
         }
       } else return msg.replyEmbed(message)

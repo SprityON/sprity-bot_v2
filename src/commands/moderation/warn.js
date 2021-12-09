@@ -27,13 +27,13 @@ module.exports = {
       case 0:
         member.roles.add(warning1)
 
-        DB.query(`UPDATE members SET warns = '${JSON.stringify(warns)}' WHERE member_id = ${member.id}`)
+        await DB.query(`UPDATE members SET warns = '${JSON.stringify(warns)}' WHERE member_id = ${member.id}`)
 
         break;
       case 1:
         member.roles.add(warning2)
 
-        DB.query(`UPDATE members SET warns = '${JSON.stringify(warns)}' WHERE member_id = ${member.id}`)
+        await DB.query(`UPDATE members SET warns = '${JSON.stringify(warns)}' WHERE member_id = ${member.id}`)
 
         break;
       case 2:
@@ -44,7 +44,7 @@ module.exports = {
           )
           : (
             msg.inlineReply(`**${member.user.username}** kicked by warning system.`),
-            DB.query(`update members set kicked = 1, warns = '[]' where member_id = ${member.id}`),
+            await DB.query(`update members set kicked = 1, warns = '[]' where member_id = ${member.id}`),
             member.kick(reason)
           )
         break;

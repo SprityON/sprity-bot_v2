@@ -50,7 +50,7 @@ module.exports = {
 
     //     if (runChance == 1) {
     //       points -= lostPoints
-    //       DB.query(`update members set points = ${points} where member_id = ${msg.member.id}`)
+    //       await DB.query(`update members set points = ${points} where member_id = ${msg.member.id}`)
     //       return msg.replyEmbed(`You couldn't run away and lost ${point} **${lostPoints}** points!`, { color: 'ff0000' })
     //     } else {
     //       return msg.replyEmbed(`You successfully ran away from **${bossName}**!`, { color: '00ff00' })
@@ -70,7 +70,7 @@ module.exports = {
     //       } else {
     //         points += receivablePoints
     //         player.levelUp(experience, msg)
-    //         DB.query(`update members set points = ${points} where member_id = ${msg.member.id}`)
+    //         await DB.query(`update members set points = ${points} where member_id = ${msg.member.id}`)
     //         return msg.replyEmbed(`You received ${point} **${receivablePoints}** points and got **${experience}** XP because you killed **${bossName}**!`, { color: '00ff00' })
     //       }
     //     }
@@ -90,7 +90,7 @@ module.exports = {
 
     //     if (playerHealth < 1) {
     //       points -= lostPoints
-    //       DB.query(`update members set points = ${points} where member_id = ${msg.member.id}`)
+    //       await DB.query(`update members set points = ${points} where member_id = ${msg.member.id}`)
     //       return
     //     }
 

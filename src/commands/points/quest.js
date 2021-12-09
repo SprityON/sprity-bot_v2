@@ -61,12 +61,12 @@ module.exports = {
               for (let i = 0; i < quests.length; i++) if (questDB.id == quests[i].id) quests[i].completed = true
               if (!success) return DB.query(`update members set points = ${newPoints}, quests = '${JSON.stringify(quests)}''`)
               player.levelUp(questDB.xp, msg)
-              if (tracker) DB.query(`delete from trackers where member_id = ${msg.member.id} and type = '${tracker.type}'`)
+              if (tracker) await DB.query(`delete from trackers where member_id = ${msg.member.id} and type = '${tracker.type}'`)
               
               console.log(strings.length);
               msg.replyEmbed(`You obtained ${strings.length > 0 ? strings + ', ' : ' '}**${point} ${questDB.points}** and **${questDB.xp}** XP `)
 
-              DB.query(`update members set points = ${newPoints}, experience = ${newXP}, quests = '${JSON.stringify(quests)}', inventory = '${JSON.stringify(inventory)}' where member_id = ${msg.member.id}`)
+              await DB.query(`update members set points = ${newPoints}, experience = ${newXP}, quests = '${JSON.stringify(quests)}', inventory = '${JSON.stringify(inventory)}' where member_id = ${msg.member.id}`)
             }
         }).catch(err => console.log(err))
       break;

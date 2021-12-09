@@ -53,15 +53,15 @@ module.exports.execute = async (msg, args) => {
           points += receivablePoints
 
           throwable.amount < 1
-            ? DB.query(`update members set points = ${points}, throwable = '' where member_id = ${msg.member.id}`)
-            : DB.query(`update members set points = ${points}, throwable = ${JSON.stringify(throwable)} where member_id = ${msg.member.id}`)
+            ? await DB.query(`update members set points = ${points}, throwable = '' where member_id = ${msg.member.id}`)
+            : await DB.query(`update members set points = ${points}, throwable = ${JSON.stringify(throwable)} where member_id = ${msg.member.id}`)
 
           msg.replyEmbed(`You killed **${minionName}**!`, { color: '00ff00' })
           return [true, inventory]
         }
 
-        if (throwable.amount < 1) { DB.query(`update members set points = ${points}, throwable = '' where member_id = ${msg.member.id}`) }
-        else DB.query(`update members set throwable = '[${JSON.stringify(throwable)}]' where member_id = ${msg.member.id}`)
+        if (throwable.amount < 1) { await DB.query(`update members set points = ${points}, throwable = '' where member_id = ${msg.member.id}`) }
+        else await DB.query(`update members set throwable = '[${JSON.stringify(throwable)}]' where member_id = ${msg.member.id}`)
 
         msg.replyEmbed(`You threw a ${throwableEmote} **${shopThrowable.name}** and did **${shopThrowable.damage}** damage! ***${minionName}'s* HP: ${minionHealth}/${maxMinionHealth}**`, { color: 'ffff00' })
         await enemyTurn()
@@ -76,13 +76,13 @@ module.exports.execute = async (msg, args) => {
           potion.amount -= 1
 
           potion.amount < 1
-            ? DB.query(`update members set points = ${points}, potion = '' where member_id = ${msg.member.id}`)
-            : DB.query(`update members set points = ${points}, potion = '[${JSON.stringify(potion)}]' where member_id = ${msg.member.id}`)
+            ? await DB.query(`update members set points = ${points}, potion = '' where member_id = ${msg.member.id}`)
+            : await DB.query(`update members set points = ${points}, potion = '[${JSON.stringify(potion)}]' where member_id = ${msg.member.id}`)
 
           playerHealth += Math.floor(playerMaxHealth / shopPotion.heal_percentage)
 
           if (playerHealth >= playerMaxHealth) playerHealth = playerMaxHealth
-          DB.query(`update members set potion = ${JSON.stringify(potion)} where member_id = ${msg.member.id}`)
+          await DB.query(`update members set potion = ${JSON.stringify(potion)} where member_id = ${msg.member.id}`)
 
           msg.replyEmbed(`You restored ${shopPotion.heal_percentage}% of your health by using ${potionEmote} **${shopPotion.name}**\n***Your* HP: ${playerHealth}/${playerMaxHealth}**`, { color: 'ffff00' })
           await enemyTurn()
@@ -96,7 +96,7 @@ module.exports.execute = async (msg, args) => {
 
       if (runChance == 1) {
         points -= lostPoints
-        DB.query(`update members set points = ${points} where member_id = ${msg.member.id}`)
+        await DB.query(`update members set points = ${points} where member_id = ${msg.member.id}`)
         msg.replyEmbed(`You couldn't run away!`, { color: 'ff0000' })
         return [false]
       } else {
@@ -143,7 +143,7 @@ module.exports.execute = async (msg, args) => {
 
     if (playerHealth < 1) {
       points -= lostPoints
-      DB.query(`update members set points = ${points} where member_id = ${msg.member.id}`)
+      await DB.query(`update members set points = ${points} where member_id = ${msg.member.id}`)
       return [false]
     }
     // rocket grab item for if minion runs away?

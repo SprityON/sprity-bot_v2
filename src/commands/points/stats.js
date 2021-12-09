@@ -67,19 +67,19 @@ module.exports = {
       switch (args[1].toLowerCase()) {
         case 'hp':
           stats.health += (2 * amount)
-          DB.query(`update members set stats = '${JSON.stringify(stats)}', attributes = ${attributes - amount} where member_id = ${msg.member.id}`)
+          await DB.query(`update members set stats = '${JSON.stringify(stats)}', attributes = ${attributes - amount} where member_id = ${msg.member.id}`)
           msg.replyEmbed(`You used your **${amount}** attributes and you now have **${stats.health} ${args[1].toUpperCase()}**`)
         break;
 
         case 'att':
           stats.attack += (2 * amount)
-          DB.query(`update members set stats = '${JSON.stringify(stats)}', attributes = ${attributes - amount} where member_id = ${msg.member.id}`)
+          await DB.query(`update members set stats = '${JSON.stringify(stats)}', attributes = ${attributes - amount} where member_id = ${msg.member.id}`)
           msg.replyEmbed(`You used your **${amount}** attributes and you now have **${stats.attack} ${args[1].toUpperCase()}**`)
         break;
 
         case 'def':
           stats.defense += (2 * amount)
-          DB.query(`update members set stats = '${JSON.stringify(stats)}', attributes = ${attributes - amount} where member_id = ${msg.member.id}`)
+          await DB.query(`update members set stats = '${JSON.stringify(stats)}', attributes = ${attributes - amount} where member_id = ${msg.member.id}`)
           msg.replyEmbed(`You used your **${amount}** attributes and you now have **${stats.defense} ${args[1].toUpperCase()}**`)
         break;
       }

@@ -30,35 +30,35 @@ module.exports = {
       if (player.difficulty === 0.75) return msg.replyEmbed(`You already have your difficulty set to easy!`)
 
       console.log('test');
-      DB.query(`update members set difficulty = 0.75 where member_id = ${msg.member.id}`)
+      await DB.query(`update members set difficulty = 0.75 where member_id = ${msg.member.id}`)
       return msg.replyEmbed(`Your difficulty was set to **easy**.`)
     }
 
     else if (args[0].toLowerCase() === 'medium') {
       if (player.difficulty === 1) return msg.replyEmbed(`You already have your difficulty set to medium!`)
 
-      DB.query(`update members set difficulty = 1 where member_id = ${msg.member.id}`)
+      await DB.query(`update members set difficulty = 1 where member_id = ${msg.member.id}`)
       return msg.replyEmbed(`Your difficulty was set to **medium**.`)
     }
 
     else if (args[0].toLowerCase() === 'hard') {
       if (player.difficulty === 1.25) return msg.replyEmbed(`You already have your difficulty set to hard!`)
 
-      DB.query(`update members set difficulty = 1.25 where member_id = ${msg.member.id}`)
+      await DB.query(`update members set difficulty = 1.25 where member_id = ${msg.member.id}`)
       return msg.replyEmbed(`Your difficulty was set to **hard**.`)
     }
 
     else if (args[0].toLowerCase() === 'insane') {
       if (player.difficulty === 1.50) return msg.replyEmbed(`You already have your difficulty set to hard!`)
 
-      DB.query(`update members set difficulty = 1.50 where member_id = ${msg.member.id}`)
+      await DB.query(`update members set difficulty = 1.50 where member_id = ${msg.member.id}`)
       return msg.replyEmbed(`Your difficulty was set to **insane**.`)
     }
 
     else if (args[0].toLowerCase() === 'impossible') {
       if (player.difficulty === 2) return msg.replyEmbed(`You already have your difficulty set to impossible!`)
 
-      DB.query(`update members set difficulty = 2 where member_id = ${msg.member.id}`)
+      await DB.query(`update members set difficulty = 2 where member_id = ${msg.member.id}`)
       return msg.replyEmbed(`Your difficulty was set to **impossible**.`)
     }
   },

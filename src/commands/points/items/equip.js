@@ -19,7 +19,7 @@ module.exports.execute = async(msg, item_id, type) => {
 
     const invItemAmount = item.amount
     inventory[item.pos].amount -= item.amount
-    DB.query(`update members set ${type} = '[{"id": "${item_id}", "amount": ${invItemAmount + weapon.amount}}]', inventory = '${JSON.stringify(inventory)}' where member_id = ${msg.member.id}`)
+    await DB.query(`update members set ${type} = '[{"id": "${item_id}", "amount": ${invItemAmount + weapon.amount}}]', inventory = '${JSON.stringify(inventory)}' where member_id = ${msg.member.id}`)
   } else if (weapon) {
     msg.replyEmbed(`You are now using ${newThrowableEmote} **${newShopThrowable.name}** as a ${type}`)
 
@@ -32,13 +32,13 @@ module.exports.execute = async(msg, item_id, type) => {
     inventory[newWeaponInv.pos].amount -= newWeaponInv.amount
     inventory[oldWeaponInv.pos].amount += oldNewWeaponAmount
 
-    DB.query(`update members set ${type} = '[{"id": "${item_id}", "amount": ${oldNewWeaponAmount}}]', inventory = '${JSON.stringify(inventory)}' where member_id = ${msg.member.id}`)
+    await DB.query(`update members set ${type} = '[{"id": "${item_id}", "amount": ${oldNewWeaponAmount}}]', inventory = '${JSON.stringify(inventory)}' where member_id = ${msg.member.id}`)
   } else {
     msg.replyEmbed(`You are now using ${newThrowableEmote} **${newShopThrowable.name}** as a ${type}.`)
     const item = inventory.find(item => item.id === item_id)
     console.log(item);
     const invItemAmount = item.amount
     inventory[item.pos].amount -= item.amount
-    DB.query(`update members set ${type} = '[{"id": "${item_id}", "amount": ${invItemAmount}}]', inventory = '${JSON.stringify(inventory)}' where member_id = ${msg.member.id}`)
+    await DB.query(`update members set ${type} = '[{"id": "${item_id}", "amount": ${invItemAmount}}]', inventory = '${JSON.stringify(inventory)}' where member_id = ${msg.member.id}`)
   }
 }

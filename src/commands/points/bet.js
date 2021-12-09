@@ -30,13 +30,13 @@ module.exports = {
         [`${msg.author.username} rolled:`, `\`${dicePlayer}\``],
         [`${msg.guild.me.user.username} rolled:`, `\`${diceBot}\``]
       ], { color: '00ff00', inline: true, title: 'You won the bet!', description: `You received ${point} **${number}** points` })
-      DB.query(`update members set points = ${points + number} where member_id = ${msg.member.id}`)
+      await DB.query(`update members set points = ${points + number} where member_id = ${msg.member.id}`)
     } else if (dicePlayer < diceBot) {
       msg.replyEmbed([
         [msg.author.username, `\`${dicePlayer}\``],
         [msg.guild.me.user.username, `\`${diceBot}\``]
       ], { color: 'ff0000', inline: true, title: 'You lost the bet!', description: `You lost ${point} **${number}** points` })
-      DB.query(`update members set points = ${points - number} where member_id = ${msg.member.id}`)
+      await DB.query(`update members set points = ${points - number} where member_id = ${msg.member.id}`)
     } else msg.replyEmbed([
         [msg.author.username, `\`${dicePlayer}\``],
         [msg.guild.me.user.username, `\`${diceBot}\``]

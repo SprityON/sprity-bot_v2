@@ -36,7 +36,7 @@ module.exports = {
 
     if (fished.length < 1) return msg.replyEmbed(`You went fishing and got **nothing**!`)
 
-    DB.query(`update members set inventory = '${JSON.stringify(inventory)}' where member_id = ${msg.member.id}`)
+    await DB.query(`update members set inventory = '${JSON.stringify(inventory)}' where member_id = ${msg.member.id}`)
     msg.replyEmbed(`You went fishing and got **${fished.join(", ")}**`)
   },
 

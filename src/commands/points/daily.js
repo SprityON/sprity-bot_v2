@@ -18,8 +18,8 @@ module.exports = {
     const [overTime, arr, overTimeMessage] = await player.getDaily()
 
     if (overTime) {
-      DB.query(`update timer_dates set enddate = '${moment().clone().add(12, 'hour').format('M/D/YYYY H:mm:ss:SSS')}' where member_id = ${msg.member.id} and type = 'daily'`)
-      DB.query(`update members set points = '${points += 250}' where member_id = '${msg.member.id}'`)
+      await DB.query(`update timer_dates set enddate = '${moment().clone().add(12, 'hour').format('M/D/YYYY H:mm:ss:SSS')}' where member_id = ${msg.member.id} and type = 'daily'`)
+      await DB.query(`update members set points = '${points += 250}' where member_id = '${msg.member.id}'`)
 
       const point = Bot.client.emojis.cache.find(e => e.name === 'pointdiscord')
       return msg.replyEmbed(`You have received your ${point} **250** daily points!`)

@@ -6,6 +6,7 @@ const Utils = require('../classes/utilities/Utils');
 let isUsing = false
 
 module.exports.execute = async (msg) => {
+  if (!msg.member) return
   if (msg.member.user.bot) return
   
   DB.member.countMessage(msg.member)

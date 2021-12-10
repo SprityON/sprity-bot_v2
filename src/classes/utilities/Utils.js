@@ -41,6 +41,14 @@ module.exports = class Utils {
     this.refresh()
   }
 
+  static wait(time) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve()
+      }, time);
+    })
+  }
+
   static normalizePrice(n) {
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumSignificantDigits: 1 }).format(n).replace('$', ' ')
   }

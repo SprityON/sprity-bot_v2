@@ -1,9 +1,10 @@
 const Bot = require('../../../Bot')
 const DB = require('../../../classes/database/DB')
+const Battle = require('../../../classes/utilities/Battle')
 const Player = require('../../../classes/utilities/Player')
 const Utils = require('../../../classes/utilities/Utils')
 
-module.exports.execute = async (msg, args) => {
+module.exports.execute = async (msg, args, quest) => {
   const point = Bot.client.emojis.cache.find(e => e.name === 'pointdiscord')
   const randomNumber = Math.floor(Math.random() * 998) + 1
   const minionName = `🤖 Minion #${randomNumber}`
@@ -23,14 +24,20 @@ module.exports.execute = async (msg, args) => {
 
   let points = await player.points
 
-  const experience = Math.floor(Math.random() * 100) + 50
   const time = 10
 
-  let minionHealth = await player.health * await player.difficulty
-  let maxMinionHealth = await player.health * await player.difficulty
+  let minionHealth = await player.hp * await player.difficulty
+  let maxMinionHealth = await player.hp * await player.difficulty
 
-  let playerHealth = await player.health
-  let playerMaxHealth = await player.health
+  let playerHealth = await player.hp
+  let playerMaxHealth = await player.hp
+
+  const battle = new Battle(msg.member, {
+    name: minionName,
+    att: Math.floor(await player.att * ((Math.random() * 0.2) + 0.85)) * await player.difficulty,
+    def: 0,
+    hp: await player.hp * await player.difficulty
+  })
 
   msg.replyEmbed(`Kill **${minionName}** (**${minionHealth}/${maxMinionHealth}**) to receive ${point} **${receivablePoints}**\n\nType \`attack\`, \`throw\`, \`potion\` or \`run\``,
     { title: `You encountered ${minionName}!)`, color: 'ff0000' })
@@ -106,39 +113,24 @@ module.exports.execute = async (msg, args) => {
     }
 
     if (answer === 'attack') {
-      let damage = Math.floor(await player.attack * ((Math.random() * 0.2) + 0.85))
+      const attack = await battle.attack()
+      let hasWon = attack[0]
+      let message = attack[1]
 
-      minionHealth -= damage
+      if (hasWon === true) { msg.replyEmbed(message); return [true, inventory] } 
+      else if (hasWon === false) { msg.replyEmbed(message); return ['skip'] } 
+      else if (hasWon === 'skip') { 
+        msg.replyEmbed(message); 
 
-      if (minionHealth < 1) {
-        const runChance = Math.floor(Math.random() * 5) + 1
+        await Utils.wait(1000)
 
-        if (runChance == 1) {
-          msg.replyEmbed(`Oh no, **${minionName}** ran away from you!`, { color: 'ff0000' })
-          return ['skip']
-        } else {
-          msg.replyEmbed(`You killed **${minionName}**`, { color: '00ff00' })
-          return [true, inventory]
-        }
+        const enemyAttack = await battle.enemyActions.attack(playerHealth)
+        hasWon = enemyAttack[0]
+        message = enemyAttack[1]
+
+        if (hasWon === true) { msg.replyEmbed(message); return [false, inventory] }
+        else if (hasWon === false) { msg.replyEmbed(message); }
       }
-
-      msg.replyEmbed(`You did **${damage}** damage! ***${minionName}'s* HP: ${minionHealth}/${maxMinionHealth}**`, { color: 'ffff00' })
-
-      await enemyTurn()
-    }
-
-    async function enemyTurn() {
-      const damage = Math.floor(await player.attack * ((Math.random() * 0.2) + 0.85)) * await player.difficulty
-      playerHealth -= damage
-
-      setTimeout(() => {
-        if (playerHealth < 1) {
-          msg.replyEmbed(`**${minionName}** did **${damage}** damage and you died with **${playerHealth}** HP!`, { color: 'ff0000' })
-          return [false]
-        } else {
-          msg.replyEmbed(`**${minionName}** did **${damage}** damage. ***Your* HP: ${playerHealth}/${playerMaxHealth}**\n\nType \`attack\`, \`throw\`, \`potion\` or \`run\``, { color: 'ffff00' })
-        }
-      }, 1000);
     }
 
     if (playerHealth < 1) {

@@ -5,12 +5,11 @@ module.exports = {
   category: Utils.getCmdCategory(__filename),
   usage: '',
   aliases: [],
-  permissions: ['SEND_MESSAGES'],
+  permissions: ['BAN_MEMBERS'],
   timeout: 1000,
 
   async execute(msg, args) {
     const role = msg.guild.roles.cache.find(r => r.name === '@everyone')
-    console.log(role);
     await msg.channel.updateOverwrite(role, {
       SEND_MESSAGES: false
     });

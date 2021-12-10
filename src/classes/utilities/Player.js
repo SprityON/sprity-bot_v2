@@ -4,9 +4,7 @@ const moment = require('moment')
 
 module.exports = class Player {
   constructor (member) {
-    member
-    ? this.member = member
-    : (() => { throw new Error('Constructor needs member object') })
+    this.member = member
   }
 
   /** 
@@ -60,21 +58,21 @@ module.exports = class Player {
     })
   }
 
-  get health() {
+  get hp() {
     return new Promise(async (resolve, reject) => {
       const result = await DB.query(`select stats from members where member_id = ${this.member.id}`)
       resolve(JSON.parse(result[0][0].stats).health)
     })
   }
 
-  get attack() {
+  get att() {
     return new Promise(async (resolve, reject) => {
       const result = await DB.query(`select stats from members where member_id = ${this.member.id}`)
       resolve(JSON.parse(result[0][0].stats).attack)
     })
   }
 
-  get defense() {
+  get def() {
     return new Promise(async (resolve, reject) => {
       const result = await DB.query(`select stats from members where member_id = ${this.member.id}`)
       resolve(JSON.parse(result[0][0].stats).defense)

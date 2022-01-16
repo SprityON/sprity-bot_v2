@@ -32,7 +32,7 @@ module.exports = {
       currPage: page,
       showAmountOfItems: 5,
       filter: filter
-    }, message => msg.reply(message))
+    }, message => msg.reply({ embeds: [message] }))
   },
 
   help: {

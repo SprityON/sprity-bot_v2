@@ -1,7 +1,6 @@
 const Bot = require('../../Bot');
 const Player = require('../../classes/utilities/Player');
 const Utils = require('../../classes/utilities/Utils')
-const { sendEmbed } = require('../../classes/utilities/AdvancedEmbed')
 
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
@@ -34,7 +33,7 @@ module.exports = {
       currPage: page,
       showAmountOfItems: 5,
       filter: filter
-    }, message => msg.reply(message))
+    }, message => msg.reply({ embeds: [message] }))
   },
 
   help: {

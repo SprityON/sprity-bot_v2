@@ -8,7 +8,7 @@ module.exports = class DB {
         user: process.env.DB_USER,
         password: process.env.DB_PASS,
         database: "sprity_bot"
-      }).connect(err => 
+      }).connect(err =>
         err
           ? reject('\n**\nDatabase error.\n' + err + '\n**')
           : resolve('Database is connected.\n')
@@ -25,7 +25,7 @@ module.exports = class DB {
       multipleStatements: true
     })
   }
-  
+
   static async query(sql, bindings) {
     return new Promise((resolve) => {
       switch (typeof bindings) {
@@ -37,8 +37,16 @@ module.exports = class DB {
           })
           break;
 
+          case 'array':
+            this.pool.query(sql, bindings, (err, result, fields) => {
+              err
+                ? (() => { throw err })()
+                : resolve([result, fields, err]);
+            })
+          break;
+
         default:
-          this.pool.query(sql, bindings, (err, result, fields) => {
+          this.pool.query(sql, [], (err, result, fields) => {
             err
               ? (() => { throw err })()
               : resolve([result, fields, err]);
@@ -64,10 +72,10 @@ module.exports = class DB {
 
     countMessage: async (member) => {
       this.query(`select messages from members where member_id = ${member.id}`)
-      .then(data => {
-        const messages = data[0][0].messages
-        this.query(`update members set messages = ${messages + 1} where member_id = ${member.id}`)
-      })
+        .then(data => {
+          const messages = data[0][0].messages
+          this.query(`update members set messages = ${messages + 1} where member_id = ${member.id}`)
+        })
     }
   }
 

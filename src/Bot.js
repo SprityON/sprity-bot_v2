@@ -8,8 +8,6 @@ module.exports = new class Bot {
 		this.Discord = require('discord.js');
 		this.Commands = new this.Discord.Collection();
 
-		// this.client = new this.Discord.Client({ allowedMentions: { repliedUser: false } });
-
 		const allIntents = () => {
 			let flags = this.Discord.Intents.FLAGS
 			let arr = []
@@ -29,7 +27,6 @@ module.exports = new class Bot {
 	 */
 
 	run(client) {
-		require("./classes/other/ExtraStructures")
 		client.login(process.env.TOKEN);
 		client.on('ready', this.ready.bind(this, client))
 	}

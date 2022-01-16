@@ -107,6 +107,6 @@ module.exports.execute = async(msg) => {
 
     if (newPlayerQuests.length > 0) DB.query(`update members set quests = '${JSON.stringify(newPlayerQuests)}' where member_id = ${msg.member.id}`)
     
-    msg.inlineReply(embed)
+    msg.reply({ embeds: [embed] })
   }
 }

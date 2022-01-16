@@ -8,7 +8,18 @@ module.exports = new class Bot {
 		this.Discord = require('discord.js');
 		this.Commands = new this.Discord.Collection();
 
-		this.client = new this.Discord.Client({ allowedMentions: { repliedUser: false } });
+		// this.client = new this.Discord.Client({ allowedMentions: { repliedUser: false } });
+
+		const allIntents = () => {
+			let flags = this.Discord.Intents.FLAGS
+			let arr = []
+			Object.keys(flags).forEach((flag) => {
+				arr.push(flag)
+			})
+			return arr
+		}
+		
+		this.client = new this.Discord.Client({intents: allIntents()})
 		this.run(this.client);
 	}
 

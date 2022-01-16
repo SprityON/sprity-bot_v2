@@ -2,6 +2,7 @@ const Player = require('../../classes/utilities/Player')
 const Utils = require('../../classes/utilities/Utils')
 const Bot = require('../../Bot')
 const DB = require('../../classes/database/DB')
+const { sendEmbed } = require('../../classes/utilities/AdvancedEmbed')
 
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
@@ -16,7 +17,6 @@ module.exports = {
     const inventory = await player.inventory
     const obtainables = require('./items/items.json').filter(obt => obt.type === 'aquatic')
 
-    console.log(inventory);
     const fished = []
     obtainables.forEach(obt => {
       const chance = Math.floor(Math.random() * 10000)
@@ -34,11 +34,12 @@ module.exports = {
           : inventory.push({ pos: inventory.length, id: obt.id, amount: amount })
       }
     })
-
-    if (fished.length < 1) return msg.replyEmbed(`You went fishing and got **nothing**!`)
+  
+    if (fished.length < 1) return msg.reply({ embeds: [sendEmbed(`You went fishing and got **nothing**!`)] })
 
     await DB.query(`update members set inventory = '${JSON.stringify(inventory)}' where member_id = ${msg.member.id}`)
-    msg.replyEmbed(`You went fishing and got **${fished.join(", ")}**`)
+
+    msg.reply({ embeds: [sendEmbed(`You went fishing and got **${fished.join(", ")}**`)] })
   },
 
   help: {

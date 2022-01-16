@@ -11,16 +11,16 @@ module.exports = {
 
   async execute(msg, args) {
     const member = msg.mentions.members.first()
-    if (!member) return msg.inlineReply(`You did not mention a member.`)
+    if (!member) return msg.reply(`You did not mention a member.`)
 
     const role = msg.guild.roles.cache.find(role => role.name === "Muted")
 
     if (member.roles.cache.find(r => r.name == role.name)) {
       member.roles.remove(role)
-      msg.inlineReply(`**${member.user.username}** has been unmuted!`)
+      msg.reply(`**${member.user.username}** has been unmuted!`)
       await DB.query(`DELETE FROM timer_dates WHERE member_id = ${member.id} AND 'type' = 'mute'`)
     } else {
-      msg.inlineReply(`**${member.user.username}** is already unmuted.`)
+      msg.reply(`**${member.user.username}** is already unmuted.`)
     }
   },
 

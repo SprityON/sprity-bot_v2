@@ -1,5 +1,6 @@
 const Utils = require('../../classes/utilities/Utils')
 const Player = require('../../classes/utilities/Player')
+const { sendEmbed } = require('../../classes/utilities/AdvancedEmbed')
 
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),

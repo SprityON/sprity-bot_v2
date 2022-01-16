@@ -2,6 +2,7 @@ const Bot = require('../../Bot');
 const DB = require('../../classes/database/DB');
 const Utils = require('../../classes/utilities/Utils')
 const Player = require('../../classes/utilities/Player')
+const { sendEmbed } = require('../../classes/utilities/AdvancedEmbed')
 
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
@@ -15,20 +16,18 @@ module.exports = {
     let cmd = args.shift()
 
     switch (cmd) {
-      case 'list': require('./quest/list').execute(msg, args); break;
       case 'choose': require('./quest/choose.js').execute(msg, args); break;
-      //case 'refresh': require('./quest/refresh.js').execute(msg, args); break;
 
       default: 
         if (!isNaN(cmd)) return require('./quest/choose').execute(msg, [Number(cmd)], true)
 
         let quests = (await DB.query(`select quests from members where member_id = ${msg.member.id}`))[0][0].quests
-        if (!quests) return msg.replyEmbed(`You have not chosen a quest! View available quests: ${await DB.guild.getPrefix()}quest list`)
+        if (!quests) return msg.reply({ embeds: [sendEmbed(`You have not chosen a quest! View available quests: ${await DB.guild.getPrefix()}quest list`)] })
         quests = JSON.parse(quests)
         let questDB = quests.find(q => q.active === true)
       
-        if (!questDB) return msg.replyEmbed(`You have not chosen a quest! (${await DB.guild.getPrefix()}quest choose <number>)`)
-        if (questDB.completed === true) return msg.replyEmbed(`You already have completed your current quest!`)
+        if (!questDB) return msg.reply({ embeds: [sendEmbed(`You have not chosen a quest! (${await DB.guild.getPrefix()}quest choose <number>)`)] })
+        if (questDB.completed === true) return msg.reply({ embeds: [sendEmbed(`You already have completed your current quest!`)] })
         const quest = require('./quest/quests.json').find(q => q.id === questDB.id)
         quest.items = questDB.items
 
@@ -60,24 +59,24 @@ module.exports = {
               const newXP = await player.experience + questDB.xp
 
               for (let i = 0; i < quests.length; i++) if (questDB.id == quests[i].id) quests[i].completed = true
+
               player.levelUp(questDB.xp, msg)
+
               if (tracker) await DB.query(`delete from trackers where member_id = ${msg.member.id} and type = '${tracker.type}'`)
-              
-              msg.replyEmbed(`You obtained ${strings.length > 0 ? strings + ', ' : ' '}**${point} ${questDB.points}** and **${questDB.xp}** XP `)
 
-              await DB.query(`update members set points = ${newPoints}, experience = ${newXP}, quests = '${JSON.stringify(quests)}', inventory = '${JSON.stringify(inventory)}' where member_id = ${msg.member.id}`)
-            }
+              msg.reply({ embeds: [sendEmbed(`You obtained ${strings.length > 0 ? strings + ', ' : ' '}**${point} ${questDB.points}** and **${questDB.xp}** XP `)] })
 
-            if (!success) {
-              msg.replyEmbed(`You lost **${point} ${questDB.points}**`)
+              await DB.query(`update members set points = ${newPoints}, experience = ${newXP}, quests = ${JSON.stringify(quests)}, inventory = '${JSON.stringify(inventory)}' where member_id = ${msg.member.id}`)
+            } 
+            
+            else {
+              msg.reply({ embeds: [sendEmbed(`You lost **${point} ${questDB.points}**`)] })
               questDB.completed = true
               return DB.query(`update members set points = ${newPoints}, quests = '${JSON.stringify(quests)}'`)
             }
         }).catch(err => console.log(err))
       break;
     }
-    // automatic next quest when current quest completed
-
     /** quests.json
      *   {
     "id": 3,

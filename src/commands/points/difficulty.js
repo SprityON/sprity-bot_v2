@@ -1,6 +1,7 @@
 const DB = require('../../classes/database/DB')
 const Player = require('../../classes/utilities/Player')
 const Utils = require('../../classes/utilities/Utils')
+const { sendEmbed } = require('../../classes/utilities/AdvancedEmbed')
 
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
@@ -21,45 +22,54 @@ module.exports = {
       if (Number(await player.difficulty) === 1.50) return '*insane*'
       if (Number(await player.difficulty) === 2) return '*impossible*'
     }
-
-    if (!args[0] || mention) return msg.replyEmbed(`${mention ? mention.user.username + '\'s' : 'Your'} current difficulty is set to **${await difficulty()}**.`, { 
-      footer: `to change difficulty: ${await DB.guild.getPrefix()}difficulty <easy/medium/hard/insane/impossible>`
+    
+    if (!args[0] || mention) return msg.reply({
+      embeds: [sendEmbed(`${mention ? mention.user.username + '\'s' : 'Your'} current difficulty is set to **${await difficulty()}**.`, {
+        footer: `to change difficulty: ${await DB.guild.getPrefix()}difficulty <easy/medium/hard/insane/impossible>`
+      })]
     })
 
     if (args[0].toLowerCase() === 'easy') {
-      if (player.difficulty === 0.75) return msg.replyEmbed(`You already have your difficulty set to easy!`)
+      if (player.difficulty === 0.75) return msg.reply({ embeds: [sendEmbed(`You already have your difficulty set to easy!`)] })
 
-      console.log('test');
       await DB.query(`update members set difficulty = 0.75 where member_id = ${msg.member.id}`)
-      return msg.replyEmbed(`Your difficulty was set to **easy**.`)
+
+      return msg.reply({ embeds: [sendEmbed(`Your difficulty was set to **easy**.`)] })
     }
 
     else if (args[0].toLowerCase() === 'medium') {
-      if (player.difficulty === 1) return msg.replyEmbed(`You already have your difficulty set to medium!`)
+      
+      if (player.difficulty === 1) return msg.reply({ embeds: [sendEmbed(`You already have your difficulty set to medium!`)] })
 
       await DB.query(`update members set difficulty = 1 where member_id = ${msg.member.id}`)
-      return msg.replyEmbed(`Your difficulty was set to **medium**.`)
+      
+      return msg.reply({ embeds: [sendEmbed(`Your difficulty was set to **medium**.`)] })
     }
 
     else if (args[0].toLowerCase() === 'hard') {
-      if (player.difficulty === 1.25) return msg.replyEmbed(`You already have your difficulty set to hard!`)
+      
+      if (player.difficulty === 1.25) return msg.reply({ embeds: [sendEmbed(`You already have your difficulty set to hard!`)] })
 
       await DB.query(`update members set difficulty = 1.25 where member_id = ${msg.member.id}`)
-      return msg.replyEmbed(`Your difficulty was set to **hard**.`)
+      
+      return msg.reply({ embeds: [sendEmbed(`Your difficulty was set to **hard**.`)] })
     }
 
     else if (args[0].toLowerCase() === 'insane') {
-      if (player.difficulty === 1.50) return msg.replyEmbed(`You already have your difficulty set to hard!`)
+      
+      if (player.difficulty === 1.50) return msg.reply({ embeds: [sendEmbed(`You already have your difficulty set to hard!`)] })
 
       await DB.query(`update members set difficulty = 1.50 where member_id = ${msg.member.id}`)
-      return msg.replyEmbed(`Your difficulty was set to **insane**.`)
+      
+      return msg.reply({ embeds: [sendEmbed(`Your difficulty was set to **insane**.`)] })
     }
 
     else if (args[0].toLowerCase() === 'impossible') {
-      if (player.difficulty === 2) return msg.replyEmbed(`You already have your difficulty set to impossible!`)
+      if (player.difficulty === 2) return msg.reply({ embeds: [sendEmbed(`You already have your difficulty set to impossible!`)] })
 
       await DB.query(`update members set difficulty = 2 where member_id = ${msg.member.id}`)
-      return msg.replyEmbed(`Your difficulty was set to **impossible**.`)
+      
+      return msg.reply({ embeds: [sendEmbed(`Your difficulty was set to **impossible**.`)] })
     }
   },
 

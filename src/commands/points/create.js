@@ -1,5 +1,6 @@
 const Player = require('../../classes/utilities/Player')
 const Utils = require('../../classes/utilities/Utils')
+const { sendEmbed } = require('../../classes/utilities/AdvancedEmbed')
 
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
@@ -11,7 +12,7 @@ module.exports = {
 
   async execute(msg, args) {
     const player = new Player(msg.member)
-    if (player.hasAccount(msg)) return msg.replyEmbed(`You already have an account!`)
+    if (player.hasAccount(msg)) return msg.reply({ embeds: [sendEmbed(`You already have an account!`)] })
   },
 
   help: {

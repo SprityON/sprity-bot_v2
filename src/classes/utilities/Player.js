@@ -37,7 +37,7 @@ module.exports = class Player {
 
     if (experience >= levelExperience) {
       const attributes = (await DB.query(`select attributes from members where member_id = ${this.member.id}`))[0][0].attributes
-      msg.replyEmbed(`You leveled up! You are now level **${level + 1}**.`)
+      msg.reply({ embeds: [sendEmbed(`You leveled up! You are now level **${level + 1}**.`)] })
       await DB.query(`update members set level = ${level + 1}, experience = ${experience}, attributes = ${attributes + 3} where member_id = ${this.member.id}`)
     } else {
       await DB.query(`update members set experience = ${experience} where member_id = ${this.member.id}`)

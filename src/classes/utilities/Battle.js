@@ -7,7 +7,7 @@ module.exports = class Battle extends Player {
 
     this.enemy = enemy
     this.enemy.maxHealth = this.enemy.hp
-    this.maxHealth = this.hp
+    this.playerMaxHealth = this.hp
     this.embed = new Bot.Discord.MessageEmbed().setColor('ffff00')
   }
 
@@ -33,7 +33,7 @@ module.exports = class Battle extends Player {
       if (playerHealth < 1) {
         return [true, `**${this.enemy.name}** did **${this.enemy.att}** damage and you died with **${playerHealth}** HP!`]
       } else {
-        return [false, `**${this.enemy.name}** did **${this.enemy.att}** damage. ***Your* HP: ${playerHealth}/${await this.maxHealth}**\n\nType \`attack\`, \`throw\`, \`potion\` or \`run\``]
+        return [false, `**${this.enemy.name}** did **${this.enemy.att}** damage. ***Your* HP: ${playerHealth}/${await this.playerMaxHealth}**\n\nType \`attack\`, \`throw\`, \`potion\` or \`run\``]
       }
     },
 

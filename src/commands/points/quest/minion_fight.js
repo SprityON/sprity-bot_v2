@@ -1,5 +1,6 @@
 const Bot = require('../../../Bot')
 const DB = require('../../../classes/database/DB')
+const { sendEmbed } = require('../../../classes/utilities/AdvancedEmbed')
 const Battle = require('../../../classes/utilities/Battle')
 const Player = require('../../../classes/utilities/Player')
 const Utils = require('../../../classes/utilities/Utils')
@@ -38,9 +39,9 @@ module.exports.execute = async (msg, args, quest) => {
     def: 0,
     hp: await player.hp * await player.difficulty
   })
-
-  msg.replyEmbed(`Kill **${minionName}** (**${minionHealth}/${maxMinionHealth}**) to receive ${point} **${receivablePoints}**\n\nType \`attack\`, \`throw\`, \`potion\` or \`run\``,
-    { title: `You encountered ${minionName}!)`, color: 'ff0000' })
+  msg.reply({
+    embeds: [sendEmbed(`Kill **${minionName}** (**${minionHealth}/${maxMinionHealth}**) to receive ${point} **${receivablePoints}**\n\nType \`attack\`, \`throw\`, \`potion\` or \`run\``,
+      { title: `You encountered ${minionName}!)`, color: 'ff0000' })] })
 
   const lostPoints = (Math.floor(Math.random() * 50) + 50) * await player.difficulty
 
@@ -63,22 +64,21 @@ module.exports.execute = async (msg, args, quest) => {
             ? await DB.query(`update members set points = ${points}, throwable = '' where member_id = ${msg.member.id}`)
             : await DB.query(`update members set points = ${points}, throwable = ${JSON.stringify(throwable)} where member_id = ${msg.member.id}`)
 
-          msg.replyEmbed(`You killed **${minionName}**!`, { color: '00ff00' })
+          msg.reply({ embeds: [sendEmbed(`You killed **${minionName}**!`, { color: '00ff00' })]})
           return [true, inventory]
         }
 
         if (throwable.amount < 1) { await DB.query(`update members set points = ${points}, throwable = '' where member_id = ${msg.member.id}`) }
         else await DB.query(`update members set throwable = '[${JSON.stringify(throwable)}]' where member_id = ${msg.member.id}`)
-
-        msg.replyEmbed(`You threw a ${throwableEmote} **${shopThrowable.name}** and did **${shopThrowable.damage}** damage! ***${minionName}'s* HP: ${minionHealth}/${maxMinionHealth}**`, { color: 'ffff00' })
+        msg.reply({ embeds: [sendEmbed(`You threw a ${throwableEmote} **${shopThrowable.name}** and did **${shopThrowable.damage}** damage! ***${minionName}'s* HP: ${minionHealth}/${maxMinionHealth}**`, { color: 'ffff00' })] })
         await enemyTurn()
-      } else msg.replyEmbed(`You are not using a throwable!\n\nType \`attack\`, \`throw\`, \`potion\` or \`run\``, { color: 'ffff00' })
+      } else msg.reply({ embeds: [sendEmbed(`You are not using a throwable!\n\nType \`attack\`, \`throw\`, \`potion\` or \`run\``, { color: 'ffff00' })] })
     }
 
     if (answer === 'potion') {
       if (potion) {
         if (playerHealth >= playerMaxHealth) {
-          msg.replyEmbed(`You are already at full health! ***Your* HP: ${playerHealth}/${playerMaxHealth}**\n\nType \`attack\`, \`throw\`, \`potion\` or \`run\``, { color: 'ffff00' })
+          msg.reply({ embeds: [sendEmbed(`You are already at full health! ***Your* HP: ${playerHealth}/${playerMaxHealth}**\n\nType \`attack\`, \`throw\`, \`potion\` or \`run\``, { color: 'ffff00' })] })
         } else {
           potion.amount -= 1
 
@@ -90,12 +90,11 @@ module.exports.execute = async (msg, args, quest) => {
 
           if (playerHealth >= playerMaxHealth) playerHealth = playerMaxHealth
           await DB.query(`update members set potion = ${JSON.stringify(potion)} where member_id = ${msg.member.id}`)
-
-          msg.replyEmbed(`You restored ${shopPotion.heal_percentage}% of your health by using ${potionEmote} **${shopPotion.name}**\n***Your* HP: ${playerHealth}/${playerMaxHealth}**`, { color: 'ffff00' })
+          msg.reply({ embeds: [sendEmbed(`You restored ${shopPotion.heal_percentage}% of your health by using ${potionEmote} **${shopPotion.name}**\n***Your* HP: ${playerHealth}/${playerMaxHealth}**`, { color: 'ffff00' })] })
           await enemyTurn()
         }
 
-      } else msg.replyEmbed(`You are not using a potion!\n\nType \`attack\`, \`throw\`, \`potion\` or \`run\``, { color: 'ffff00' })
+      } else msg.reply({ embeds: [sendEmbed(`You are not using a potion!\n\nType \`attack\`, \`throw\`, \`potion\` or \`run\``, { color: 'ffff00' })] })
     }
 
     if (answer === 'run') {
@@ -104,10 +103,11 @@ module.exports.execute = async (msg, args, quest) => {
       if (runChance == 1) {
         points -= lostPoints
         await DB.query(`update members set points = ${points} where member_id = ${msg.member.id}`)
-        msg.replyEmbed(`You couldn't run away!`, { color: 'ff0000' })
+
+        msg.reply({ embeds: [sendEmbed(`You couldn't run away!`, { color: 'ff0000' })] })
         return [false]
       } else {
-        msg.replyEmbed(`You successfully ran away from **${minionName}**!`, { color: '00ff00' })
+        msg.reply({ embeds: [sendEmbed(`You successfully ran away from **${minionName}**!`, { color: '00ff00' })] })
         return ['skip']
       }
     }
@@ -116,11 +116,11 @@ module.exports.execute = async (msg, args, quest) => {
       const attack = await battle.attack()
       let hasWon = attack[0]
       let message = attack[1]
-
-      if (hasWon === true) { msg.replyEmbed(message); return [true, inventory] } 
-      else if (hasWon === false) { msg.replyEmbed(message); return ['skip'] } 
+      
+      if (hasWon === true) { msg.reply({ embeds: [sendEmbed(message)] }); return [true, inventory] } 
+      else if (hasWon === false) { msg.reply({ embeds: [sendEmbed(message)] }); return ['skip'] } 
       else if (hasWon === 'skip') { 
-        msg.replyEmbed(message); 
+        msg.reply({ embeds: [sendEmbed(message)] })
 
         await Utils.wait(1000)
 
@@ -128,8 +128,8 @@ module.exports.execute = async (msg, args, quest) => {
         hasWon = enemyAttack[0]
         message = enemyAttack[1]
 
-        if (hasWon === true) { msg.replyEmbed(message); return [false, inventory] }
-        else if (hasWon === false) { msg.replyEmbed(message); }
+        if (hasWon === true) { msg.reply({ embeds: [sendEmbed(message)] }); return [false, inventory] }
+        else if (hasWon === false) { msg.reply({ embeds: [sendEmbed(message)] }); }
       }
     }
 

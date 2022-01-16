@@ -2,6 +2,7 @@ const Bot = require('../../Bot')
 const DB = require('../../classes/database/DB')
 const Player = require('../../classes/utilities/Player')
 const Utils = require('../../classes/utilities/Utils')
+const { sendEmbed } = require('../../classes/utilities/AdvancedEmbed')
 
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
@@ -12,8 +13,9 @@ module.exports = {
   timeout: 1000,
 
   async execute(msg, args) {
-    if (!args[0] || !isNaN(args[0])) return msg.replyEmbed(`You have to provide a valid item ID!`)
-    if (args[1] && isNaN(args[1])) return msg.replyEmbed(`You have to provide a valid amount!`)
+    msg.reply({ embeds: [sendEmbed(`You have to provide a valid amount!`)] })
+    if (!args[0] || !isNaN(args[0])) return msg.reply({ embeds: [sendEmbed(`You have to provide a valid item ID!`)] })
+    if (args[1] && isNaN(args[1])) return msg.reply({ embeds: [sendEmbed(`You have to provide a valid amount!`)] })
 
     const itemID = args[0]
     const amount = args[1] ? Number(args[1]) : 1
@@ -21,7 +23,7 @@ module.exports = {
     const shop = require('./shop.json')
     const item = shop.find(i => i.id === itemID)
 
-    if (!item) return msg.replyEmbed(`That item was not found!`)
+    if (!item) return msg.reply({ embeds: [sendEmbed(`That item was not found!`)] })
     
     const emoji = item.uploaded ? Bot.client.emojis.cache.find(e => e.name === item.emoji) : item.emoji
 
@@ -30,7 +32,7 @@ module.exports = {
     let points = await player.points
     const point = Bot.client.emojis.cache.find(e => e.name === 'pointdiscord')
 
-    if ((item.price * amount) > points) return msg.replyEmbed(`You do not have enough **${point} Points** to buy this item!`)
+    if ((item.price * amount) > points) return msg.reply({ embeds: [sendEmbed(`You do not have enough **${point} Points** to buy this item!`)] })
 
     points -= (item.price * amount)
     const foundItem = inventory.find(i => i.id === item.id)
@@ -40,7 +42,7 @@ module.exports = {
 
     await DB.query(`update members set points = ${points}, inventory = '${JSON.stringify(inventory)}' where member_id = ${msg.member.id}`)
     .then(() => {
-      msg.replyEmbed(`You successfully bought **${amount} ${emoji} ${item.name}**. You now have ${point} **${Utils.normalizePrice(points)}** points.`)
+      msg.reply({ embeds: [sendEmbed(`You successfully bought **${amount} ${emoji} ${item.name}**. You now have ${point} **${Utils.normalizePrice(points)}** points.`)] })
     })
   },
 

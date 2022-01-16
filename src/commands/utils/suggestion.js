@@ -1,5 +1,6 @@
 const Bot = require('../../Bot')
 const Utils = require('../../classes/utilities/Utils')
+const { sendEmbed } = require('../../classes/utilities/AdvancedEmbed')
 
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
@@ -13,13 +14,14 @@ module.exports = {
     const suggestionChannel = msg.guild.channels.cache.find(channel => channel.id === '720739903331237949')
 
     const filter = m => m.author.id === msg.author.id
-    msg.replyEmbed("Please type in the title of your suggestion.\n*Type 'cancel' to cancel*")
+    msg.reply({ embeds: [sendEmbed("Please type in the title of your suggestion.\n*Type 'cancel' to cancel*")] })
     msg.channel.awaitMessages(filter, {
       max: 1,
       time: 180000
     }).then(collected => {
         if (collected.first().content == 'cancel') 
-          return collected.first().replyEmbed('Cancelled!')
+          
+          return collected.first().reply({ embeds: [sendEmbed('Cancelled!')] })
         
         let suggestionTitle = collected.first().content
         msg.sendEmbed(`Suggestions's title has been set to: **${suggestionTitle}**!`)
@@ -33,7 +35,7 @@ module.exports = {
         }).then(collected => {
           let suggestionContent = collected.first().content
           if (suggestionContent == 'cancel')
-            return collected.first().replyEmbed('Cancelled!')
+          return collected.first().reply({ embeds: [sendEmbed('Cancelled!')] })
 
           var embed = new Bot.Discord.MessageEmbed()
             .setColor(require('../../config.json').embedColor)

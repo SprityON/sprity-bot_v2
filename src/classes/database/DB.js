@@ -21,7 +21,8 @@ module.exports = class DB {
       host: process.env.DB_HOST,
       user: process.env.DB_USER,
       password: process.env.DB_PASS,
-      database: "sprity_bot"
+      database: "sprity_bot",
+      multipleStatements: true
     })
   }
   

@@ -12,15 +12,15 @@ module.exports = {
 
   async execute(msg, args) {
     let member = msg.mentions.members.first()
-    if (!member) return msg.inlineReply(`You have to mention a member.`)
+    if (!member) return msg.reply(`You have to mention a member.`)
     const embed = new Bot.Discord.MessageEmbed()
       .setTitle(`${member.user.username}'s warnings`)
       .setColor(require('../../config.json').embedColor)
-      .setFooter(`use '$warns help' for more information about this command`)
+      .setFooter({text: `use '$warns help' for more information about this command`})
       .setThumbnail(member.user.avatarURL({dynamic: true}))
 
     await DB.query(`SELECT * FROM members WHERE member_id = ${member.id}`, data => {
-      if (!data) return msg.inlineReply(`**${member.user.username}** does not have any warnings.`)
+      if (!data) return msg.reply(`**${member.user.username}** does not have any warnings.`)
       for (let row_one of data[0]) {
         if (Utils.advancedReplace(args[0], '<@!>', '', { charOnly: true }).length === 18) {
 
@@ -36,11 +36,11 @@ module.exports = {
             ? embed.addField(`Kicked?`, 'No')
             : embed.addField(`Kicked?`, 'Yes')
 
-          return msg.channel.send(embed)
+          return msg.reply({embeds: embed})
         }
 
         // if (args[0] == 'clear') {
-        //   if (!msg.member.permissions.has("MANAGE_MESSAGES")) return msg.inlineReply(`You do not have enough permissions!`)
+        //   if (!msg.member.permissions.has("MANAGE_MESSAGES")) return msg.reply(`You do not have enough permissions!`)
         //   let warn1 = msg.guild.roles.cache.find(role => role.name === 'Warning 1')
         //   let warn2 = msg.guild.roles.cache.find(role => role.name === 'Warning 2')
 
@@ -51,19 +51,19 @@ module.exports = {
         //     if (row_one.warns == 2) { warnsAmount = 0; try { member.roles.remove(warn1) } catch (err) { err }; try { member.roles.remove(warn2) } catch (err) { err } }
         //     else if (row_one.warns == 1) { warnsAmount = 0; try { member.roles.remove(warn1) } catch (err) { err } }
         //     else if (row_one.warns == 0) {
-        //       return msg.inlineReply(`Clear unsuccessfull! You tried to clear ${warnsAmountText} warns from a member with 0 warns.`)
+        //       return msg.reply(`Clear unsuccessfull! You tried to clear ${warnsAmountText} warns from a member with 0 warns.`)
         //     }
 
         //     await DB.query(`UPDATE members SET warns = ${warnsAmount} WHERE member_id = ${member.id}`)
         //     msg.channel.send(`Succesfully removed **${row_one.warns}** warn(s) from **${member.displayName}**`)
         //     return
         //   }
-        //   if (isNaN(warnsAmount)) return msg.inlineReply(`\`${warnsAmount}\` is not a number!`)
-        //   if (warnsAmount > 2) return msg.inlineReply(`You can only clear up to 2 warns!`)
-        //   if (warnsAmount < 1) return msg.inlineReply(`What are you trying to do? You can only clear 1 - 2 warns!`)
+        //   if (isNaN(warnsAmount)) return msg.reply(`\`${warnsAmount}\` is not a number!`)
+        //   if (warnsAmount > 2) return msg.reply(`You can only clear up to 2 warns!`)
+        //   if (warnsAmount < 1) return msg.reply(`What are you trying to do? You can only clear 1 - 2 warns!`)
 
         //   if (row_one.warns == 0) {
-        //     return msg.inlineReply(`Clear unsuccessfull! You tried to clear ${warnsAmount} warns from a member with 0 warns.`)
+        //     return msg.reply(`Clear unsuccessfull! You tried to clear ${warnsAmount} warns from a member with 0 warns.`)
         //   }
 
         //   if (warnsAmount == 2) {
@@ -76,7 +76,7 @@ module.exports = {
         //     } else if (row_one.warns == 1) {
         //       warnsAmount = 0
         //       warnsAmountText = 1
-        //       msg.inlineReply(`You tried to clear 2 warns from a member with 1 warn. 1 warn was removed instead.`)
+        //       msg.reply(`You tried to clear 2 warns from a member with 1 warn. 1 warn was removed instead.`)
         //       member.roles.remove(warn1)
         //     }
         //   }

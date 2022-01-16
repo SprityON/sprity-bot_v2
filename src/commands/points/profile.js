@@ -2,6 +2,7 @@ const { Discord } = require('../../Bot')
 const DB = require('../../classes/database/DB')
 const Player = require('../../classes/utilities/Player')
 const Utils = require('../../classes/utilities/Utils')
+const { sendEmbed } = require('../../classes/utilities/AdvancedEmbed')
 
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
@@ -25,7 +26,7 @@ module.exports = {
       .addField(`Points`, Utils.normalizePrice(await player.points), true)
       .addField(`Join Date`, joinedDate, true)
 
-    msg.inlineReply(embed)
+    msg.reply(embed)
   },
 
   help: {

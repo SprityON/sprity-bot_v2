@@ -1,4 +1,5 @@
 const DB = require('../../../classes/database/DB')
+const { sendEmbed } = require('../../../classes/utilities/AdvancedEmbed')
 const Player = require('../../../classes/utilities/Player')
 const Utils = require('../../../classes/utilities/Utils')
 
@@ -17,7 +18,7 @@ module.exports = {
       const points = await player.points
       const reward = messages * 1.25
       await DB.query(`update members set messages = 0, points = ${points + Math.ceil(reward)} where member_id = ${msg.member.id}`)
-      msg.replyEmbed(`You converted **${messages}** messages into **${Math.ceil(reward)}** points!`)
+      msg.reply({ embeds: [sendEmbed(`You converted **${messages}** messages into **${Math.ceil(reward)}** points!`)]})
     })
   },
 

@@ -2,6 +2,7 @@ const DB = require('../../classes/database/DB')
 const Player = require('../../classes/utilities/Player')
 const Utils = require('../../classes/utilities/Utils')
 const Bot = require('../../Bot')
+const { sendEmbed } = require('../../classes/utilities/AdvancedEmbed')
 
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
@@ -12,8 +13,8 @@ module.exports = {
   timeout: 1000,
 
   async execute(msg, args) {
-    if (!args[0] || !isNaN(args[0])) return msg.replyEmbed(`You have to provide a valid item ID!`)
-    if (args[1] && isNaN(args[1])) return msg.replyEmbed(`You have to provide a valid amount!`)
+    if (!args[0] || !isNaN(args[0])) return msg.reply({ embeds: [sendEmbed(`You have to provide a valid item ID!`)] })
+    if (args[1] && isNaN(args[1])) return msg.reply({ embeds: [sendEmbed(`You have to provide a valid amount!`)] })
 
     const itemID = args[0]
     const amount = args[1] ? Number(args[1]) : 1
@@ -21,8 +22,8 @@ module.exports = {
     const shop = require('./shop.json')
     const item = shop.find(i => i.id === itemID)
     const emoji = item.uploaded ? Bot.client.emojis.cache.find(e => e.name === item.id) : item.emoji
-
-    if (!item) return msg.replyEmbed(`That item was not found!`)
+    
+    if (!item) return msg.reply({ embeds: [sendEmbed(`That item was not found!`)] })
 
     const player = new Player(msg.member)
     let inventory = await player.inventory
@@ -36,14 +37,14 @@ module.exports = {
       
       await DB.query(`update members set inventory = '${JSON.stringify(inventory)}', points = ${points} where member_id = ${msg.member.id}`)
         .then(() => {
-          msg.replyEmbed(`You successfully sold **${amount} ${emoji} ${item.name}**! You now have ${point} **${Utils.normalizePrice(points)}** points.`)
+          msg.reply({ embeds: [sendEmbed(`You successfully sold **${amount} ${emoji} ${item.name}**! You now have ${point} **${Utils.normalizePrice(points)}** points.`)] })
 
           if (item.role) {
             const role = msg.guild.roles.cache.find(e => e.name === item.role)
             msg.member.roles.remove(role)
           }
         })
-    } else return msg.replyEmbed(`You do not have that many ${emoji} **${item.name}**`)
+    } else return msg.reply({ embeds: [sendEmbed(`You do not have that many ${emoji} **${item.name}**`)] })
   },
 
   help: {

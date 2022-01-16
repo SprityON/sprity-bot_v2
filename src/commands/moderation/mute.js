@@ -15,8 +15,8 @@ module.exports = {
     const role = msg.guild.roles.cache.find(role => role.name === "Muted")
     const member = msg.mentions.members.first()
 
-    if (!member) return msg.inlineReply('You have to mention a member!')
-    if (member.roles.cache.find(r => r.name === role.name)) return msg.inlineReply(`**${member.user.username}** has already been muted!`)
+    if (!member) return msg.reply('You have to mention a member!')
+    if (member.roles.cache.find(r => r.name === role.name)) return msg.reply(`**${member.user.username}** has already been muted!`)
 
     let time, timeINT = '';
     let unit = ''
@@ -41,18 +41,18 @@ module.exports = {
         accepted = true
     });
     
-    if (accepted == false) return msg.inlineReply(`Invalid time unit!\nAccepted units: \`ms\` \`s\` \`m\` \`h\` \`d\` \`w\` \`y\``)
+    if (accepted == false) return msg.reply(`Invalid time unit!\nAccepted units: \`ms\` \`s\` \`m\` \`h\` \`d\` \`w\` \`y\``)
 
     const endDate = moment().add(`${timeINT}`, `${unit}`).format('M/D/YYYY H:mm:ss:SSS')
 
     await DB.query(`INSERT INTO timer_dates(member_id, enddate, type) VALUES ('${member.id}', '${endDate}', 'mute')`)
     member.roles.add(role)
 
-    msg.inlineReply(`**${member.user.username}** has been muted for ${ms(ms(time), { long: true })}!`)
+    msg.reply(`**${member.user.username}** has been muted for ${ms(ms(time), { long: true })}!`)
 
     setTimeout(async() => {
       member.roles.remove(role)
-      msg.inlineReply(`**${member.displayName}** has been unmuted!`)
+      msg.reply(`**${member.displayName}** has been unmuted!`)
 
       await DB.query(`DELETE FROM timer_dates WHERE member_id = ${member.id} AND 'type' = 'mute'`)
     }, ms(time));

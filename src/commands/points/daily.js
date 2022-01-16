@@ -3,6 +3,7 @@ const Player = require('../../classes/utilities/Player')
 const Utils = require('../../classes/utilities/Utils')
 const moment = require('moment')
 const Bot = require('../../Bot')
+const { sendEmbed } = require('../../classes/utilities/AdvancedEmbed')
 
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
@@ -22,8 +23,9 @@ module.exports = {
       await DB.query(`update members set points = '${points += 250}' where member_id = '${msg.member.id}'`)
 
       const point = Bot.client.emojis.cache.find(e => e.name === 'pointdiscord')
-      return msg.replyEmbed(`You have received your ${point} **250** daily points!`)
-    } else msg.replyEmbed(`You cannot claim your daily yet.\nPlease wait: **${overTimeMessage}**`)
+      
+      return msg.reply({ embeds: [sendEmbed(`You have received your ${point} **250** daily points!`)] })
+    } else msg.reply({ embeds: [sendEmbed(`You cannot claim your daily yet.\nPlease wait: **${overTimeMessage}**`)] })
   },
 
   help: {

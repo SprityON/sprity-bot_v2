@@ -1,6 +1,7 @@
 const Bot = require('../../Bot')
 const Player = require('../../classes/utilities/Player')
 const Utils = require('../../classes/utilities/Utils')
+const { sendEmbed } = require('../../classes/utilities/AdvancedEmbed.js')
 
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
@@ -16,8 +17,7 @@ module.exports = {
     const points = await player.points
 
     const point = Bot.client.emojis.cache.find(e => e.name === 'pointdiscord')
-
-    msg.replyEmbed(`You have ${point} **${Utils.normalizePrice(points)}** points!`, { footer: 'you can also view your full profile!' })
+    msg.reply({ embeds: [sendEmbed(`You have ${point} **${Utils.normalizePrice(points)}** points!`, { footer: 'you can also view your full profile!' })] })
   },
 
   help: {

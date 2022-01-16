@@ -19,7 +19,7 @@ module.exports = {
     .setColor(require('../../config.json').embedColor)
     if (!args[0]) {
         embed.setTitle(`Commands`)
-        .setFooter(`For more specific information: help (category/command)`)
+        .setFooter({ text: `For more specific information: help (category/command)`})
 
       let num = 0
       commandCategoryFolders.forEach(f => {
@@ -49,7 +49,7 @@ module.exports = {
         }
       }
 
-      return msg.channel.send(embed)
+      return msg.channel.send({embeds: [embed]})
     } else if (args[0] && isNaN(args[0])) {
       let text = ''
       let isCategory = false
@@ -99,7 +99,7 @@ module.exports = {
         }
 
         embed.setDescription(text)
-        msg.channel.send(embed)
+        msg.channel.send({embeds: [embed]})
       } else {
         const command = Bot.Commands.find(cmd => cmd.name === args[0] || cmd.aliases && cmd.aliases.find(alias => alias === args[0]))
 
@@ -136,7 +136,7 @@ module.exports = {
           .addField(`Cooldown`, `${command.timeout / 1000}s`)
           .addField(`Permissions`, `\`\`\`${permissions}\`\`\``)
 
-        msg.channel.send(embed)
+        msg.channel.send({embeds: [embed]})
       }
     }
   },

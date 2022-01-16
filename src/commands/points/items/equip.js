@@ -1,6 +1,7 @@
 const Bot = require("../../../Bot")
 const DB = require("../../../classes/database/DB")
 const Player = require("../../../classes/utilities/Player")
+const { sendEmbed } = require('../../../classes/utilities/AdvancedEmbed')
 
 module.exports.execute = async(msg, item_id, type) => {
   const player = new Player(msg.member)
@@ -15,13 +16,13 @@ module.exports.execute = async(msg, item_id, type) => {
 
   if (weapon && weapon.id == item_id) {
     const item = inventory.find(item => item.id === item_id)
-    msg.replyEmbed(`You are now using **${item.amount + weapon.amount}** of ${newThrowableEmote} **${newShopThrowable.name}** as a ${type}`)
+    msg.reply({ embeds: [sendEmbed(`You are now using **${item.amount + weapon.amount}** of ${newThrowableEmote} **${newShopThrowable.name}** as a ${type}`)] })
 
     const invItemAmount = item.amount
     inventory[item.pos].amount -= item.amount
     await DB.query(`update members set ${type} = '[{"id": "${item_id}", "amount": ${invItemAmount + weapon.amount}}]', inventory = '${JSON.stringify(inventory)}' where member_id = ${msg.member.id}`)
   } else if (weapon) {
-    msg.replyEmbed(`You are now using ${newThrowableEmote} **${newShopThrowable.name}** as a ${type}`)
+    msg.reply({ embeds: [sendEmbed(`You are now using ${newThrowableEmote} **${newShopThrowable.name}** as a ${type}`)] })
 
     const oldWeapon = weapon
 
@@ -34,7 +35,7 @@ module.exports.execute = async(msg, item_id, type) => {
 
     await DB.query(`update members set ${type} = '[{"id": "${item_id}", "amount": ${oldNewWeaponAmount}}]', inventory = '${JSON.stringify(inventory)}' where member_id = ${msg.member.id}`)
   } else {
-    msg.replyEmbed(`You are now using ${newThrowableEmote} **${newShopThrowable.name}** as a ${type}.`)
+    msg.reply({ embeds: [sendEmbed(`You are now using ${newThrowableEmote} **${newShopThrowable.name}** as a ${type}`)] })
     const item = inventory.find(item => item.id === item_id)
     console.log(item);
     const invItemAmount = item.amount

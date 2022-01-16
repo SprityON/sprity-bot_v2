@@ -1,6 +1,7 @@
 const Bot = require("../../Bot")
 const { Discord, client } = require("../../Bot")
 const Utils = require("../../classes/utilities/Utils")
+const { sendEmbed } = require('../../classes/utilities/AdvancedEmbed')
 
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
@@ -14,10 +15,10 @@ module.exports = {
     switch (args[0]) {
       case 'create':
         let embed = new Discord.MessageEmbed()
-
-        msg.replyEmbed([], 
-          { title: 'Choose your embed title', description: 'Cancel this process with **cancel**.' }
-        ).then(message1 => {
+        msg.reply({
+        embeds: [sendEmbed([],
+          { title: 'Choose your embed title', description: 'Cancel this process with **cancel**.' })] })
+          .then(message1 => {
           const filter = m => m.author.id === msg.author.id
 
           message1.channel.awaitMessages(filter, {
@@ -25,7 +26,7 @@ module.exports = {
             max: 1
           }).then(collected0 => {
             if (collected0.first().content.toLowerCase() === 'cancel') {
-              message1.inlineReply(`Cancelled!`).then(msg => msg.delete({ timeout: 5000 }))
+              message1.reply(`Cancelled!`).then(msg => msg.delete({ timeout: 5000 }))
 
               return (
                 msg.delete({ timeout: 1000 }),
@@ -37,7 +38,7 @@ module.exports = {
             const title = collected0.first().content
             embed.setTitle(title)
 
-            collected0.first().inlineReply(`You have chosen the title: **${title}**`).then(msg => msg.delete({ timeout: 5000 }))
+            collected0.first().reply(`You have chosen the title: **${title}**`).then(msg => msg.delete({ timeout: 5000 }))
 
             let number = 0
 
@@ -52,7 +53,7 @@ module.exports = {
               let fieldTitle
               let fieldDescription
 
-              collected.first().inlineReply(
+              collected.first().reply(
                 new Discord.MessageEmbed()
                   .setDescription(`What will the title of field #${number} be?`)
                   .setFooter(`type 'send' to send embed`)).then(message2 => {
@@ -63,7 +64,7 @@ module.exports = {
                     }).then(collected1 => {
 
                       if (collected1.first().content.toLowerCase() === 'cancel') {
-                        collected1.first().inlineReply(`Cancelled!`).then(msg => msg.delete({ timeout: 5000 }))
+                        collected1.first().reply(`Cancelled!`).then(msg => msg.delete({ timeout: 5000 }))
 
                         return (
                           msg.delete({ timeout: 1000 }),
@@ -87,7 +88,7 @@ module.exports = {
 
                       fieldTitle = collected1.first().content
 
-                      collected1.first().inlineReply(
+                      collected1.first().reply(
                         new Discord.MessageEmbed()
                           .setDescription(`What will the description of field #${number} be?`)
                           .setFooter(`type 'send' to send embed`)).then(message3 => {
@@ -97,7 +98,7 @@ module.exports = {
                               max: 1
                             }).then(collected2 => {
 
-                              if (collected2.first().content.toLowerCase() === 'cancel') return collected2.first().inlineReply(`Cancelled!`).then(msg => msg.delete({ timeout: 5000 }))
+                              if (collected2.first().content.toLowerCase() === 'cancel') return collected2.first().reply(`Cancelled!`).then(msg => msg.delete({ timeout: 5000 }))
                               if (collected2.first().content.toLowerCase() === 'send') {
                                 collected2.first().channel.send(embed)
 
@@ -126,16 +127,16 @@ module.exports = {
                               return callback(collected2)
 
                             }).catch(collected => {
-                              msg.inlineReply(`Cancelled! You took too long.`)
+                              msg.reply(`Cancelled! You took too long.`)
                             })
                           }).catch(collected => {
-                            msg.inlineReply(`Cancelled! You took too long.`)
+                            msg.reply(`Cancelled! You took too long.`)
                           })
                     }).catch(collected => {
-                      msg.inlineReply(`Cancelled! You took too long.`)
+                      msg.reply(`Cancelled! You took too long.`)
                     })
                   }).catch(collected => {
-                    msg.inlineReply(`Cancelled! You took too long.`)
+                    msg.reply(`Cancelled! You took too long.`)
                   })
             }
           }).catch(collected => {
@@ -145,14 +146,14 @@ module.exports = {
         break;
       case 'edit':
         if (!args[1] || isNaN(args[1]) || args[1].length !== 18)
-          return msg.inlineReply(`You have to provide a valid message id!`).then(msg1 => (msg.delete({ timeout: 5000 }), msg1.delete({ timeout: 5000 })))
+          return msg.reply(`You have to provide a valid message id!`).then(msg1 => (msg.delete({ timeout: 5000 }), msg1.delete({ timeout: 5000 })))
 
         const messageID = args[1]
 
         let selectedMsg = await msg.channel.messages.fetch(messageID)
         const filter = m => m.author.id === msg.author.id
 
-        msg.inlineReply(`What would you like to edit?\nChoose from: \`title\`, \`description\`, \`footer\`, \`fields\`, \`color\` or \`cancel\``).then(message0 => {
+        msg.reply(`What would you like to edit?\nChoose from: \`title\`, \`description\`, \`footer\`, \`fields\`, \`color\` or \`cancel\``).then(message0 => {
           msg.channel.awaitMessages(filter, {
             time: 120000,
             max: 1
@@ -162,7 +163,7 @@ module.exports = {
             switch (receivedMessage.content.toLowerCase()) {
 
               case 'title':
-                receivedMessage.inlineReply(`What will your new title be?`).then(message1 => {
+                receivedMessage.reply(`What will your new title be?`).then(message1 => {
                   receivedMessage.channel.awaitMessages(filter, {
                     time: 120000,
                     max: 1
@@ -173,14 +174,14 @@ module.exports = {
                     collected1.first().delete()
 
                     selectedMsg.edit(selectedMsg.embeds[0].setTitle(collected1.first().content))
-                    selectedMsg.inlineReply(`Embed title changed to \`${collected1.first().content}\``).then(msg => msg.delete({ timeout: 5000 }))
+                    selectedMsg.reply(`Embed title changed to \`${collected1.first().content}\``).then(msg => msg.delete({ timeout: 5000 }))
                   })
                 })
 
                 break;
 
               case 'description':
-                receivedMessage.inlineReply(`What will your new description be?`).then(message1 => {
+                receivedMessage.reply(`What will your new description be?`).then(message1 => {
                   receivedMessage.channel.awaitMessages(filter, {
                     time: 120000,
                     max: 1
@@ -191,14 +192,14 @@ module.exports = {
                     collected1.first().delete()
 
                     selectedMsg.edit(selectedMsg.embeds[0].setDescription(collected1.first().content))
-                    selectedMsg.inlineReply(`Embed description changed to \`${collected1.first().content}\``).then(msg => msg.delete({ timeout: 5000 }))
+                    selectedMsg.reply(`Embed description changed to \`${collected1.first().content}\``).then(msg => msg.delete({ timeout: 5000 }))
                   })
                 })
 
                 break;
 
               case 'footer':
-                receivedMessage.inlineReply(`What will your new footer be?`).then(message1 => {
+                receivedMessage.reply(`What will your new footer be?`).then(message1 => {
                   receivedMessage.channel.awaitMessages(filter, {
                     time: 120000,
                     max: 1
@@ -209,13 +210,13 @@ module.exports = {
                     collected1.first().delete()
 
                     selectedMsg.edit(selectedMsg.embeds[0].setFooter(collected1.first().content))
-                    selectedMsg.inlineReply(`Embed footer changed to \`${collected1.first().content}\``).then(msg => msg.delete({ timeout: 5000 }))
+                    selectedMsg.reply(`Embed footer changed to \`${collected1.first().content}\``).then(msg => msg.delete({ timeout: 5000 }))
                   })
                 })
                 break;
 
               case 'color':
-                receivedMessage.inlineReply(`What will your new color be?`).then(message1 => {
+                receivedMessage.reply(`What will your new color be?`).then(message1 => {
                   receivedMessage.channel.awaitMessages(filter, {
                     time: 120000,
                     max: 1
@@ -225,25 +226,25 @@ module.exports = {
                     collected0.first().delete()
 
                     if (collected1.first().content.length !== 3 && collected1.first().content.length !== 6)
-                      return collected.first().inlineReply(`That is not a valid hexcode!`)
+                      return collected.first().reply(`That is not a valid hexcode!`)
 
                     let format = 'abcdef0123456789';
                     for (let i = 0; i < collected1.first().content.length; i++) {
                       const char = collected1.first().content[i];
 
                       if (!format.includes(char))
-                        return collected.first().inlineReply(`That is not a valid hexcode!`)
+                        return collected.first().reply(`That is not a valid hexcode!`)
                     }
 
                     collected1.first().delete()
                     selectedMsg.edit(selectedMsg.embeds[0].setColor(collected1.first().content))
-                    selectedMsg.inlineReply(`Embed color changed to \`${collected1.first().content}\``).then(msg => msg.delete({ timeout: 5000 }))
+                    selectedMsg.reply(`Embed color changed to \`${collected1.first().content}\``).then(msg => msg.delete({ timeout: 5000 }))
                   })
                 })
                 break;
 
               case 'fields':
-                receivedMessage.inlineReply(`\`Add\` or \`edit\` a field?`).then(message1 => {
+                receivedMessage.reply(`\`Add\` or \`edit\` a field?`).then(message1 => {
                   receivedMessage.channel.awaitMessages(filter, {
                     time: 120000,
                     max: 1
@@ -252,7 +253,7 @@ module.exports = {
 
                     switch (collected1.first().content.toLowerCase()) {
                       case 'edit':
-                        receivedMessage.inlineReply(`Which field do you want to edit? **${selectedMsg.embeds[0].fields.length || 0}** ${selectedMsg.embeds[0].fields.length == 1 ? 'field' : 'fields'}`).then(message2 => {
+                        receivedMessage.reply(`Which field do you want to edit? **${selectedMsg.embeds[0].fields.length || 0}** ${selectedMsg.embeds[0].fields.length == 1 ? 'field' : 'fields'}`).then(message2 => {
                           receivedMessage.channel.awaitMessages(filter, {
                             time: 120000,
                             max: 1
@@ -265,14 +266,14 @@ module.exports = {
 
                             let title, description
 
-                            collected2.first().inlineReply(`Choose your field title`).then(message3 => {
+                            collected2.first().reply(`Choose your field title`).then(message3 => {
                               msg.channel.awaitMessages(filter, {
                                 time: 120000,
                                 max: 1
                               }).then(collected3 => {
                                 title = collected3.first().content
 
-                                collected2.first().inlineReply(`Choose your field description`).then(message4 => {
+                                collected2.first().reply(`Choose your field description`).then(message4 => {
                                   msg.channel.awaitMessages(filter, {
                                     time: 120000,
                                     max: 1
@@ -309,7 +310,7 @@ module.exports = {
                       case 'add':
                         let title, description
 
-                        receivedMessage.inlineReply(`Choose your field title.`).then(message2 => {
+                        receivedMessage.reply(`Choose your field title.`).then(message2 => {
                           message2.channel.awaitMessages(filter, {
                             time: 120000,
                             max: 1
@@ -317,7 +318,7 @@ module.exports = {
                             title = collected2.first().content
                             collected0.first().delete()
 
-                            collected2.first().inlineReply(`Choose your field description.`).then(message3 => {
+                            collected2.first().reply(`Choose your field description.`).then(message3 => {
                               msg.channel.awaitMessages(filter, {
                                 time: 120000,
                                 max: 1
@@ -331,7 +332,7 @@ module.exports = {
                                 collected3.first().delete()
 
                                 selectedMsg.edit(selectedMsg.embeds[0].addField(title, description, true))
-                                selectedMsg.inlineReply(`Your field was updated`).then(msg => msg.delete({ timeout: 5000 }))
+                                selectedMsg.reply(`Your field was updated`).then(msg => msg.delete({ timeout: 5000 }))
                               })
                             })
                           })
@@ -346,7 +347,7 @@ module.exports = {
                 break;
 
               default:
-                collected0.first().inlineReply(`Cancelled!`)
+                collected0.first().reply(`Cancelled!`)
                 break;
             }
           })

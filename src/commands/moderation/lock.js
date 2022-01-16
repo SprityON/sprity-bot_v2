@@ -1,4 +1,5 @@
 const Utils = require('../../classes/utilities/Utils')
+const { sendEmbed } = require('../../classes/utilities/AdvancedEmbed')
 
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
@@ -14,7 +15,7 @@ module.exports = {
       SEND_MESSAGES: false
     });
 
-     msg.replyEmbed(`Channel locked.`)
+    msg.reply({ embeds: [sendEmbed(`Channel locked.`)] })
   },
 
   help: {

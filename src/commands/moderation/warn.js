@@ -1,4 +1,5 @@
 const Utils = require('../../classes/utilities/Utils')
+const { sendEmbed } = require('../../classes/utilities/AdvancedEmbed')
 const DB = require("../../classes/database/DB")
 const Bot = require('../../Bot')
 
@@ -12,9 +13,9 @@ module.exports = {
 
   async execute(msg, args) {
     const member = msg.mentions.members.first()
-    if (!member) return msg.inlineReply(`You have to mention a member.`)
+    if (!member) return msg.reply(`You have to mention a member.`)
     let warns = JSON.parse(await DB.member.getWarns(member))
-    if (!args[1]) return msg.inlineReply(`You have to provide a reason.`)
+    if (!args[1]) return msg.reply(`You have to provide a reason.`)
 
     const warning1 = msg.guild.roles.cache.find(role => role.name === 'Warning 1')
     const warning2 = msg.guild.roles.cache.find(role => role.name === 'Warning 2')
@@ -39,18 +40,17 @@ module.exports = {
       case 2:
         member.roles.cache.find(role => role.name === "Kicked")
           ? (
-            msg.inlineReply(`**${member.user.username}** Banned by warning system.`),
+            msg.reply(`**${member.user.username}** Banned by warning system.`),
             member.ban(reason)
           )
           : (
-            msg.inlineReply(`**${member.user.username}** kicked by warning system.`),
+            msg.reply(`**${member.user.username}** kicked by warning system.`),
             await DB.query(`update members set kicked = 1, warns = '[]' where member_id = ${member.id}`),
             member.kick(reason)
           )
         break;
     }
-
-    msg.replyEmbed([], { title: `${member.user.username} was warned by ${msg.member.user.username} for:`, description: `\`${reason}\`` })
+    msg.reply({ embeds: [sendEmbed([], { title: `${member.user.username} was warned by ${msg.member.user.username} for:`, description: `\`${reason}\`` })] })
   },
 
   help: {

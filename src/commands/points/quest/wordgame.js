@@ -1,6 +1,7 @@
 const Bot = require('../../../Bot')
 const DB = require('../../../classes/database/DB')
 const Player = require('../../../classes/utilities/Player')
+const { sendEmbed } = require('../../../classes/utilities/AdvancedEmbed')
 
 module.exports.execute = async (msg, args) => {
   const sentences = [
@@ -22,21 +23,21 @@ module.exports.execute = async (msg, args) => {
 
   const sentence = sentences[Math.floor(Math.random() * sentences.length)]
   const time = ((sentence.length * 0.25) + 0.5) / await player.difficulty
-  msg.replyEmbed(`**Hurry!** Type in:\n\`${sentence}\``, { title: `Game: Wordgame (${time.toFixed(1)}s)`, color: 'ffff00' })
+  msg.reply({ embeds: [sendEmbed(`**Hurry!** Type in:\n\`${sentence}\``, { title: `Game: Wordgame (${time.toFixed(1)}s)`, color: 'ffff00' })] })
 
   const filter = m => m.author.id === msg.author.id
   const collected = await msg.channel.awaitMessages(filter, { time: time * 1000, max: 1 })
 
   if (!collected.first()) {
-    msg.replyEmbed(`You were too late!`, { color: 'ff0000' })
+    msg.reply({ embeds: [sendEmbed(`You were too late!`, { color: 'ff0000' })] })
     return [false]
   }
 
   if ((collected.first().content.charAt(0).toLowerCase() + collected.first().content.slice(1)) === sentence) {
-    collected.first().replyEmbed(`Good job! You typed the sentence correctly.`, { color: '00ff00' })
+    collected.first().reply({ embeds: [sendEmbed(`Good job! You typed the sentence correctly.`, { color: '00ff00' })] })
     return [true]
   } else {
-    collected.first().replyEmbed(`You typed in the wrong sentence!`, { color: 'ff0000' })
+    collected.first().reply({ embeds: [sendEmbed(`You typed in the wrong sentence!`, { color: 'ff0000' })] })
     return [false]
   }
 }

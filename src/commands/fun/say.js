@@ -10,10 +10,8 @@ module.exports = {
 
   async execute(msg, args) {
     msg.delete()
-    msg.sendEmbed([
-          [`${msg.author.username} said:`, `\`\`\`` + msg.content.slice(msg.content.split(" ")[0].length + 1) + `\`\`\``]
-        ], { color: Utils.randomColor() }
-    );
+
+    msg.channel.send(msg.content.slice(msg.content.split(" ")[0].length + 1));
   },
 
   help: {

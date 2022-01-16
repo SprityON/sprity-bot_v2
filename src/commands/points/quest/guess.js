@@ -3,6 +3,7 @@ const Bot = require('../../../Bot')
 const { Discord } = require('../../../Bot')
 const DB = require('../../../classes/database/DB')
 const Player = require('../../../classes/utilities/Player')
+const { sendEmbed } = require('../../../classes/utilities/AdvancedEmbed')
 
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
@@ -23,8 +24,7 @@ module.exports = {
     const point = Bot.client.emojis.cache.find(e => e.name === 'pointdiscord')
 
     const experience = Math.floor((Math.floor(Math.random() * 100) + 100) * await player.difficulty)
-
-    msg.replyEmbed(`Guess my number between **1 - 10** for ${point} **${winPoints}**. \n\nYou got **${tries}** tries and **${hints}** hint!`)
+    msg.reply({ embeds: [sendEmbed(`Guess my number between **1 - 10** for ${point} **${winPoints}**. \n\nYou got **${tries}** tries and **${hints}** hint!`)] })
 
     const embed = new Discord.MessageEmbed().setColor('ffff00')
 
@@ -39,28 +39,31 @@ module.exports = {
 
       if (answer.toLowerCase() == 'hint') {
         if (hints == 0) {
-          msg.replyEmbed(`You used all your hints!`)
+          msg.reply({ embeds: [sendEmbed(`You used all your hints!`)] })
         }
 
         else if (tries == 3) {
-          msg.replyEmbed(`You have to take a guess first!`)
+          msg.reply({ embeds: [sendEmbed(`You have to take a guess first!`)] })
         }
 
         else {
+
           lastGuess < random
-            ? msg.replyEmbed(`Your last guess (**${lastGuess}**) was lower then my number.`)
-            : msg.replyEmbed(`Your last guess (**${lastGuess}**) was higher then my number.`)
+            ? msg.reply({ embeds: [sendEmbed(`Your last guess (**${lastGuess}**) was lower then my number.`)] })
+            : msg.reply({ embeds: [sendEmbed(`Your last guess (**${lastGuess}**) was higher then my number.`)] })
+
 
           hints--
         }
       } else if (isNaN(answer)) {
-        msg.replyEmbed(`That is not a number! Guess a number between **1 - 10**.`)
+        msg.reply({ embeds: [sendEmbed(`That is not a number! Guess a number between **1 - 10**.`)] })
       } else if (answer == random) {
         await DB.query(`update members set points = ${points + winPoints} where member_id = ${msg.member.id}`)
 
         embed.setDescription(`Your given number: **${answer}**\nYou guessed...`)
 
-        const message = await msg.inlineReply(embed)
+
+        const message = await msg.reply({ embeds: [embed] })
 
         const timer1 = async() => setTimeout(async() => {
           message.edit(embed.setDescription(`Your given number: **${answer}**\nYou guessed... right!`).setColor('00ff00'))
@@ -80,7 +83,7 @@ module.exports = {
         lastGuess = answer
         embed.setDescription(`Your given number: **${answer}**\nYou guessed...`)
 
-        const message = await msg.inlineReply(embed)
+        const message = await msg.reply({ embeds: [embed] })
 
         const timer1 = async() => setTimeout(async() => {
           message.edit(embed.setDescription(`Your given number: **${answer}**\nYou guessed... wrong!`).setColor('ff0000'))
@@ -95,7 +98,7 @@ module.exports = {
         }, 1000);
 
         if (tries == 0) {
-          message.replyEmbed(`You couldn't guess my number, which was **${random}**!`)
+          message.reply({ embeds: [sendEmbed(`You couldn't guess my number, which was **${random}**!`)] })
           await DB.query(`update members set points = ${points - lostPoints} where member_id = ${msg.member.id}`)
           return [false]
         }

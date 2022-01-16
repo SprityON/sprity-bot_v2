@@ -10,7 +10,7 @@ module.exports.execute = async(msg) => {
   const difficulty = await player.difficulty
   const embed = new Bot.Discord.MessageEmbed()
     .setTitle(`${msg.member.user.username}'s available quests`)
-    .setFooter(`Complete all quests to refresh or ${await DB.guild.getPrefix()}quest refresh (1000 points)`)
+    .setFooter({ text: `Complete all quests to refresh or ${await DB.guild.getPrefix()}quest refresh (1000 points)` })
     .setDescription(`Use \`${await DB.guild.getPrefix()}quest <number> to play\``)
   const quests = require('./quests.json')
 

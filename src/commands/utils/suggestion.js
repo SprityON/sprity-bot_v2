@@ -43,7 +43,7 @@ module.exports = {
             .addField(`${suggestionTitle}`, `${suggestionContent}`)
             .addField(`Status`, `Under Review`)
             .setThumbnail(msg.author.avatarURL({ dynamic: true }))
-            .setFooter(`By ${msg.author.tag}`)
+            .setFooter({ text: `By ${msg.author.tag}` })
             .setTimestamp()
 
           msg.channel.send(`Sending your suggestion to ${suggestionChannel.name}`).then(msg => {

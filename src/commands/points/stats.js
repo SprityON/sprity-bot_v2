@@ -43,7 +43,7 @@ module.exports = {
       .addField(`DEF`, await player.defense, true)
       .addField(`THROWABLE`, throwable ? `${shopThrowable.uploaded ? Bot.client.emojis.cache.find(e => e.name === shopThrowable.emoji) : shopThrowable.emoji} ${shopThrowable.name} (${throwable.amount})` : `:x: NONE`, true)
         .addField(`POTION`, potion ? `${shopPotion.uploaded ? Bot.client.emojis.cache.find(e => e.name === shopPotion.emoji) : shopPotion.emoji} ${shopPotion.name} (${potion.amount})` : `:x: NONE`, true)
-      .setFooter(`to upgrade: ${await DB.guild.getPrefix()}stats upgrade <stat> <amount>`)
+      .setFooter({text: `to upgrade: ${await DB.guild.getPrefix()}stats upgrade <stat> <amount>` })
       
       msg.reply(embed)
     } 

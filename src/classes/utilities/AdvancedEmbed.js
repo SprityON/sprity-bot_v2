@@ -31,7 +31,7 @@ module.exports = class AdvancedEmbed {
 
       if (options.title) embed.setTitle(options.title)
       if (options.description) embed.setDescription(options.description)
-      if (options.footer) embed.setFooter(options.footer)
+      if (options.footer) embed.setFooter({text: options.footer})
       if (options.color) embed.setColor(options.color)
       if (options.author) embed.setAuthor(options.author)
 

@@ -56,7 +56,7 @@ module.exports = {
               collected.first().reply(
                 new Discord.MessageEmbed()
                   .setDescription(`What will the title of field #${number} be?`)
-                  .setFooter(`type 'send' to send embed`)).then(message2 => {
+                  .setFooter({ text: `type 'send' to send embed` })).then(message2 => {
 
                     message2.channel.awaitMessages(filter, {
                       time: 120000,
@@ -91,7 +91,7 @@ module.exports = {
                       collected1.first().reply(
                         new Discord.MessageEmbed()
                           .setDescription(`What will the description of field #${number} be?`)
-                          .setFooter(`type 'send' to send embed`)).then(message3 => {
+                          .setFooter({ text: `type 'send' to send embed` })).then(message3 => {
 
                             message3.channel.awaitMessages(filter, {
                               time: 120000,
@@ -209,7 +209,7 @@ module.exports = {
                     collected0.first().delete()
                     collected1.first().delete()
 
-                    selectedMsg.edit(selectedMsg.embeds[0].setFooter(collected1.first().content))
+                    selectedMsg.edit(selectedMsg.embeds[0].setFooter({ text: collected1.first().content }))
                     selectedMsg.reply(`Embed footer changed to \`${collected1.first().content}\``).then(msg => msg.delete({ timeout: 5000 }))
                   })
                 })

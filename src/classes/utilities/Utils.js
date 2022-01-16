@@ -342,7 +342,7 @@ module.exports = class Utils {
         }
 
         embed.setDescription(`${title.toString()}\n\n${text}`)
-          .setFooter(`Page ${currPage}/${lastPage} | Use ${await DB.guild.getPrefix()}help for more info`)
+          .setFooter({ text: `Page ${currPage}/${lastPage} | Use ${await DB.guild.getPrefix()}help for more info` })
 
         text ? callback(embed) : callback(new Bot.Discord.MessageEmbed().setColor('#3E4BDD').setDescription(`Your inventory is empty. Buy something!`))
         break;
@@ -412,7 +412,7 @@ module.exports = class Utils {
           }
 
           embed.setDescription(`${title.toString()}\n\n${text}`)
-            .setFooter(`Page ${currPage}/${lastPage}`)
+            .setFooter({ text: `Page ${currPage}/${lastPage}` })
 
           callback(embed)
         })()
@@ -478,7 +478,7 @@ module.exports = class Utils {
           }
 
           embed.setDescription(`${title.toString()} ──── **Page ${currPage}/${lastPage}**\n\n${text}`)
-            .setFooter(`For more information, use the help command`)
+            .setFooter({ text: `For more information, use the help command` })
 
           callback(embed)
         })

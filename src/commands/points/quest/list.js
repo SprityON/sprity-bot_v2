@@ -12,6 +12,7 @@ module.exports.execute = async(msg) => {
     .setTitle(`${msg.member.user.username}'s available quests`)
     .setFooter({ text: `Complete all quests to refresh or ${await DB.guild.getPrefix()}quest refresh (1000 points)` })
     .setDescription(`Use \`${await DB.guild.getPrefix()}quest <number> to play\``)
+    .setColor('#3E4BDD')
   const quests = require('./quests.json')
 
   let jsonQuests = (await DB.query(`select quests from members where member_id = ${msg.member.id}`))[0][0].quests

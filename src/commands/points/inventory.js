@@ -37,8 +37,8 @@ module.exports = {
   },
 
   help: {
-    enabled: false,
-    title: '',
-    description: ``,
+    enabled: true,
+    title: 'Inventory',
+    description: `See a list of all your items`,
   }
 }

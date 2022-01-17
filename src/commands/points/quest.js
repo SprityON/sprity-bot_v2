@@ -18,7 +18,7 @@ module.exports = {
     switch (cmd) {
       case 'choose': require('./quest/choose.js').execute(msg, args); break;
 
-      default: 
+      default:
         if (!isNaN(cmd)) return require('./quest/choose').execute(msg, [Number(cmd)], true)
 
         let quests = (await DB.query(`select quests from members where member_id = ${msg.member.id}`))[0][0].quests
@@ -63,10 +63,11 @@ module.exports = {
               player.levelUp(questDB.xp, msg)
 
               if (tracker) await DB.query(`delete from trackers where member_id = ${msg.member.id} and type = '${tracker.type}'`)
+              if (!quests.find(q => q.completed === false)) quests = null
 
               msg.reply({ embeds: [sendEmbed(`You obtained ${strings.length > 0 ? strings + ', ' : ' '}**${point} ${questDB.points}** and **${questDB.xp}** XP `)] })
 
-              await DB.query(`update members set points = ${newPoints}, experience = ${newXP}, quests = ${JSON.stringify(quests)}, inventory = '${JSON.stringify(inventory)}' where member_id = ${msg.member.id}`)
+              await DB.query(`update members set points = ${newPoints}, experience = ${newXP}, quests = '${quests ? JSON.stringify(quests) : ''}', inventory = '${JSON.stringify(inventory)}' where member_id = ${msg.member.id}`)
             } 
             
             else {

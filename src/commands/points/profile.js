@@ -32,6 +32,6 @@ module.exports = {
   help: {
     enabled: true,
     title: 'Profile',
-    description: ``,
+    description: `See your profile`,
   }
 }

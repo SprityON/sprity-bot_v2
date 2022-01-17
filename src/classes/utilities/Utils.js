@@ -418,6 +418,66 @@ module.exports = class Utils {
         })()
         break;
 
+      case 'settings':
+        (async () => {
+          const player = new Player(member)
+          let pageItemsAmount = 0;
+          let totalItemsAmount = 0;
+
+          let text = '';
+
+          let i = 0;
+          let testI = 0;
+
+          let embed = new Bot.Discord.MessageEmbed()
+
+          if (!currPage) currPage = 1;
+
+          if (currPage > 1) { i = (currPage * showAmountOfItems) - showAmountOfItems }
+
+          let allJSON = JSONlist;
+
+          for (let item of allJSON) {
+            let dbItem = await player.settings
+            dbItem = dbItem.find(i => i.id === item.id)
+            totalItemsAmount++
+
+            if (testI !== i) { testI++ } else {
+              pageItemsAmount++
+
+              if (pageItemsAmount > showAmountOfItems) { break; }
+
+              const enabled = ':white_check_mark:'
+              const disabled = ':x:'
+
+              text += `${dbItem && dbItem.enabled === true ? enabled : !dbItem && item.default === true ? enabled : disabled} **${item.id}**\n*${item.description}*\n\`Default: ${item.default ? 'ON' : 'OFF'}\`\n\n`
+
+              testI++
+              i++
+
+            }
+          }
+
+          let lastPage;
+          let totalItemsAmount_temp = totalItemsAmount / showAmountOfItems;
+          totalItemsAmount_temp < 1 ? lastPage = 1 : lastPage = Math.ceil(totalItemsAmount_temp);
+
+          if (currPage > lastPage) {
+            if (lastPage == 1) {
+              return callback(`**${member.user.username}**, there is only 1 page!`);
+            } else {
+              return callback(`**${member.user.username}**, there are only ${lastPage} pages!`);
+            }
+          }
+
+          embed.setDescription(`${title.toString()} ────────────── **Page ${currPage}/${lastPage}**\n\n${text}`)
+            .setFooter({ text: `$settings <setting> <enable/disable>` })
+
+          callback(embed)
+        })()
+
+      break;
+
       default:
         (() => {
           let pageItemsAmount = 0;

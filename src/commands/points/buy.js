@@ -47,8 +47,8 @@ module.exports = {
   },
 
   help: {
-    enabled: false,
-    title: '',
-    description: ``,
+    enabled: true,
+    title: 'Buy',
+    description: `Buy an item in the shop`,
   }
 }

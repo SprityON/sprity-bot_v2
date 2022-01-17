@@ -1,0 +1,13 @@
+[
+  { 
+    "id": "autonext",
+    "description": "Automatically activate the next quest.",
+    "default": true
+  },
+
+  {
+    "id": "safemode",
+    "description": "People can not take points from you when\nin safe mode, but neither can you.",
+    "default": false
+  }
+]

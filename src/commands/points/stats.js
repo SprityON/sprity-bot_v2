@@ -38,14 +38,14 @@ module.exports = {
       .setTitle(`${msg.author.username}'s stats | LVL: ${await player.level} (${currExperience}/${nextLevelExperience})`)
       .setThumbnail(msg.author.avatarURL({dynamic: true}))
       .setDescription(`You have **${result[0][0].attributes}** attributes.`)
-      .addField(`HP`, await player.health, true)
-      .addField(`ATT`, await player.attack, true)
-      .addField(`DEF`, await player.defense, true)
+      .addField(`HP`, `${await player.hp}`, true)
+      .addField(`ATT`, `${await player.att}`, true)
+      .addField(`DEF`, `${await player.def}`, true)
       .addField(`THROWABLE`, throwable ? `${shopThrowable.uploaded ? Bot.client.emojis.cache.find(e => e.name === shopThrowable.emoji) : shopThrowable.emoji} ${shopThrowable.name} (${throwable.amount})` : `:x: NONE`, true)
         .addField(`POTION`, potion ? `${shopPotion.uploaded ? Bot.client.emojis.cache.find(e => e.name === shopPotion.emoji) : shopPotion.emoji} ${shopPotion.name} (${potion.amount})` : `:x: NONE`, true)
       .setFooter({text: `to upgrade: ${await DB.guild.getPrefix()}stats upgrade <stat> <amount>` })
       
-      msg.reply(embed)
+      msg.reply({ embeds: [embed] })
     } 
     
     else if (args[0].toLowerCase() === 'upgrade') {
@@ -91,8 +91,8 @@ module.exports = {
   },
 
   help: {
-    enabled: false,
-    title: '',
-    description: ``,
+    enabled: true,
+    title: 'Stats',
+    description: `View your stats!`,
   }
 }

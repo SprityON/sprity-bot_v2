@@ -1,6 +1,9 @@
 const DB = require("../database/DB")
 const Utils = require("./Utils")
 const moment = require('moment')
+const { sendEmbed } = require("./AdvancedEmbed")
+const { MessageEmbed } = require("discord.js")
+const { Discord } = require("../../Bot")
 
 module.exports = class Player {
   constructor (member) {
@@ -17,6 +20,10 @@ module.exports = class Player {
     await DB.query(`insert into timer_dates (member_id, enddate, type) values ('${this.member.id}', '${moment().clone().format('M/D/YYYY H:mm:ss:SSS')}', 'monthly')`)
   }
 
+  /**
+   * Checks if member has an account. If not, create one.
+   * @returns {Boolean} 
+   */
   hasAccount() {
     return new Promise(async (resolve, reject) => {
       const result = await DB.query(`SELECT * FROM timer_dates WHERE member_id = ${this.member.id}`)
@@ -27,6 +34,11 @@ module.exports = class Player {
     })
   }
 
+  /**
+   * Checks if member is able to level up.
+   * @param {Number} amount 
+   * @param {String} msg 
+   */
   async levelUp(amount, msg) {
     const level = await this.level
     const experience = amount ? await this.experience + amount : await this.experience
@@ -177,5 +189,34 @@ module.exports = class Player {
           : resolve([true])
       } else resolve([true])
     })
+  }
+
+  get settings() {
+    return new Promise(async (resolve, reject) => {
+      const result = await DB.query(`select settings from settings where member_id = ${this.member.id}`)
+      const settings = result[0][0] ? JSON.parse(result[0][0].settings) : []
+      resolve(settings)
+    })
+  }
+
+  /**
+   * Returns an embed of member's settings list.
+   * @returns {MessageEmbed}
+   */
+  async showSettings(page) {
+    const settingsJSON = require('../../commands/settings/settings.json')
+    
+    let message = await new Promise((resolve, reject) => {
+      Utils.embedList({
+        JSONlist: settingsJSON,
+        currPage: page,
+        member: this.member,
+        type: 'settings',
+        showAmountOfItems: 5,
+        title: `:gear: **${this.member.user.username}'s Settings**`
+      }, message => resolve(message))
+    })
+
+    return message
   }
 }

@@ -45,6 +45,6 @@ module.exports = {
   help: {
     enabled: true,
     title: 'Go fish!',
-    description: ``,
+    description: `Pretty simple ain't it. It's fishing.`,
   }
 }

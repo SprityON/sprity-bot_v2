@@ -26,7 +26,7 @@ module.exports.execute = async (msg, args) => {
   msg.reply({ embeds: [sendEmbed(`**Hurry!** Type in:\n\`${sentence}\``, { title: `Game: Wordgame (${time.toFixed(1)}s)`, color: 'ffff00' })] })
 
   const filter = m => m.author.id === msg.author.id
-  const collected = await msg.channel.awaitMessages(filter, { time: time * 1000, max: 1 })
+  const collected = await msg.channel.awaitMessages({ filter, time: time * 1000, max: 1 })
 
   if (!collected.first()) {
     msg.reply({ embeds: [sendEmbed(`You were too late!`, { color: 'ff0000' })] })

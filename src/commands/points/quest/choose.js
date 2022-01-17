@@ -20,7 +20,7 @@ module.exports.execute = async (msg, args, play) => {
   playerQuests[choice - 1].active = true
 
   await DB.query(`update members set quests = '${JSON.stringify(playerQuests)}' where member_id = ${msg.member.id}`)
-
+  
   if (play === true) return require(`../quest`).execute(msg, args)
 
   const quests = require('./quests.json')

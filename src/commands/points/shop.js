@@ -36,8 +36,8 @@ module.exports = {
   },
 
   help: {
-    enabled: false,
-    title: '',
-    description: ``,
+    enabled: true,
+    title: 'Shop',
+    description: `Buy items and tools!`,
   }
 }

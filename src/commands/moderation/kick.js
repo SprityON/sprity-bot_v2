@@ -16,7 +16,7 @@ module.exports = {
     msg.reply({ embeds: [sendEmbed(`Are you sure you want to kick **${member.user.username}**? **(Y/N)**\n*NOTE: Members automatically get kicked by the warn system!*`)] })
 
     const filter = m => m.author.id === msg.author.id
-    msg.channel.awaitMessages(filter, { timeout: 30000, max: 1 })
+    msg.channel.awaitMessages({filter, timeout: 30000, max: 1 })
     .then(collected => {
       const answer = collected.first().content.toLowerCase()
       if (answer !== 'y') return msg.reply({ embeds: [sendEmbed(`**${member.user.username}** was not kicked!`)] })

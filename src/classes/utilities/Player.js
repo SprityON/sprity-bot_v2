@@ -200,6 +200,19 @@ module.exports = class Player {
   }
 
   /**
+   * Checks whether or not a setting is enabled.
+   * @param {String} setting 
+   * @returns {Boolean}
+   */
+  settingIsEnabled = async (setting) => {
+    return await new Promise((resolve, reject) => {
+      this.settings.find(s => s.id === setting)
+        ? resolve(true)
+        : resolve(false)
+    })
+  }
+
+  /**
    * Returns an embed of member's settings list.
    * @returns {MessageEmbed}
    */

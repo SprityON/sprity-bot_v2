@@ -34,7 +34,7 @@ module.exports = {
       embed.setColor('ffff00')
       const filter = m => m.author.id === msg.author.id
 
-      const collected = await msg.channel.awaitMessages(filter, { timeout: 60000, max: 1 })
+      const collected = await msg.channel.awaitMessages({filter, timeout: 60000, max: 1 })
       const answer = collected.first().content
 
       if (answer.toLowerCase() == 'hint') {

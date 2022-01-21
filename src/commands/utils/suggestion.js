@@ -15,7 +15,7 @@ module.exports = {
 
     const filter = m => m.author.id === msg.author.id
     msg.reply({ embeds: [sendEmbed("Please type in the title of your suggestion.\n*Type 'cancel' to cancel*")] })
-    msg.channel.awaitMessages(filter, {
+    msg.channel.awaitMessages({filter, 
       max: 1,
       time: 180000
     }).then(collected => {
@@ -29,7 +29,7 @@ module.exports = {
           await msg.channel.send(`Perfect! Now, please type in the content for your suggestion.`)
         }, 1000);
 
-        msg.channel.awaitMessages(filter, {
+        msg.channel.awaitMessages({filter, 
           max: 1,
           time: 180000
         }).then(collected => {

@@ -42,8 +42,8 @@
   {
     "id": 2,
     "name": "minion_fight",
-    "title": "Fight a minion",
-    "desc": "Fight one of my minions",
+    "title": "Fight a Minion",
+    "desc": "Fight a Sprity Bot Minion",
     "needs": [],
     "obtainables": [
       { "common": [
@@ -84,10 +84,10 @@
 
   {
     "id": 4,
-    "type": "fish10",
     "name": "fish_10_times",
-    "title": "Fish 10 times",
-    "desc": "Fish **10** times to complete",
+    "type": "tracker",
+    "command": "fish",
+    "title": "Fish $[amount] Times",
     "tracker": true,
     "goal": 10,
     "needs": [],

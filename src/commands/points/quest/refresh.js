@@ -10,7 +10,7 @@ module.exports.execute = async (msg, args, quest) => {
   if (points < 1000) return msg.reply({ embeds: [sendEmbed(`You do not have enough ${point} points to refresh!`)] })
 
   const filter = m => m.author.id === msg.author.id
-  msg.channel.awaitMessages(filter, { max: 1, timeout: 30000 })
+  msg.channel.awaitMessages({filter, max: 1, timeout: 30000 })
   .then(collected => {
     const choice = collected.first().content.toLowerCase()
 

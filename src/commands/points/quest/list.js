@@ -49,8 +49,10 @@ module.exports.execute = async(msg) => {
 
           function findQuest() {
             if (newPlayerQuests.find(q => q.id === quest.id)) return newQuest()
+
             const obtainables = concatArrays(quests.find(q => q.name === quest.name).obtainables)
             const items = []
+
             obtainables.forEach(obt => {
               const chance = Math.floor(Math.random() * 10000)
               if (chance < obt.chance) {
@@ -61,20 +63,26 @@ module.exports.execute = async(msg) => {
               }
             })
 
-            quest.active = false
+            quest.type ? quest.active = true : quest.active = false
             quest.completed = false
             quest.items = items
 
             questXP = Math.floor((Math.floor(Math.random() * quest.exp_range[1]) + quest.exp_range[0]) * difficulty)
             questPoints = Math.floor((Math.floor(Math.random() * quest.points_range[1]) + quest.points_range[0]) * difficulty)
-            newPlayerQuests.push({ id: quest.id, active: false, completed: false, xp: questXP, points: questPoints, items: items })
+
+            newPlayerQuests.push({ 
+              id: quest.id, 
+              tracker: quest.tracker ? true : false, 
+              active: quest.tracker ? true : false, 
+              completed: false, 
+              xp: questXP,
+              points: questPoints, 
+              items: items 
+            })
           }
 
           newQuest()
       })()
-
-      let active = quest.active && quest.active == true ? '(active)' : ''
-      let completed = quest.completed && quest.completed === true ? '~~' : ''
       let items = quest.items && quest.items ? (quest.items.length > 0 ? quest.items : null) : null
 
       const obtainables = () => {
@@ -93,13 +101,17 @@ module.exports.execute = async(msg) => {
       }
 
       if (quest.tracker) {
-        const tracker = (await DB.query(`select * from trackers where member_id = ${msg.member.id} and type = '${quest.type}'`))[0][0]
+        const tracker = (await DB.query(`select * from trackers where member_id = ${msg.member.id} and name = '${quest.name}'`))[0][0]
+        if (!tracker) DB.query(`insert into trackers (member_id, quest_id, name, current, goal) values ('${msg.member.id}', '${quest.id}', '${quest.name}', '0','${Math.floor(quest.goal * await player.difficulty)}')`)
 
         const current = tracker ? tracker.current : 0
 
-        quest.title = `${quest.type.charAt(0).toUpperCase() + Utils.advancedReplace(quest.type, '1234567890', '', { charOnly: true }).slice(1)} ${Math.floor((tracker ? tracker.goal : quest.goal * difficulty))} times`
-        quest.desc = `${quest.type.charAt(0).toUpperCase() + Utils.advancedReplace(quest.type, '1234567890', '', { charOnly: true }).slice(1)} **${Math.floor((tracker ? tracker.goal : quest.goal * difficulty) - current)}** times to complete`
+        quest.title = `${quest.command.charAt(0).toUpperCase() + quest.command.slice(1)} ${Math.floor((tracker ? tracker.goal : quest.goal * difficulty))} times`
+        quest.desc = `${quest.command.charAt(0).toUpperCase() + quest.command.slice(1)} **${Math.floor((tracker ? tracker.goal : quest.goal * difficulty) - current)}** times to complete`
       }
+
+      const active = quest.active && quest.active == true ? quest.tracker ? '(t)' : '(active)' : ''
+      const completed = quest.completed && quest.completed === true ? '~~' : ''
 
       jsonQuests
         ? embed.addField(`${completed}${o + 1}. ${quest.title} ${completed}${active}`, `*${quest.desc}*\n${obtainables()}\n\n**XP:** ${jsonQuests[o].xp}\n**${point}:** ${jsonQuests[o].points}`, true)

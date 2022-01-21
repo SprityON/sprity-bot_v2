@@ -48,7 +48,7 @@ module.exports.execute = async (msg, args, quest) => {
   const filter = m => m.author.id === msg.author.id
 
   while (true) {
-    const collected = await msg.channel.awaitMessages(filter, { timeout: time * 1000, max: 1 })
+    const collected = await msg.channel.awaitMessages({filter, timeout: time * 1000, max: 1 })
     const answer = collected.first().content.toLowerCase()
 
     if (answer === 'throw') {

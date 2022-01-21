@@ -12,7 +12,7 @@ module.exports = {
   permissions: ['SEND_MESSAGES'],
   timeout: 1000,
 
-  async execute(msg, args) {
+  async execute(msg, args, tracker) {
     let cmd = args.shift()
 
     switch (cmd) {
@@ -24,12 +24,19 @@ module.exports = {
         let quests = (await DB.query(`select quests from members where member_id = ${msg.member.id}`))[0][0].quests
         if (!quests) return msg.reply({ embeds: [sendEmbed(`You have not chosen a quest! View available quests: ${await DB.guild.getPrefix()}quest list`)] })
         quests = JSON.parse(quests)
-        let questDB = quests.find(q => q.active === true)
+        let questDB = quests.find(q => q.active && !q.tracker)
       
-        if (!questDB) return msg.reply({ embeds: [sendEmbed(`You have not chosen a quest! (${await DB.guild.getPrefix()}quest choose <number>)`)] })
-        if (questDB.completed === true) return msg.reply({ embeds: [sendEmbed(`You already have completed your current quest!`)] })
-        const quest = require('./quest/quests.json').find(q => q.id === questDB.id)
-        quest.items = questDB.items
+        if (!questDB && !tracker) return msg.reply({ embeds: [sendEmbed(`You have not chosen a quest! (${await DB.guild.getPrefix()}quest choose <number>)`)] })
+        if (questDB.completed === true && !tracker) return msg.reply({ embeds: [sendEmbed(`You already have completed your current quest!`)] })
+        let questsJSON = require('./quest/quests.json')
+        let quest = questsJSON.find(q => q.id === questDB.id)
+
+        if (quest.tracker === true && !tracker) return msg.reply({ embeds: [sendEmbed(`Tracker quests not playable.`)] })
+
+        if (tracker) {
+          quest = questsJSON.find(q => q.id === tracker.quest_id)
+          quest.items = quests.find(q => q.id === tracker.quest_id).items
+        } else quest.items = questDB.items
 
         require(`./quest/${quest.name}`).execute(msg, args, quest)
           .then(async ([success, inventory, tracker]) => {
@@ -58,16 +65,20 @@ module.exports = {
 
               const newXP = await player.experience + questDB.xp
 
-              for (let i = 0; i < quests.length; i++) if (questDB.id == quests[i].id) quests[i].completed = true
+              console.log(tracker);
+              for (let i = 0; i < quests.length; i++) if ([tracker ? tracker.quest_id : questDB.id] == quests[i].id) quests[i].completed = true
 
               player.levelUp(questDB.xp, msg)
 
-              if (tracker) await DB.query(`delete from trackers where member_id = ${msg.member.id} and type = '${tracker.type}'`)
-              if (!quests.find(q => q.completed === false)) quests = null
+              if (!quests.find(q => q.completed === false)) { 
+                if (tracker) await DB.query(`delete from trackers where member_id = ${msg.member.id} and namre = '${tracker.type}'`)
+                quests = null
+              }
 
               msg.reply({ embeds: [sendEmbed(`You obtained ${strings.length > 0 ? strings + ', ' : ' '}**${point} ${questDB.points}** and **${questDB.xp}** XP `)] })
 
               await DB.query(`update members set points = ${newPoints}, experience = ${newXP}, quests = '${quests ? JSON.stringify(quests) : ''}', inventory = '${JSON.stringify(inventory)}' where member_id = ${msg.member.id}`)
+
             } 
             
             else {

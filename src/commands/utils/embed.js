@@ -21,7 +21,7 @@ module.exports = {
           .then(message1 => {
           const filter = m => m.author.id === msg.author.id
 
-          message1.channel.awaitMessages(filter, {
+          message1.channel.awaitMessages({filter, 
             time: 120000,
             max: 1
           }).then(collected0 => {
@@ -58,7 +58,7 @@ module.exports = {
                   .setDescription(`What will the title of field #${number} be?`)
                   .setFooter({ text: `type 'send' to send embed` })).then(message2 => {
 
-                    message2.channel.awaitMessages(filter, {
+                    message2.channel.awaitMessages({filter, 
                       time: 120000,
                       max: 1
                     }).then(collected1 => {
@@ -93,7 +93,7 @@ module.exports = {
                           .setDescription(`What will the description of field #${number} be?`)
                           .setFooter({ text: `type 'send' to send embed` })).then(message3 => {
 
-                            message3.channel.awaitMessages(filter, {
+                            message3.channel.awaitMessages({filter, 
                               time: 120000,
                               max: 1
                             }).then(collected2 => {
@@ -154,7 +154,7 @@ module.exports = {
         const filter = m => m.author.id === msg.author.id
 
         msg.reply(`What would you like to edit?\nChoose from: \`title\`, \`description\`, \`footer\`, \`fields\`, \`color\` or \`cancel\``).then(message0 => {
-          msg.channel.awaitMessages(filter, {
+          msg.channel.awaitMessages({filter, 
             time: 120000,
             max: 1
           }).then(collected0 => {
@@ -164,7 +164,7 @@ module.exports = {
 
               case 'title':
                 receivedMessage.reply(`What will your new title be?`).then(message1 => {
-                  receivedMessage.channel.awaitMessages(filter, {
+                  receivedMessage.channel.awaitMessages({filter, 
                     time: 120000,
                     max: 1
                   }).then(collected1 => {
@@ -182,7 +182,7 @@ module.exports = {
 
               case 'description':
                 receivedMessage.reply(`What will your new description be?`).then(message1 => {
-                  receivedMessage.channel.awaitMessages(filter, {
+                  receivedMessage.channel.awaitMessages({filter, 
                     time: 120000,
                     max: 1
                   }).then(collected1 => {
@@ -200,7 +200,7 @@ module.exports = {
 
               case 'footer':
                 receivedMessage.reply(`What will your new footer be?`).then(message1 => {
-                  receivedMessage.channel.awaitMessages(filter, {
+                  receivedMessage.channel.awaitMessages({filter, 
                     time: 120000,
                     max: 1
                   }).then(collected1 => {
@@ -217,7 +217,7 @@ module.exports = {
 
               case 'color':
                 receivedMessage.reply(`What will your new color be?`).then(message1 => {
-                  receivedMessage.channel.awaitMessages(filter, {
+                  receivedMessage.channel.awaitMessages({filter, 
                     time: 120000,
                     max: 1
                   }).then(collected1 => {
@@ -245,7 +245,7 @@ module.exports = {
 
               case 'fields':
                 receivedMessage.reply(`\`Add\` or \`edit\` a field?`).then(message1 => {
-                  receivedMessage.channel.awaitMessages(filter, {
+                  receivedMessage.channel.awaitMessages({filter, 
                     time: 120000,
                     max: 1
                   }).then(collected1 => {
@@ -254,7 +254,7 @@ module.exports = {
                     switch (collected1.first().content.toLowerCase()) {
                       case 'edit':
                         receivedMessage.reply(`Which field do you want to edit? **${selectedMsg.embeds[0].fields.length || 0}** ${selectedMsg.embeds[0].fields.length == 1 ? 'field' : 'fields'}`).then(message2 => {
-                          receivedMessage.channel.awaitMessages(filter, {
+                          receivedMessage.channel.awaitMessages({filter, 
                             time: 120000,
                             max: 1
                           }).then(collected2 => {
@@ -267,14 +267,14 @@ module.exports = {
                             let title, description
 
                             collected2.first().reply(`Choose your field title`).then(message3 => {
-                              msg.channel.awaitMessages(filter, {
+                              msg.channel.awaitMessages({filter, 
                                 time: 120000,
                                 max: 1
                               }).then(collected3 => {
                                 title = collected3.first().content
 
                                 collected2.first().reply(`Choose your field description`).then(message4 => {
-                                  msg.channel.awaitMessages(filter, {
+                                  msg.channel.awaitMessages({filter, 
                                     time: 120000,
                                     max: 1
                                   }).then(collected4 => {
@@ -311,7 +311,7 @@ module.exports = {
                         let title, description
 
                         receivedMessage.reply(`Choose your field title.`).then(message2 => {
-                          message2.channel.awaitMessages(filter, {
+                          message2.channel.awaitMessages({filter, 
                             time: 120000,
                             max: 1
                           }).then(collected2 => {
@@ -319,7 +319,7 @@ module.exports = {
                             collected0.first().delete()
 
                             collected2.first().reply(`Choose your field description.`).then(message3 => {
-                              msg.channel.awaitMessages(filter, {
+                              msg.channel.awaitMessages({filter, 
                                 time: 120000,
                                 max: 1
                               }).then(collected3 => {

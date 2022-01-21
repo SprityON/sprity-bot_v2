@@ -16,7 +16,7 @@ module.exports = {
       msg.reply({ embeds: [sendEmbed(`Please type in your advertisement!`, { footer: 'type cancel to cancel' })] })
 
       const filter = m => m.author.id === msg.author.id
-      msg.channel.awaitMessages(filter, { timeout: 1000000, max: 1 })
+      msg.channel.awaitMessages({filter, timeout: 1000000, max: 1 })
       .then(collected => {
         if (collected.first().content.toLowerCase() === 'cancel') return resolve([false, `Cancelled!`])
 

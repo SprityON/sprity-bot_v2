@@ -12,10 +12,10 @@ module.exports.execute = async (msg, args, play) => {
 
   playerQuests = JSON.parse(playerQuests)
 
+  if (playerQuests[choice - 1].tracker) return msg.reply({ embeds: [sendEmbed(`Tracker quests are not playable.`)] })
+
   for (let i = 0; i < playerQuests.length; i++) 
-    if (playerQuests[i].active === true) {
-      playerQuests[i].active = false
-    }
+    if (playerQuests[i].active === true && playerQuests[i].tracker === false) playerQuests[i].active = false
 
   playerQuests[choice - 1].active = true
 

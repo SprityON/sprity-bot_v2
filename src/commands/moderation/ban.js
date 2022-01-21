@@ -16,7 +16,7 @@ module.exports = {
     msg.reply(`Are you sure you want to ban **${member.user.username}**? **(Y/N)**\n*The warn system already does this!*`)
 
     const filter = m => m.author.id === msg.author.id
-    msg.channel.awaitMessages(filter, { timeout: 30000, max: 1 })
+    msg.channel.awaitMessages({filter, timeout: 30000, max: 1 })
       .then(collected => {
         const answer = collected.first().content.toLowerCase()
         if (answer !== 'y') return msg.reply({ embeds: [sendEmbed(`**${member.user.username}** was not kicked!`)] })

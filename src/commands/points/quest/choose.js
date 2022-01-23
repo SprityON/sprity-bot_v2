@@ -8,7 +8,7 @@ module.exports.execute = async (msg, args, play) => {
   if (choice < 1 || choice > 3) return msg.reply({ embeds: [sendEmbed(`Choose a quest from 1-3!`)] })
 
   let playerQuests = (await DB.query(`select quests from members where member_id = ${msg.member.id}`))[0][0].quests
-  if (!playerQuests) return msg.reply({ embeds: [sendEmbed(`You have completed all quests! For new quests, use ${DB.guild.getPrefix()}quests`)] })
+  if (!playerQuests) return msg.reply({ embeds: [sendEmbed(`You have completed all quests!\nLoad new quests: \`${await DB.guild.getPrefix()}quests\``)] })
 
   playerQuests = JSON.parse(playerQuests)
 

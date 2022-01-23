@@ -4,6 +4,7 @@ const { Discord } = require('../../../Bot')
 const DB = require('../../../classes/database/DB')
 const Player = require('../../../classes/utilities/Player')
 const { sendEmbed } = require('../../../classes/utilities/AdvancedEmbed')
+const { wait } = require('../../../classes/utilities/Utils')
 
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
@@ -62,20 +63,18 @@ module.exports = {
 
         embed.setDescription(`Your given number: **${answer}**\nYou guessed...`)
 
+        const message = await msg.reply({ embeds: [embed]} )
 
-        const message = await msg.reply({ embeds: [embed] })
+        await wait(1000)
+        embed.setDescription(`Your given number: **${answer}**\nYou guessed... right!`).setColor('00ff00')
 
-        const timer1 = async() => setTimeout(async() => {
-          message.edit(embed.setDescription(`Your given number: **${answer}**\nYou guessed... right!`).setColor('00ff00'))
+        message.edit({ embeds: [embed] })
 
-          const timer2 = async() => setTimeout(async() => {
-            message.edit(embed.setDescription(`Your given number: **${answer}**\nYou guessed... right!\n\nYou received ${point} **${winPoints}** points and **${experience}** XP.`))
-          }, 250);
+        await wait(250)
+        embed.setDescription(`Your given number: **${answer}**\nYou guessed... right!\n\nYou received ${point} **${winPoints}** points and **${experience}** XP.`)
 
-          await timer2()
-        }, 1000);
+        message.edit({ embeds: [embed] })
 
-        await timer1()
         return [true]
       } else {
         tries--
@@ -85,25 +84,21 @@ module.exports = {
 
         const message = await msg.reply({ embeds: [embed] })
 
-        const timer1 = async() => setTimeout(async() => {
-          message.edit(embed.setDescription(`Your given number: **${answer}**\nYou guessed... wrong!`).setColor('ff0000'))
+        await wait(1000)
+        embed.setDescription(`Your given number: **${answer}**\nYou guessed... wrong!`).setColor('ff0000') 
 
-          if (tries == 0) {
-            const timer2 = async () => setTimeout(() => {
-              message.edit(embed.setDescription(`Your given number: **${answer}**\nYou guessed... wrong!\n\n**${tries}** tries left.`))
-            }, 250);
+        message.edit({ embeds: [embed]})
 
-            await timer2()
-          }
-        }, 1000);
+        await wait(250)
+        embed.setDescription(`Your given number: **${answer}**\nYou guessed... wrong!\n\n**${tries}** tries left.`) 
+
+        message.edit({ embeds: [embed]})
 
         if (tries == 0) {
           message.reply({ embeds: [sendEmbed(`You couldn't guess my number, which was **${random}**!`)] })
           await DB.query(`update members set points = ${points - lostPoints} where member_id = ${msg.member.id}`)
           return [false]
         }
-
-        await timer1()
       }
     }
   },

@@ -65,13 +65,12 @@ module.exports = {
 
               const newXP = await player.experience + questDB.xp
 
-              console.log(tracker);
               for (let i = 0; i < quests.length; i++) if ([tracker ? tracker.quest_id : questDB.id] == quests[i].id) quests[i].completed = true
 
               player.levelUp(questDB.xp, msg)
 
               if (!quests.find(q => q.completed === false)) { 
-                if (tracker) await DB.query(`delete from trackers where member_id = ${msg.member.id} and namre = '${tracker.type}'`)
+                if (tracker) await DB.query(`delete from trackers where member_id = ${msg.member.id} and name = '${tracker.type}'`)
                 quests = null
               }
 

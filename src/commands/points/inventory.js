@@ -8,7 +8,7 @@ module.exports = {
   usage: 'inventory',
   aliases: ['inv'],
   permissions: ['SEND_MESSAGES'],
-  timeout: 5000,
+  timeout: 1000,
 
   async execute(msg, args) {
     let page, filter;

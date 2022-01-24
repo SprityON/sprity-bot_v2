@@ -3,7 +3,7 @@
     "id": "iron_ingot",
     "name": "Iron Ingot",
     "emoji": "iron_ingot",
-    "price": 3,
+    "price": 10,
     "uploaded": true
   },
 
@@ -27,7 +27,7 @@
     "id": "copper_ore",
     "name": "Copper Ore",
     "emoji": "copper_ore",
-    "price": 1,
+    "price": 3,
     "uploaded": true
   },
 
@@ -35,7 +35,7 @@
     "id": "iron_ore",
     "name": "Iron Ore",
     "emoji": "iron_ore",
-    "price": 1,
+    "price": 3,
     "uploaded": true
   },
 
@@ -43,7 +43,7 @@
     "id": "coal_ore",
     "name": "Coal Ore",
     "emoji": "coal_ore",
-    "price": 1,
+    "price": 3,
     "uploaded": true
   },
 
@@ -51,7 +51,7 @@
     "id": "gold_ore",
     "name": "Gold Ore",
     "emoji": "gold_ore",
-    "price": 2,
+    "price": 4,
     "uploaded": true
   },
 
@@ -67,7 +67,7 @@
     "id": "rare_chest",
     "name": "Rare Chest",
     "emoji": "rare_chest",
-    "price": 250,
+    "price": 500,
     "uploaded": true
   },
 
@@ -105,7 +105,7 @@
     "emoji": ":crab:",
     "uploaded": false,
     "chance": 2500,
-    "price": 3,
+    "price": 5,
     "amountNultiplier": 0.4
   },
 
@@ -116,7 +116,7 @@
     "emoji": ":octopus:",
     "uploaded": false,
     "chance": 2500,
-    "price": 3,
+    "price": 10,
     "amountNultiplier": 0.2
   },
 
@@ -127,7 +127,7 @@
     "emoji": ":shark:",
     "uploaded": false,
     "chance": 25,
-    "price": 300,
+    "price": 500,
     "amountNultiplier": 0.1
   }
 ]

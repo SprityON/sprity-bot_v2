@@ -63,8 +63,7 @@ module.exports.execute = async (msg) => {
         if (files.find(file => !file.endsWith('.js')) && cmdFile.handler) return cmdFile.execute(msg, args)
 
         Utils.commandCooldown.execute(msg.member, cmdFile).then(([onCooldown, seconds]) => {
-          if (onCooldown)
-            return msg.reply({ embeds: [sendEmbed(`You have to wait ${seconds} seconds before using this command again!`)] })
+          if (onCooldown) return msg.reply({ embeds: [sendEmbed(`You have to wait ${seconds} seconds before using this command again!`)] })
 
           let enoughPermissions = true;
           cmdFile.permissions.forEach(perm => {
@@ -75,46 +74,45 @@ module.exports.execute = async (msg) => {
             ? (async () => {
               const player = new Player(msg.member)
 
-              await player.hasAccount()
+              player.hasAccount()
 
               isUsing = true
-              cmdFile.execute(msg, args).then(async() => {
+              cmdFile.execute(msg, args).then(async () => {
+                isUsing = false
+
                 let questsDB = (await DB.query(`select quests from members where member_id = ${msg.member.id}`))[0][0].quests
 
                 if (questsDB) {
                   questsDB = JSON.parse(questsDB)
                   if (!questsDB.find(q => q.completed === false))
                     await DB.query(`update members set quests = '' where member_id = ${msg.member.id}`)
-                } else return isUsing = false
+                } else return 
 
                 const quests = require('../commands/points/quest/quests.json')
                 const trackerQuest = quests.find(q => q.command === cmdFile.name)
 
-                if (!trackerQuest) return isUsing = false
+                if (!trackerQuest) return 
 
                 const trackers = await DB.query(`select * from trackers where member_id = ${msg.member.id} and name = '${trackerQuest.name}'`)
                 if (trackers[0]) {
                   trackers[0].forEach(async tracker => {
-                    if (!trackerQuest) return;
                     const current = tracker.current += 1
  
                     if (current >= tracker.goal) {
-                      msg.reply({ embeds: [sendEmbed(`You completed quest **${trackerQuest.title.replace('$[amount]', tracker.goal)}**`)] }).then(() => {
-                        require(`../commands/points/quest`).execute(msg, [], tracker)
+                      if (!questsDB.find(q => q.id === trackerQuest.id).completed) {
+                        DB.query(`update trackers set current = ${current} where member_id = ${msg.member.id} and name = '${tracker.name}'`)
+                        return msg.reply({ embeds: [sendEmbed(`You completed quest **${trackerQuest.title.replace('$[amount]', tracker.goal)}**`)] })
+                        .then(() => {
+                          require(`../commands/points/quest`).execute(msg, [], tracker)
                       })
-
-                      // DB.query('update members set quests = ${')
-                      return DB.query(`delete from trackers where name = '${trackerQuest.name}' and member_id = ${msg.member.id}`)
+                      } else return
                     }
-
-                    await DB.query(`update trackers set current = ${current} where member_id = ${msg.member.id} and name = '${tracker.name}'`)
                   })
-                } return isUsing = false
+                }
               }) 
             })()
             : msg.reply(`**${msg.author.username}**, you do not have enough permissions to use this command!`)
         })
-        return 
       }
     }
   } catch (err) {

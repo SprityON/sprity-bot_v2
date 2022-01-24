@@ -1,7 +1,5 @@
-const Bot = require('../../../Bot');
 const DB = require('../../../classes/database/DB');
 const Player = require('../../../classes/utilities/Player');
-const { sendEmbed } = require('../../../classes/utilities/AdvancedEmbed')
 
 module.exports.execute = async (msg, args, quest) => {
   const player = new Player(msg.member)

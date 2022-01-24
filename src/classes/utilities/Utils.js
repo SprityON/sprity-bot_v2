@@ -53,12 +53,28 @@ module.exports = class Utils {
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumSignificantDigits: 1 }).format(n).replace('$', ' ')
   }
 
-  static concatArrays(...args) {
-    args = args[0]
-    
+  /**
+   * Concats every given array and returns it.
+   * @param {Object} options 
+   * @param  {Array} args 
+   * @returns 
+   */
+  static concatArrays(options = {
+    keysOnly: false,
+    valuesOnly: false
+  }, ...args) {
+    typeof options == 'object' ? options : options = args.shift()
+
     let arr = []
-    args.forEach(arg => {
-      arr.push(Object.values(arg)[0]);
+    args.forEach(items => {
+      items.forEach(item => {
+        item = options.keysOnly === true
+        ? Object.keys(item)[0] 
+        : options.valuesOnly === true
+          ? Object.values(item)[0] 
+          : item
+        arr.push(item);
+      })
     })
 
     let newArr = []

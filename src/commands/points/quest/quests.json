@@ -6,18 +6,15 @@
     "desc": "Explore vast caves",
     "needs": ["pickaxe"],
     "obtainables": [
-      { "common": [
-          {"id": "stone", "chance": 9999, "amountMultiplier": 1.5},
-          {"id": "copper_ore", "chance": 7000, "amountMultiplier": 0.8},
-          {"id": "iron_ore", "chance": 5000, "amountMultiplier": 0.8},
-          {"id": "coal_ore", "chance": 7000, "amountMultiplier": 1},
-          {"id": "gold_ore", "chance": 4000, "amountMultiplier": 0.6},
-          {"id": "basic_chest", "chance": 2500, "amountMultiplier": 0.25},
-          {"id": "rare_chest", "chance": 500, "amountMultiplier": 0.25},
-          {"id": "epic_chest", "chance": 100, "amountMultiplier": 0.01},
-          {"id": "legendary_chest", "chance": 5, "amountMultiplier": 0.01}
-        ]
-      }
+      {"id": "stone", "chance": 9999, "amountMultiplier": 1.5},
+      {"id": "copper_ore", "chance": 7000, "amountMultiplier": 0.8},
+      {"id": "iron_ore", "chance": 5000, "amountMultiplier": 0.8},
+      {"id": "coal_ore", "chance": 7000, "amountMultiplier": 1},
+      {"id": "gold_ore", "chance": 4000, "amountMultiplier": 0.6},
+      {"id": "basic_chest", "chance": 2500, "amountMultiplier": 0.25},
+      {"id": "rare_chest", "chance": 500, "amountMultiplier": 0.25},
+      {"id": "epic_chest", "chance": 100, "amountMultiplier": 0.01},
+      {"id": "legendary_chest", "chance": 5, "amountMultiplier": 0.01}
     ],
     "exp_range": [50, 50],
     "points_range": [50, 50]
@@ -30,10 +27,7 @@
     "desc": "Explore the forest",
     "needs": ["axe"],
     "obtainables": [
-      { "common": [
-          {"id": "wood", "chance": 9999, "amountMultiplier": 1}
-        ]
-      }
+      {"id": "wood", "chance": 9999, "amountMultiplier": 1}
     ],
     "exp_range": [50, 50],
     "points_range": [50, 50]
@@ -46,19 +40,12 @@
     "desc": "Fight a Sprity Bot Minion",
     "needs": [],
     "obtainables": [
-      { "common": [
-          {"id": "iron_ingot", "chance": 8000, "amountMultiplier": 0.3},
-          {"id": "basic_chest", "chance": 5000, "amountMultiplier": 0.25}
-        ]
-      }, 
-
-      { "rare": [
-          {"id": "basic_chest", "chance": 2500, "amountMultiplier": 0.25},
-          {"id": "rare_chest", "chance": 500, "amountMultiplier": 0.25},
-          {"id": "epic_chest", "chance": 100, "amountMultiplier": 0.01},
-          {"id": "legendary_chest", "chance": 25, "amountMultiplier": 0.01}
-        ]
-      }
+      {"id": "iron_ingot", "chance": 8000, "amountMultiplier": 0.3},
+      {"id": "basic_chest", "chance": 5000, "amountMultiplier": 0.25},
+      {"id": "basic_chest", "chance": 2500, "amountMultiplier": 0.25},
+      {"id": "rare_chest", "chance": 500, "amountMultiplier": 0.25},
+      {"id": "epic_chest", "chance": 100, "amountMultiplier": 0.01},
+      {"id": "legendary_chest", "chance": 25, "amountMultiplier": 0.01}
     ],
     "exp_range": [100, 100],
     "points_range": [100, 100]
@@ -71,12 +58,10 @@
     "desc": "Don't lose now",
     "needs": [],
     "obtainables": [
-      { "common": [
-        {"id": "basic_chest", "chance": 8000, "amountMultiplier": 0.25},
-        {"id": "rare_chest", "chance": 5000, "amountMultiplier": 0.25},
-        {"id": "epic_chest", "chance": 2000, "amountMultiplier": 0.01},
-        {"id": "legendary_chest", "chance": 500, "amountMultiplier": 0.01}
-      ]}
+      {"id": "basic_chest", "chance": 8000, "amountMultiplier": 0.25},
+      {"id": "rare_chest", "chance": 5000, "amountMultiplier": 0.25},
+      {"id": "epic_chest", "chance": 2000, "amountMultiplier": 0.01},
+      {"id": "legendary_chest", "chance": 500, "amountMultiplier": 0.01}
     ],
     "exp_range": [200, 100],
     "points_range": [200, 100]
@@ -92,12 +77,10 @@
     "goal": 10,
     "needs": [],
     "obtainables": [
-      { "common": [
-          {"id": "basic_chest", "chance": 7500, "amountMultiplier": 0.25},
-          {"id": "rare_chest", "chance": 500, "amountMultiplier": 0.25},
-          {"id": "epic_chest", "chance": 100, "amountMultiplier": 0.01},
-          {"id": "legendary_chest", "chance": 25, "amountMultiplier": 0.01}
-      ]}
+      {"id": "basic_chest", "chance": 7500, "amountMultiplier": 0.25},
+      {"id": "rare_chest", "chance": 500, "amountMultiplier": 0.25},
+      {"id": "epic_chest", "chance": 100, "amountMultiplier": 0.01},
+      {"id": "legendary_chest", "chance": 25, "amountMultiplier": 0.01}
     ],
     "exp_range": [75, 25],
     "points_range": [75, 25]
@@ -112,12 +95,10 @@
     "goal": 0,
     "needs": [],
     "obtainables": [
-      { "common": [
-          {"id": "basic_chest", "chance": 7500, "amountMultiplier": 0.25},
-          {"id": "rare_chest", "chance": 500, "amountMultiplier": 0.25},
-          {"id": "epic_chest", "chance": 100, "amountMultiplier": 0.01},
-          {"id": "legendary_chest", "chance": 25, "amountMultiplier": 0.01}
-      ]}
+      {"id": "basic_chest", "chance": 7500, "amountMultiplier": 0.25},
+      {"id": "rare_chest", "chance": 500, "amountMultiplier": 0.25},
+      {"id": "epic_chest", "chance": 100, "amountMultiplier": 0.01},
+      {"id": "legendary_chest", "chance": 25, "amountMultiplier": 0.01}
     ],
     "exp_range": [75, 25],
     "points_range": [75, 25]

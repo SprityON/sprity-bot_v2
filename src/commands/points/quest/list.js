@@ -50,7 +50,7 @@ module.exports.execute = async(msg) => {
           function findQuest() {
             if (newPlayerQuests.find(q => q.id === quest.id)) return newQuest()
 
-            const obtainables = concatArrays(quests.find(q => q.name === quest.name).obtainables)
+            const obtainables = quests.find(q => q.name === quest.name).obtainables
             const items = []
 
             obtainables.forEach(obt => {
@@ -63,7 +63,7 @@ module.exports.execute = async(msg) => {
               }
             })
 
-            quest.type ? quest.active = true : quest.active = false
+            quest.type === 'tracker' ? quest.active = true : quest.active = false
             quest.completed = false
             quest.items = items
 

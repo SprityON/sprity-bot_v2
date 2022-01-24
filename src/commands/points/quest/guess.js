@@ -50,8 +50,8 @@ module.exports = {
         else {
 
           lastGuess < random
-            ? msg.reply({ embeds: [sendEmbed(`Your last guess (**${lastGuess}**) was lower then my number.`)] })
-            : msg.reply({ embeds: [sendEmbed(`Your last guess (**${lastGuess}**) was higher then my number.`)] })
+            ? msg.reply({ embeds: [sendEmbed(`Your last guess (**${lastGuess}**) was lower then my number. **${hints - 1}** hints left.`)] })
+            : msg.reply({ embeds: [sendEmbed(`Your last guess (**${lastGuess}**) was higher then my number. **${hints - 1}** hints left.`)] })
 
 
           hints--

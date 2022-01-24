@@ -3,6 +3,7 @@ const Player = require('../../classes/utilities/Player')
 const Utils = require('../../classes/utilities/Utils')
 const Bot = require('../../Bot')
 const { sendEmbed } = require('../../classes/utilities/AdvancedEmbed')
+const { concatArrays } = require('../../classes/utilities/Utils')
 
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
@@ -19,11 +20,15 @@ module.exports = {
     const itemID = args[0]
     const amount = args[1] ? Number(args[1]) : 1
 
-    const shop = require('./shop.json')
-    const item = shop.find(i => i.id === itemID)
-    const emoji = item.uploaded ? Bot.client.emojis.cache.find(e => e.name === item.id) : item.emoji
-    
+    const shopJSON = require('./shop.json')
+    const itemsJSON = require('./items/items.json')
+
+    const buyables = concatArrays(shopJSON, itemsJSON) 
+    const item = buyables.find(i => i.id === itemID)
+
     if (!item) return msg.reply({ embeds: [sendEmbed(`That item was not found!`)] })
+
+    const emoji = item.uploaded ? Bot.client.emojis.cache.find(e => e.name === item.id) : item.emoji
 
     const player = new Player(msg.member)
     let inventory = await player.inventory
@@ -35,9 +40,9 @@ module.exports = {
       points += ((item.price * amount) / 100) * 60
       inventory[invItem.pos].amount -= amount
       
-      await DB.query(`update members set inventory = '${JSON.stringify(inventory)}', points = ${points} where member_id = ${msg.member.id}`)
+      await DB.query(`update members set inventory = '${JSON.stringify(inventory)}', points = ${Math.floor(points)} where member_id = ${msg.member.id}`)
         .then(() => {
-          msg.reply({ embeds: [sendEmbed(`You successfully sold **${amount} ${emoji} ${item.name}**! You now have ${point} **${Utils.normalizePrice(points)}** points.`)] })
+          msg.reply({ embeds: [sendEmbed(`You successfully sold **${amount} ${emoji}** for **${point} ${Utils.normalizePrice(Math.floor(((item.price * amount) / 100) * 60))}**! You now have ${point} **${Utils.normalizePrice(Math.floor(points))}** points.`)] })
 
           if (item.role) {
             const role = msg.guild.roles.cache.find(e => e.name === item.role)

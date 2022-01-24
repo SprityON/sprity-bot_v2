@@ -26,7 +26,7 @@ module.exports = {
       .addField(`Points`, Utils.normalizePrice(await player.points), true)
       .addField(`Join Date`, joinedDate, true)
 
-    msg.reply(embed)
+    msg.reply({ embeds: [embed] })
   },
 
   help: {

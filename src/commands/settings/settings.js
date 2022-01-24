@@ -33,9 +33,47 @@ module.exports = {
       }
     }
 
-    const status = args[1] ? args[1] : oppositeStatus()
+    let status = args[1] ? null : oppositeStatus()
+
+    if (!status) {
+      let correctArguments = [
+        { 'enable': true },
+        { 'on': true },
+        { 'disable': false },
+        { 'off': false },
+        { 'e': true },
+        { 'd': false }
+      ]
+
+      let isCorrectArgument = false
+      for (let i = 0; i < correctArguments.length; i++) {
+        const arg = correctArguments[i]
+        
+        if (args[1] == Object.keys(arg)[0]) {
+          status = Object.values(arg)[0]
+          isCorrectArgument = true
+
+          break
+        }
+      }
+
+      if (!isCorrectArgument) return msg.reply({ embeds: [sendEmbed(`Incorrect arguments! Type \`enable/disable\``)] })
+    }
     
-    if (setting) findSetting ? memberSettings[findSetting.pos].enabled = status : memberSettings.push({ id: setting, pos: memberSettings.length, enabled: status })
+    if (setting) {
+      if (findSetting) {
+        if (memberSettings[findSetting.pos].enabled === status) 
+          return msg.reply({ embeds: [sendEmbed(`This setting is already ${status === true ? 'enabled' : 'disabled'}`)] })
+
+        memberSettings[findSetting.pos].enabled = status 
+      } else {
+        memberSettings.push({ id: setting, pos: memberSettings.length, enabled: status })
+
+        if (memberSettings[findSetting.pos].enabled === status) 
+          return msg.reply({ embeds: [sendEmbed(`This setting is already ${status === true ? 'enabled' : 'disabled'}`)] })
+      }
+    }
+
     msg.reply({ embeds: [sendEmbed(`Setting \`${setting}\` was set to \`${status === true ? 'enabled' : 'disabled'}\``)]})
     
     playerSettings.length > 0

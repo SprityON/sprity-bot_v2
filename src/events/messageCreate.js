@@ -7,7 +7,7 @@ const { sendEmbed } = require('../classes/utilities/AdvancedEmbed')
 let isUsing = false
 
 module.exports.execute = async (msg) => {
-  if (!msg || !msg.member || !msg.member.user || msg.member.user.bot) return
+  if (msg.member.user.bot) return
   
   await DB.member.countMessage(msg.member)
 
@@ -40,7 +40,6 @@ module.exports.execute = async (msg) => {
           }
         })
 
-
       if (command.includes(cmd.name) || alias) {
         const prefix = await DB.guild.getPrefix()
 
@@ -54,9 +53,7 @@ module.exports.execute = async (msg) => {
         let cmdFile
         try {
           cmdFile = require(`../commands/${cmd.category}/${cmd.name}`);
-        } catch (error) {
-          return
-        }
+        } catch {}
 
         let files = readdirSync(`./commands/${cmd.category}`)
 
@@ -91,12 +88,12 @@ module.exports.execute = async (msg) => {
                 const quests = require('../commands/points/quest/quests.json')
                 const trackerQuest = quests.find(q => q.command === cmdFile.name)
 
-                if (!trackerQuest) return 
+                if (!trackerQuest) return
 
                 const trackers = await DB.query(`select * from trackers where member_id = ${msg.member.id} and name = '${trackerQuest.name}'`)
                 if (trackers[0]) {
                   trackers[0].forEach(async tracker => {
-                    const current = tracker.current += 1
+                    const current = tracker.current + 1
  
                     if (current >= tracker.goal) {
                       if (!questsDB.find(q => q.id === trackerQuest.id).completed) {
@@ -106,7 +103,7 @@ module.exports.execute = async (msg) => {
                           require(`../commands/points/quest`).execute(msg, [], tracker)
                       })
                       } else return
-                    }
+                    } else DB.query(`update trackers set current = ${current} where member_id = ${msg.member.id} and name = '${tracker.name}'`)
                   })
                 }
               }) 

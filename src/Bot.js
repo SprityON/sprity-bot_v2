@@ -27,7 +27,6 @@ module.exports = new class Bot {
 	 */
 
 	run(client) {
-		require('mongoose')
 		client.login(process.env.TOKEN);
 		client.on('ready', this.ready.bind(this, client))
 	}

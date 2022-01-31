@@ -45,7 +45,7 @@ module.exports = {
           .then(async ([success, inventory, tracker]) => {
             if (success === 'skip') return
 
-            const player = new Player(msg.member)
+            const player = new Player(msg.member, msg)
             if (!inventory) inventory = await player.inventory
             const settings = await player.settings
             const autonext = settings.find(s => s.id === 'autonext')
@@ -71,7 +71,7 @@ module.exports = {
 
               for (let i = 0; i < quests.length; i++) if ([tracker ? tracker.quest_id : questDB.id] == quests[i].id) quests[i].completed = true
 
-              player.levelUp(questDB.xp, msg)
+              player.levelUp(questDB.xp)
 
               msg.reply({ embeds: [sendEmbed(`You obtained ${strings.length > 0 ? strings + ', ' : ' '}**${point} ${questDB.points}** and **${questDB.xp}** XP `)] })
 

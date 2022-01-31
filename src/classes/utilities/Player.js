@@ -6,8 +6,9 @@ const { MessageEmbed } = require("discord.js")
 const { Discord } = require("../../Bot")
 
 module.exports = class Player {
-  constructor (member) {
+  constructor (member, msg) {
     this.member = member
+    this.msg = msg
   }
 
   /** 
@@ -39,7 +40,7 @@ module.exports = class Player {
    * @param {Number} amount 
    * @param {String} msg 
    */
-  async levelUp(amount, msg) {
+  async levelUp(amount) {
     const level = await this.level
     const experience = amount ? await this.experience + amount : await this.experience
     let levelExperience = 0
@@ -70,12 +71,9 @@ module.exports = class Player {
     })
   }
 
-  get hp() {
-    return new Promise(async (resolve, reject) => {
-      const result = await DB.query(`select stats from members where member_id = ${this.member.id}`)
-      resolve(JSON.parse(result[0][0].stats).health)
-    })
-  }
+  hp = { current: 0, max: 0 }
+
+  set setHP(hp) { this.hp = hp }
 
   get att() {
     return new Promise(async (resolve, reject) => {

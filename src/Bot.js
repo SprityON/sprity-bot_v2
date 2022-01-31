@@ -25,7 +25,7 @@ module.exports = new class Bot {
 	 * @description
 	 * Logs the bot in, meanwhile also loading every command and event.
 	 */
-
+ 
 	run(client) {
 		client.login(process.env.TOKEN);
 		client.on('ready', this.ready.bind(this, client))

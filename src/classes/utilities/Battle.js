@@ -1,21 +1,67 @@
 const Bot = require("../../Bot");
-const Player = require("./Player");
+const DB = require("../database/DB");
+const { sendEmbed } = require("./AdvancedEmbed");
 
-module.exports = class Battle extends Player {
-  constructor(member, enemy = { name: 'Enemy', hp: 100, att: 10, def: 0 }) {
-    super(member)
-
+module.exports = class Battle {
+  constructor(player, enemy = { 
+    name: 'Enemy', 
+    hp: 100, 
+    att: 10, 
+    def: 0 
+  }) {
+    this.player = player
     this.enemy = enemy
     this.enemy.maxHealth = this.enemy.hp
-    this.playerMaxHealth = this.hp
     this.embed = new Bot.Discord.MessageEmbed().setColor('ffff00')
   }
 
-  async playerHealth() { return await this.hp }
-  async damageDone() { return Math.floor(await this.att * ((Math.random() * 0.3) + 0.85)) }
+  async damageDone() { return Math.floor(await this.player.att * ((Math.random() * 0.3) + 0.85)) }
+
+  async usePotion() {
+    let potion = await this.player.potion
+
+    const shop = require('../../commands/points/shop.json')
+    const shopPotion = potion ? shop.find(item => item.id === potion.id) : null
+    const emote = potion ? (shopPotion.uploaded ? Bot.client.emojis.cache.find(e => e.name === shopPotion.emoji) : shopPotion.emoji) : null
+
+    if (this.player.hp.current >= this.player.hp.max) {
+      return [false, { embeds: [sendEmbed(`You are already at full health!\n\nType \`attack\`, \`throw\`, \`potion\` or \`run\``, { color: 'ffff00' })] }]
+    } else {
+      potion.amount -= 1
+
+      potion.amount < 1
+        ? await DB.query(`update members set potion = '' where member_id = ${this.member.id}`)
+        : await DB.query(`update members set potion = '[${JSON.stringify(this.player.potion)}]' where member_id = ${this.member.id}`)
+
+      this.player.hp.current += Math.floor(this.hp.max / shopPotion.heal_percentage)
+
+      if (this.player.hp.current >= this.player.hp.max) this.player.hp.current = this.player.hp.max
+      msg.reply({ embeds: [sendEmbed(`You restored ${shopPotion.heal_percentage}% of your health by using ${emote} **${shopPotion.name}**\n***Your* HP: ${this.player.hp.current}/${this.player.hp.max}**`, { color: 'ffff00' })] })
+    }
+  }
+
+  async useThrowable() {
+    const shop = require('../../commands/points/shop.json')
+    let throwable = await this.player.throwable
+    const shopThrowable = throwable ? shop.find(item => item.id === throwable.id) : null
+    const emote = throwable ? (shopThrowable.uploaded ? Bot.client.emojis.cache.find(e => e.name === shopThrowable.emoji) : shopThrowable.emoji) : null
+
+    throwable.amount -= 1
+
+    this.enemy.hp -= shopThrowable.damage
+
+    throwable.amount < 1
+      ? await DB.query(`update members set throwable = '' where member_id = ${this.member.id}`)
+      : await DB.query(`update members set throwable = '[${JSON.stringify(throwable)}]' where member_id = ${this.member.id}`)
+
+    if (minionHealth < 1)
+      return [true, { embeds: [sendEmbed(`You killed **${minionName}** with ${emote}!`, { color: '00ff00' })] }]
+
+    return [false, { embeds: [sendEmbed(`You threw a ${emote} **${shopThrowable.name}** and did **${shopThrowable.damage}** damage! ***${this.enemy.name}'s* HP: ${this.enemy.hp}/${this.enemy.maxHealth}**`, { color: 'ffff00' })] }]
+  }
 
   async attack() {
-    this.enemy.hp -= await this.damageDone()
+    this.enemy.hp -= Math.floor(await this.damageDone())
 
     if (this.enemy.hp < 1) {
       if (this.enemyActions.run() === true) {
@@ -27,35 +73,21 @@ module.exports = class Battle extends Player {
   }
 
   enemyActions = {
-    attack: async (playerHealth) => {
-      playerHealth -= this.enemy.att
+    attack: async () => {
+      this.player.hp.current -= Math.floor(this.enemy.att)
 
-      if (playerHealth < 1) {
-        return [true, `**${this.enemy.name}** did **${this.enemy.att}** damage and you died with **${playerHealth}** HP!`]
+      if (this.player.hp.current < 1) {
+        return [true, `**${this.enemy.name}** did **${this.enemy.att}** damage and you died with **${this.player.hp.current}** HP!`]
       } else {
-        return [false, `**${this.enemy.name}** did **${this.enemy.att}** damage. ***Your* HP: ${playerHealth}/${await this.playerMaxHealth}**\n\nType \`attack\`, \`throw\`, \`potion\` or \`run\``]
+        return [false, `**${this.enemy.name}** did **${this.enemy.att}** damage. ***Your* HP: ${this.player.hp.current}/${this.player.hp.max}**\n\nType \`attack\`, \`throw\`, \`potion\` or \`run\``]
       }
     },
 
     run: async() => {
       if (this.enemy.hp < 1) {
-        const chance = Math.floor(Math.random() * 5) + 1
+        const chance = Math.floor(Math.random() * 4)
         if (chance == 1) { return true } else return false
       }
-    }
-  }
-
-  embed = {
-    setTitle(title) {
-
-    },
-
-    setDescription(description) {
-
-    },
-
-    setFooter(footer) {
-
     }
   }
 }

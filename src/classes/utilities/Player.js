@@ -16,9 +16,7 @@ module.exports = class Player {
    * @param {object} member 
    */
   async create() {
-    await DB.query(`insert into timer_dates (member_id, enddate, type) values ('${this.member.id}', '${moment().clone().format('M/D/YYYY H:mm:ss:SSS')}', 'daily')`)
-    await DB.query(`insert into timer_dates (member_id, enddate, type) values ('${this.member.id}', '${moment().clone().format('M/D/YYYY H:mm:ss:SSS')}', 'weekly')`)
-    await DB.query(`insert into timer_dates (member_id, enddate, type) values ('${this.member.id}', '${moment().clone().format('M/D/YYYY H:mm:ss:SSS')}', 'monthly')`)
+    await DB.query(`insert into timer_dates (member_id, enddate, type) values ('${this.member.id}', '${moment().clone().format('M/D/YYYY H:mm:ss:SSS')}', 'daily');insert into timer_dates (member_id, enddate, type) values ('${this.member.id}', '${moment().clone().format('M/D/YYYY H:mm:ss:SSS')}', 'weekly');insert into timer_dates (member_id, enddate, type) values ('${this.member.id}', '${moment().clone().format('M/D/YYYY H:mm:ss:SSS')}', 'monthly');`)
   }
 
   /**
@@ -50,7 +48,7 @@ module.exports = class Player {
 
     if (experience >= levelExperience) {
       const attributes = (await DB.query(`select attributes from members where member_id = ${this.member.id}`))[0][0].attributes
-      msg.reply({ embeds: [sendEmbed(`You leveled up! You are now level **${level + 1}**.`)] })
+      this.msg.reply({ embeds: [sendEmbed(`You leveled up! You are now level **${level + 1}**.`)] })
       await DB.query(`update members set level = ${level + 1}, experience = ${experience}, attributes = ${attributes + 3} where member_id = ${this.member.id}`)
     } else {
       await DB.query(`update members set experience = ${experience} where member_id = ${this.member.id}`)
@@ -71,8 +69,7 @@ module.exports = class Player {
     })
   }
 
-  hp = { current: 0, max: 0 }
-
+  hp = {}
   set setHP(hp) { this.hp = hp }
 
   get att() {
@@ -133,6 +130,14 @@ module.exports = class Player {
       const result = await DB.query(`select points from members where member_id = ${this.member.id}`)
       const points = result[0][0].points
       resolve(points)
+    })
+  }
+
+  get messages() {
+    return new Promise(async (resolve, reject) => {
+      const result = await DB.query(`select messages from members where member_id = ${this.member.id}`)
+      const messages = result[0][0].messages
+      resolve(messages)
     })
   }
 

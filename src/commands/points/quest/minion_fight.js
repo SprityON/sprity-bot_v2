@@ -2,6 +2,7 @@ const Bot = require('../../../Bot')
 const DB = require('../../../classes/database/DB')
 const { sendEmbed } = require('../../../classes/utilities/AdvancedEmbed')
 const Battle = require('../../../classes/utilities/Battle')
+const Enemy = require('../../../classes/utilities/Enemy')
 const Player = require('../../../classes/utilities/Player')
 const Utils = require('../../../classes/utilities/Utils')
 
@@ -19,6 +20,8 @@ module.exports.execute = async (msg, args, quest) => {
   let minionHealth = Math.floor(player.hp.max * await player.difficulty)
   let maxMinionHealth = minionHealth
 
+  const enemy = new Enemy(player)
+
   const battle = new Battle(player, {
     name: minionName,
     att: Math.floor(Math.floor(await player.att * ((Math.random() * 0.2) + 0.85)) * await player.difficulty),
@@ -28,7 +31,7 @@ module.exports.execute = async (msg, args, quest) => {
   
   msg.reply({
     embeds: [sendEmbed(`Kill **${minionName}** (**${minionHealth}/${maxMinionHealth}**) to steal its loot!\n\nType \`attack\`, \`throw\`, \`potion\` or \`run\``,
-      { title: `You encountered ${minionName}!)`, color: 'ff0000' })] })
+      { title: `You encountered ${minionName}!`, color: 'ff0000' })] })
 
   const filter = m => m.author.id === msg.author.id
 
@@ -50,32 +53,27 @@ module.exports.execute = async (msg, args, quest) => {
 
           const [hasWon, message] = await battle.enemyActions.attack()
 
-          if (hasWon === true) { msg.reply({ embeds: [sendEmbed(message)] }); return [false, inventory] }
-          else if (hasWon === false) { msg.reply({ embeds: [sendEmbed(message)] }); }
+          msg.reply({ embeds: [sendEmbed(message)] });
+          if (!hasWon) return [false, inventory]
         }
       } else msg.reply({ embeds: [sendEmbed(`You are not using a throwable!\n\nType \`attack\`, \`throw\`, \`potion\` or \`run\``, { color: 'ffff00' })] })
     }
 
     if (answer === 'potion') {
       if (player.potion) {
-        const [fullHP, message] = await battle.usePotion()
-
-        if (fullHP) { msg.reply(message) } else {
-          msg.reply(message)
-        }
+        battle.usePotion()
+        .then(message => msg.reply(message))
 
         await Utils.wait(1000)
       } else msg.reply({ embeds: [sendEmbed(`You are not using a potion!\n\nType \`attack\`, \`throw\`, \`potion\` or \`run\``, { color: 'ffff00' })] })
     }
 
     if (answer === 'run') {
-      const runChance = Math.floor(Math.random() * 3) + 1
-
-      if (runChance == 1) {
-        msg.reply({ embeds: [sendEmbed(`You couldn't run away!`, { color: 'ff0000' })] })
+      if (battle.run() === true) {
+        msg.reply({ embeds: [sendEmbed(`You successfully ran away from **${minionName}**!`, { color: '00ff00' })] })
         return [false]
       } else {
-        msg.reply({ embeds: [sendEmbed(`You successfully ran away from **${minionName}**!`, { color: '00ff00' })] })
+        msg.reply({ embeds: [sendEmbed(`You couldn't run away!`, { color: 'ff0000' })] })
         return ['skip']
       }
     }

@@ -25,7 +25,7 @@ module.exports = class Battle {
     const emote = potion ? (shopPotion.uploaded ? Bot.client.emojis.cache.find(e => e.name === shopPotion.emoji) : shopPotion.emoji) : null
 
     if (this.player.hp.current >= this.player.hp.max) {
-      return [false, { embeds: [sendEmbed(`You are already at full health!\n\nType \`attack\`, \`throw\`, \`potion\` or \`run\``, { color: 'ffff00' })] }]
+      return [{ embeds: [sendEmbed(`You are already at full health!\n\nType \`attack\`, \`throw\`, \`potion\` or \`run\``, { color: 'ffff00' })] }]
     } else {
       potion.amount -= 1
 
@@ -72,22 +72,11 @@ module.exports = class Battle {
     else return ['skip', `You did **${await this.damageDone()}** damage! ***${this.enemy.name}'s* HP: ${this.enemy.hp}/${this.enemy.maxHealth}**`]
   }
 
-  enemyActions = {
-    attack: async () => {
-      this.player.hp.current -= Math.floor(this.enemy.att)
+  run() {
+    const chance = Math.floor(Math.random() * 3) + 1
 
-      if (this.player.hp.current < 1) {
-        return [true, `**${this.enemy.name}** did **${this.enemy.att}** damage and you died with **${this.player.hp.current}** HP!`]
-      } else {
-        return [false, `**${this.enemy.name}** did **${this.enemy.att}** damage. ***Your* HP: ${this.player.hp.current}/${this.player.hp.max}**\n\nType \`attack\`, \`throw\`, \`potion\` or \`run\``]
-      }
-    },
-
-    run: async() => {
-      if (this.enemy.hp < 1) {
-        const chance = Math.floor(Math.random() * 4)
-        if (chance == 1) { return true } else return false
-      }
-    }
+    chance == 1
+      ? (() => { return [true] })
+      : (() => { return [false] })
   }
 }

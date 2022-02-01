@@ -2,14 +2,43 @@ const Bot = require('../Bot');
 const DB = require('../classes/database/DB');
 const Player = require('../classes/utilities/Player');
 const Utils = require('../classes/utilities/Utils');
-const { sendEmbed } = require('../classes/utilities/AdvancedEmbed')
+const { sendEmbed } = require('../classes/utilities/AdvancedEmbed');
+const { readdirSync, writeFileSync } = require('fs')
+const messagesJSON = require('./messages.json')
 
 let isUsing = false
+let waiting = false
 
 module.exports.execute = async (msg) => {
   if (msg.member.user.bot) return
+
+  const player = new Player(msg.member)
+
+  // [begin] instead of creating a query for every single message, it will save the message count for a later db update
+
+  let counter_member
+  messagesJSON.find(m => m.id === msg.member.id)
+    ? messagesJSON.find(m => m.id === msg.member.id).messages += 1
+    : messagesJSON.push({ id: msg.member.id, pos: messagesJSON.length - 1, messages: 1 })
   
-  await DB.member.countMessage(msg.member)
+  counter_member = messagesJSON.find(m => m.id === msg.member.id)
+  writeFileSync('events/messages.json', JSON.stringify(messagesJSON))
+
+  if (waiting === false) {
+    waiting = true
+    Utils.wait(120000)
+      .then(async () => {
+        waiting = false
+        const messages = await player.messages
+
+        DB.query(`update members set messages = ${messages + counter_member.messages} where member_id = ${counter_member.id}`)
+
+        messagesJSON.splice(counter_member.pos, 1)
+        writeFileSync('events/messages.json', JSON.stringify(messagesJSON))
+      })
+  } 
+    
+  // [end]
 
   if (isUsing) return
   
@@ -48,8 +77,6 @@ module.exports.execute = async (msg) => {
         if (Bot.Commands.find(c => c.name === command.slice(prefix.length, command.length)))
           cmd = Bot.Commands.find(c => c.name === command.slice(prefix.length, command.length))
 
-        const { readdirSync } = require('fs')
-
         let cmdFile
         try {
           cmdFile = require(`../commands/${cmd.category}/${cmd.name}`);
@@ -69,8 +96,6 @@ module.exports.execute = async (msg) => {
 
           enoughPermissions
             ? (async () => {
-              const player = new Player(msg.member)
-
               player.hasAccount()
 
               isUsing = true

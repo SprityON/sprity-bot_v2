@@ -10,7 +10,7 @@ module.exports = {
   usage: '',
   aliases: ['f'],
   permissions: ['SEND_MESSAGES'],
-  timeout: 1000,
+  timeout: 10000,
 
   async execute(msg, args) {
     const player = new Player(msg.member)

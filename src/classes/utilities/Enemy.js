@@ -2,30 +2,40 @@ module.exports = class Enemy {
   constructor(player) {
     this.player = player
     this.name = 'Enemy'
-    this.hp = this.player.hp.max * this.player.difficulty
-    this.att = Math.floor(Math.floor(await (this.player.att * ((Math.random() * 0.2) + 0.85))) * await (this.player.difficulty))
+    this.hp = { current: 0, max: 0 }
   }
 
   /**
    * @param {String} arg
    */
   set setName(arg) { this.name = arg }
-  get name() { return this.name }
 
-  attack()  {
-    this.player.hp.current -= Math.floor(this.enemy.att)
+  /**
+   * @param {Number} hp
+   */
+  set setHP(hp) { this.hp.current = hp, this.hp.max = hp }
+
+  async att() {
+    const playerAtt = await this.player.att
+    const playerDiff = await this.player.difficulty
+    
+    return Math.floor(playerAtt * ((Math.random() * 0.2) + 0.85)) * playerDiff
+  }
+
+  async damageDone() { return Math.floor(await this.att()) }
+  
+  async attack()  {
+    this.player.hp.current -= await this.damageDone()
 
     if (this.player.hp.current < 1) {
-      return [true, `**${this.enemy.name}** did **${this.enemy.att}** damage and you died with **${this.player.hp.current}** HP!`]
+      return [true, `**${this.name}** did **${await this.damageDone()}** damage and you died with **${this.player.hp.current}** HP!`]
     } else {
-      return [false, `**${this.enemy.name}** did **${this.enemy.att}** damage. ***Your* HP: ${this.player.hp.current}/${this.player.hp.max}**\n\nType \`attack\`, \`throw\`, \`potion\` or \`run\``]
+      return [false, `**${this.name}** did **${await this.damageDone()}** damage. ***Your* HP: ${this.player.hp.current}/${this.player.hp.max}**\n\nType \`attack\`, \`throw\`, \`potion\` or \`run\``]
     }
   }
 
   run() {
-    if (this.enemy.hp < 1) {
-      const chance = Math.floor(Math.random() * 4)
-      if (chance == 1) { return true } else return false
-    }
+    const chance = Math.floor(Math.random() * 5)
+    if (chance == 1) { return true } else return false
   }
 }

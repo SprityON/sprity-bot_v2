@@ -1,4 +1,5 @@
 const DB = require("../classes/database/DB");
+const Player = require("../classes/utilities/Player");
 
 module.exports.execute = async (member) => {
   const memberCount = member.guild.members.cache.filter(member => !member.user.bot).size
@@ -19,6 +20,9 @@ module.exports.execute = async (member) => {
 
   member.roles.add(member.guild.roles.cache.find(role => role.name === "Member"))
   DB.member.addToDB(member)
+
+  const player = new Player(member)
+  player.hasAccount()
 
   const data = await DB.query(`SELECT * FROM members WHERE member_id = ${member.id}`)
   const kicked = data[0][0].kicked

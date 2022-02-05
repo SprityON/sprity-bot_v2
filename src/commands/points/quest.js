@@ -41,7 +41,7 @@ module.exports = {
         if (questDB.completed === true && !tracker) return msg.reply({ embeds: [sendEmbed(`You already have completed your current quest!`)] })
         if (quest.tracker === true && !tracker) return msg.reply({ embeds: [sendEmbed(`Tracker quests not playable.`)] })
 
-        require(`./quest/${quest.name}`).execute(msg, args, quest)
+        await require(`./quest/${quest.name}`).execute(msg, args, quest)
           .then(async ([success, inventory, tracker]) => {
             if (success === 'skip') return
 
@@ -52,7 +52,7 @@ module.exports = {
             const newPoints = success ? await player.points + questDB.points : await player.points - questDB.points
             const point = Bot.client.emojis.cache.find(e => e.name === "pointdiscord")
 
-            if (success) {
+            if (success === true) {
               let strings = []
               quest.items.forEach(item => {
                 if (!item) return
@@ -92,20 +92,21 @@ module.exports = {
               questDB.completed = true
 
               if (!quests.find(q => q.completed === false)) {
-                if (quests.find(q => q.tracker === true)) 
-                  DB.query(`delete from trackers where member_id = ${msg.member.id}`)
-                  
                 quests = ''
+
+                DB.query(`delete from trackers where member_id = ${msg.member.id}`)
               }
 
-              DB.query(`update members set points = ${newPoints}, quests = ${quests ? `'${JSON.stringify(quests)}'` : ''} where member_id = ${msg.member.id}`)
+              quests
+                ? DB.query(`update members set points = ${newPoints}, quests = '${JSON.stringify(quests)}' where member_id = ${msg.member.id}`)
+                : DB.query(`update members set points = ${newPoints}, quests = '' where member_id = ${msg.member.id}`)
             }
 
             /**
              * Auto Next
              */
 
-            if (autonext && autonext.enabled === true) {
+            if (autonext && autonext.enabled === true && quests.find(q => q.completed === false && !q.tracker)) {
               let currPos = 0
               let nextPos = 0
 
@@ -132,10 +133,10 @@ module.exports = {
                 }
 
                 currPos === 2 ? currPos = 0 : currPos++
-              }
-            } else return
+              } 
 
-            DB.query(`update members set quests = '${JSON.stringify(quests)}' where member_id = ${msg.member.id}`)
+              if (quests.length > 0) DB.query(`update members set quests = '${JSON.stringify(quests)}' where member_id = ${msg.member.id}`)
+            } else return
         }).catch(err => console.log(err))
       break;
     }

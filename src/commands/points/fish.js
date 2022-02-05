@@ -8,9 +8,9 @@ module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
   category: Utils.getCmdCategory(__filename),
   usage: '',
-  aliases: [],
+  aliases: ['f'],
   permissions: ['SEND_MESSAGES'],
-  timeout: 10000,
+  timeout: 1000,
 
   async execute(msg, args) {
     const player = new Player(msg.member)

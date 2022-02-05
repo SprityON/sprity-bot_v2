@@ -9,6 +9,7 @@ module.exports = class Player {
   constructor (member, msg) {
     this.member = member
     this.msg = msg
+    this.setPotion()
   }
 
   /** 
@@ -36,7 +37,6 @@ module.exports = class Player {
   /**
    * Checks if member is able to level up.
    * @param {Number} amount 
-   * @param {String} msg 
    */
   async levelUp(amount) {
     const level = await this.level
@@ -95,7 +95,17 @@ module.exports = class Player {
     })
   }
 
-  get potion() {
+  potion = { id: '', amount: 0}
+
+  setPotion() {
+    this.getPotion.then(potion => {
+      if (!potion) return this.potion = null
+      this.potion.id = potion.id
+      this.potion.amount = potion.amount
+    })
+  }
+
+  get getPotion() {
     return new Promise(async (resolve, reject) => {
       const result = await DB.query(`select potion from members where member_id = ${this.member.id}`)
       const potion = result[0][0].potion
@@ -122,6 +132,14 @@ module.exports = class Player {
     return new Promise(async (resolve, reject) => {
       const result = await DB.query(`select inventory from members where member_id = ${this.member.id}`)
       resolve(JSON.parse(result[0][0].inventory))
+    })
+  }
+
+  get currentQuest() {
+    return new Promise(async (resolve) => {
+      const result = await DB.query(`select quests from members where member_id = ${this.member.id}`)
+      const quests = JSON.parse(result[0][0].quests)
+      resolve(quests.find(q => q.active === true && !q.tracker))
     })
   }
 
@@ -208,8 +226,9 @@ module.exports = class Player {
    * @returns {Boolean}
    */
   settingIsEnabled = async (setting) => {
-    return await new Promise((resolve, reject) => {
-      this.settings.find(s => s.id === setting)
+    return await new Promise(async (resolve, reject) => {
+      const settings = await this.settings
+      settings.find(s => s.id === setting)
         ? resolve(true)
         : resolve(false)
     })

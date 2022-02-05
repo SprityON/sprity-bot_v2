@@ -2,6 +2,10 @@
   {
     "id": 0,
     "name": "mine",
+    "type": "",
+    "command": "",
+    "tracker": false,
+    "goal": 0,
     "title": "Go into the mine",
     "desc": "Explore vast caves",
     "needs": ["pickaxe"],
@@ -11,10 +15,7 @@
       {"id": "iron_ore", "chance": 5000, "amountMultiplier": 0.8},
       {"id": "coal_ore", "chance": 7000, "amountMultiplier": 1},
       {"id": "gold_ore", "chance": 4000, "amountMultiplier": 0.6},
-      {"id": "basic_chest", "chance": 2500, "amountMultiplier": 0.25},
-      {"id": "rare_chest", "chance": 500, "amountMultiplier": 0.25},
-      {"id": "epic_chest", "chance": 100, "amountMultiplier": 0.01},
-      {"id": "legendary_chest", "chance": 5, "amountMultiplier": 0.01}
+      {"id": "diamond", "chance": 500, "amountMultiplier": 0.4}
     ],
     "exp_range": [50, 50],
     "points_range": [50, 50]
@@ -23,6 +24,10 @@
   {
     "id": 1,
     "name": "forest",
+    "type": "",
+    "command": "",
+    "tracker": false,
+    "goal": 0,
     "title": "Go into the forest",
     "desc": "Explore the forest",
     "needs": ["axe"],
@@ -36,6 +41,10 @@
   {
     "id": 2,
     "name": "minion_fight",
+    "type": "",
+    "command": "",
+    "tracker": false,
+    "goal": 0,
     "title": "Fight a Minion",
     "desc": "Fight a Sprity Bot Minion",
     "needs": [],
@@ -54,6 +63,10 @@
   {
     "id": 3,
     "name": "guess",
+    "type": "",
+    "command": "",
+    "tracker": false,
+    "goal": 0,
     "title": "Guess my number",
     "desc": "Don't lose now",
     "needs": [],
@@ -88,11 +101,13 @@
 
   {
     "id": 5,
-    "type": "typing",
     "name": "wordgame",
+    "type": "",
+    "command": "",
+    "tracker": false,
+    "goal": 0,
     "title": "Typing challenge",
     "desc": "Type the correct word",
-    "goal": 0,
     "needs": [],
     "obtainables": [
       {"id": "basic_chest", "chance": 7500, "amountMultiplier": 0.25},

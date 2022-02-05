@@ -14,7 +14,7 @@ module.exports = {
   permissions: ['SEND_MESSAGES'],
   timeout: 1000,
 
-  async execute(msg, args) {
+  async execute(msg, args, quest) {
     let tries = 3
     const random = Math.floor(Math.random() * 10) + 1
     const player = new Player(msg.member)
@@ -22,10 +22,8 @@ module.exports = {
     const winPoints = Math.floor((Math.floor(Math.random() * 50) + 50) * await player.difficulty)
     let hints = await player.difficulty < 1 ? 2 : 1
     const points = await player.points
-    const point = Bot.client.emojis.cache.find(e => e.name === 'pointdiscord')
 
-    const experience = Math.floor((Math.floor(Math.random() * 100) + 100) * await player.difficulty)
-    msg.reply({ embeds: [sendEmbed(`Guess my number between **1 - 10** for ${point} **${winPoints}**. \n\nYou got **${tries}** tries and **${hints}** hint!`)] })
+    msg.reply({ embeds: [sendEmbed(`Guess my number between **1 - 10**. \n\nYou got **${tries}** tries and **${hints}** hint!`)] })
 
     const embed = new Discord.MessageEmbed().setColor('ffff00')
 
@@ -71,7 +69,7 @@ module.exports = {
         message.edit({ embeds: [embed] })
 
         await wait(250)
-        embed.setDescription(`Your given number: **${answer}**\nYou guessed... right!\n\nYou received ${point} **${winPoints}** points and **${experience}** XP.`)
+        embed.setDescription(`Your given number: **${answer}**\nYou guessed... right!`)
 
         message.edit({ embeds: [embed] })
 

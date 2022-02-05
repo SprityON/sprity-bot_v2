@@ -1,8 +1,6 @@
 const Bot = require('../../../Bot')
 const DB = require('../../../classes/database/DB')
 const Player = require('../../../classes/utilities/Player')
-const { concatArrays } = require('../../../classes/utilities/Utils')
-const Utils = require('../../../classes/utilities/Utils')
 
 module.exports.execute = async(msg) => {
   const point = Bot.client.emojis.cache.find(e => e.name === 'pointdiscord')
@@ -118,8 +116,11 @@ module.exports.execute = async(msg) => {
         : embed.addField(`${completed}${o + 1}. ${quest.title} ${completed}${active}`, `*${quest.desc}*\n${obtainables()}\n\n**XP:** ${questXP}\n**${point}:** ${questPoints}`, true)
     }
 
+    if (newPlayerQuests.length > 0 && await player.settingIsEnabled('autonext') === true) newPlayerQuests[0].active = true
     if (newPlayerQuests.length > 0) DB.query(`update members set quests = '${JSON.stringify(newPlayerQuests)}' where member_id = ${msg.member.id}`)
     
     msg.reply({ embeds: [embed] })
   }
+
+  return
 }

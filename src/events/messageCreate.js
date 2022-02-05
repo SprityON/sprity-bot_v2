@@ -96,8 +96,6 @@ module.exports.execute = async (msg) => {
 
           enoughPermissions
             ? (async () => {
-              player.hasAccount()
-
               isUsing = true
               cmdFile.execute(msg, args).then(async () => {
                 isUsing = false
@@ -106,8 +104,8 @@ module.exports.execute = async (msg) => {
 
                 if (questsDB) {
                   questsDB = JSON.parse(questsDB)
-                  if (!questsDB.find(q => q.completed === false))
-                    await DB.query(`update members set quests = '' where member_id = ${msg.member.id}`)
+                  if (questsDB && !questsDB.find(q => q.completed === false))
+                    DB.query(`update members set quests = '' where member_id = ${msg.member.id}`)
                 } else return 
 
                 const quests = require('../commands/points/quest/quests.json')
@@ -136,12 +134,6 @@ module.exports.execute = async (msg) => {
             : msg.reply(`**${msg.author.username}**, you do not have enough permissions to use this command!`)
         })
       }
-    }
-  } catch (err) {
-    if (err) console.log(err)
-    msg.reply({ embeds: [sendEmbed(`Command \`${command}\` does not exist!`, { 
-      title: 'ERROR', 
-      color: 'ff0000' 
-    })] })
-  }
+    } 
+  } catch (err) { console.log(err) }
 }

@@ -1,5 +1,3 @@
-const Bot = require('../../../Bot')
-const DB = require('../../../classes/database/DB')
 const { sendEmbed } = require('../../../classes/utilities/AdvancedEmbed')
 const Battle = require('../../../classes/utilities/Battle')
 const Enemy = require('../../../classes/utilities/Enemy')
@@ -7,31 +5,22 @@ const Player = require('../../../classes/utilities/Player')
 const Utils = require('../../../classes/utilities/Utils')
 
 module.exports.execute = async (msg, args, quest) => {
-  const randomNumber = Math.floor(Math.random() * 998) + 1
-  const minionName = `🤖 Minion #${randomNumber}`
-
-  const player = new Player(msg.member)
+  const player = new Player(msg.member, msg)
   const inventory = await player.inventory
   const stats = await player.stats
   let throwable = await player.throwable
 
   player.setHP = { current: stats.health, max: stats.health }
 
-  let minionHealth = Math.floor(player.hp.max * await player.difficulty)
-  let maxMinionHealth = minionHealth
-
   const enemy = new Enemy(player)
+  enemy.setName = `🤖 Minion #${Math.floor(Math.random() * 998) + 1}`
+  enemy.setHP = player.hp.max * await player.difficulty
 
-  const battle = new Battle(player, {
-    name: minionName,
-    att: Math.floor(Math.floor(await player.att * ((Math.random() * 0.2) + 0.85)) * await player.difficulty),
-    def: 0,
-    hp: minionHealth
-  })
+  const battle = new Battle(player, enemy)
   
   msg.reply({
-    embeds: [sendEmbed(`Kill **${minionName}** (**${minionHealth}/${maxMinionHealth}**) to steal its loot!\n\nType \`attack\`, \`throw\`, \`potion\` or \`run\``,
-      { title: `You encountered ${minionName}!`, color: 'ff0000' })] })
+    embeds: [sendEmbed(`Kill **${enemy.name}** (**${enemy.hp.current}/${enemy.hp.max}**) to steal its loot!\n\nType \`attack\`, \`throw\`, \`potion\` or \`run\``,
+      { title: `You encountered ${enemy.name}!`, color: 'ff0000' })] })
 
   const filter = m => m.author.id === msg.author.id
 
@@ -51,7 +40,7 @@ module.exports.execute = async (msg, args, quest) => {
 
           await Utils.wait(1000)
 
-          const [hasWon, message] = await battle.enemyActions.attack()
+          const [hasWon, message] = await enemy.attack()
 
           msg.reply({ embeds: [sendEmbed(message)] });
           if (!hasWon) return [false, inventory]
@@ -69,12 +58,13 @@ module.exports.execute = async (msg, args, quest) => {
     }
 
     if (answer === 'run') {
+      console.log(battle.run());
       if (battle.run() === true) {
-        msg.reply({ embeds: [sendEmbed(`You successfully ran away from **${minionName}**!`, { color: '00ff00' })] })
-        return [false]
+        msg.reply({ embeds: [sendEmbed(`You successfully ran away from **${enemy.name}**!`, { color: '00ff00' })] })
+        return [true]
       } else {
-        msg.reply({ embeds: [sendEmbed(`You couldn't run away!`, { color: 'ff0000' })] })
-        return ['skip']
+        msg.reply({ embeds: [sendEmbed(`You couldn't run away from ${enemy.name}!`, { color: 'ff0000' })] })
+        return [false]
       }
     }
 
@@ -88,12 +78,11 @@ module.exports.execute = async (msg, args, quest) => {
 
         await Utils.wait(1000)
 
-        let [enemyWon, message1] = await battle.enemyActions.attack()
+        let [enemyWon, message1] = await enemy.attack()
 
         if (enemyWon === true) { msg.reply({ embeds: [sendEmbed(message1)] }); return [false, inventory] }
         else if (enemyWon === false) { msg.reply({ embeds: [sendEmbed(message1)] }); }
       }
     }
-    // rocket grab item for if minion runs away?
   }
 }

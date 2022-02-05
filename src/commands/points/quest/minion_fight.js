@@ -61,7 +61,7 @@ module.exports.execute = async (msg, args, quest) => {
       console.log(battle.run());
       if (battle.run() === true) {
         msg.reply({ embeds: [sendEmbed(`You successfully ran away from **${enemy.name}**!`, { color: '00ff00' })] })
-        return [true]
+        return ['skip']
       } else {
         msg.reply({ embeds: [sendEmbed(`You couldn't run away from ${enemy.name}!`, { color: 'ff0000' })] })
         return [false]

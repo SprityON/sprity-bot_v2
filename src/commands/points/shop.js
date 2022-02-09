@@ -172,7 +172,10 @@ module.exports = {
 
             if (typeof result === 'object' && result[0] === false) {
               interaction.reply({ content: result[1], ephemeral: true })
-            } else interaction.update({ embeds: [returnEmbed(prevSelection, 1)], components: [menu, buttons] })
+            } else {
+              interaction.update({ embeds: [returnEmbed(prevSelection, 1)], components: [menu, buttons] })
+              currentPage = 1
+            }
           break;
 
           case 'shop_previous':
@@ -199,7 +202,15 @@ module.exports = {
           break;
 
           case 'shop_last':
-            if (currentPage > 1) interaction.update({ embeds: [returnEmbed(prevSelection, 9999)], components: [menu, buttons] })
+            while (true) {
+              result = returnEmbed(prevSelection, currentPage + 1)
+
+              if (typeof result === 'object' && result[0] === false) { 
+                break 
+              } else { currentPage += 1 }
+            }
+            
+            interaction.update({ embeds: [returnEmbed(prevSelection, currentPage)], components: [menu, buttons] })
           break;
         }
       }

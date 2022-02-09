@@ -26,19 +26,18 @@ module.exports = {
     const currExperience = nextLevelExperience - previousExperience
 
     const throwable = await player.throwable
-    const potion = await player.potion
+    const potion = player.potion
 
     const shop = require('./shop.json')
     const shopThrowable = shop.find(item => item.id === throwable.id)
-
-    const shopPotion = shop.find(item => item.id === potion.id)
+    const shopPotion = potion ? shop.find(item => item.id === potion.id) : null
 
     if (!args[0]) {
       const embed = new Discord.MessageEmbed().setColor('#3E4BDD')
       .setTitle(`${msg.author.username}'s stats | LVL: ${await player.level} (${currExperience}/${nextLevelExperience})`)
       .setThumbnail(msg.author.avatarURL({dynamic: true}))
       .setDescription(`You have **${result[0][0].attributes}** attributes.`)
-      .addField(`HP`, `${await player.hp}`, true)
+      .addField(`HP`, `${player.hp.max}`, true)
       .addField(`ATT`, `${await player.att}`, true)
       .addField(`DEF`, `${await player.def}`, true)
       .addField(`THROWABLE`, throwable ? `${shopThrowable.uploaded ? Bot.client.emojis.cache.find(e => e.name === shopThrowable.emoji) : shopThrowable.emoji} ${shopThrowable.name} (${throwable.amount})` : `:x: NONE`, true)

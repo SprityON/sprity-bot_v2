@@ -33,12 +33,12 @@ module.exports = {
     item.execute(msg, args)
     .then(async ([bool, message]) => {
       if (bool === true) {
-        if (!item.role && !item.tool && !item.rpg) {
-          inventory[invItem.pos].amount -= 1
-          await DB.query(`update members set inventory = '${JSON.stringify(inventory)}' where member_id = ${msg.member.id}`)
-         
-          msg.reply({ embeds: [sendEmbed(`You have used the item **${shopItem.name}**`)] })
-        } 
+        if (item.role) return msg.reply({ embeds: [sendEmbed(message)] })
+
+        inventory[invItem.pos].amount -= 1
+        await DB.query(`update members set inventory = '${JSON.stringify(inventory)}' where member_id = ${msg.member.id}`)
+
+        msg.reply({ embeds: [sendEmbed(`You have used the item **${shopItem.name}**`)] })
       } else return msg.reply({ embeds: [sendEmbed(message)] })
     }).catch((err) => {
       console.log(err);

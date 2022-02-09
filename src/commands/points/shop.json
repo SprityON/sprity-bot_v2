@@ -31,7 +31,7 @@
 
   {
     "id": "sprityfan",
-    "type": "role",
+    "type": "usable",
     "role": "Sprity Fan",
     "emoji": ":bell:",
     "uploaded": false,
@@ -63,6 +63,7 @@
   {
     "id": "rich_role",
     "type": "usable",
+    "role": "Rich",
     "emoji": ":money_with_wings:",
     "uploaded": false,
     "name": "Rich Role",
@@ -72,7 +73,7 @@
 
   {
     "id": "hp_pot10",
-    "type": "rpg",
+    "type": "potion",
     "emoji": "health_potion",
     "uploaded": true,
     "name": "Health Potion (10%)",
@@ -83,7 +84,7 @@
 
   {
     "id": "xs_bomb",
-    "type": "rpg",
+    "type": "throwable",
     "emoji": ":bomb:",
     "uploaded": false,
     "name": "XS Bomb",
@@ -94,7 +95,7 @@
 
   {
     "id": "m_bomb",
-    "type": "rpg",
+    "type": "throwable",
     "emoji": ":bomb:",
     "uploaded": false,
     "name": "M Bomb",

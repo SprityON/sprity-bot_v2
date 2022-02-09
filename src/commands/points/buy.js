@@ -13,7 +13,6 @@ module.exports = {
   timeout: 1000,
 
   async execute(msg, args) {
-    msg.reply({ embeds: [sendEmbed(`You have to provide a valid amount!`)] })
     if (!args[0] || !isNaN(args[0])) return msg.reply({ embeds: [sendEmbed(`You have to provide a valid item ID!`)] })
     if (args[1] && isNaN(args[1])) return msg.reply({ embeds: [sendEmbed(`You have to provide a valid amount!`)] })
 

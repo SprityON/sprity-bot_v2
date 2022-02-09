@@ -292,7 +292,6 @@ module.exports = class Utils {
   static async embedList({
     title,
     type,
-    selectQuery,
     JSONlist,
     member,
     currPage,
@@ -376,23 +375,15 @@ module.exports = class Utils {
           let embed = new Bot.Discord.MessageEmbed()
             .setColor('#3E4BDD')
 
-          if (!currPage) currPage = 1;
+          if (currPage === undefined) currPage = 1;
 
           if (currPage > 1) { i = (currPage * showAmountOfItems) - showAmountOfItems }
 
-          let allJSON = JSONlist;
-
-          if (filter && isNaN(filter)) {
-            try {
-              allJSON = Array.from(require(`./commands/game/rpg/${filter}/${filter}.json`));
-            } catch (error) {
-              filter = '';
-            }
-          }
+          if (filter && isNaN(filter)) { JSONlist = JSONlist.filter(i => i.type === filter) }
 
           let Continue = true
 
-          for (let item of allJSON) {
+          for (let item of JSONlist) {
 
             totalItemsAmount++
 
@@ -421,9 +412,15 @@ module.exports = class Utils {
 
           if (currPage > lastPage) {
             if (lastPage == 1) {
-              return callback(`**${member.user.username}**, there is only 1 page!`);
+              return callback([false, `**${member.user.username}**, there is only 1 page!`]);
             } else {
-              return callback(`**${member.user.username}**, there are only ${lastPage} pages!`);
+              return callback([false, `**${member.user.username}**, there are only ${lastPage} pages!`]);
+            }
+          } else if (currPage < 1) {
+            if (lastPage == 1) {
+              return callback([false, `**${member.user.username}**, there is only 1 page!`]);
+            } else {
+              return callback([false, `**${member.user.username}**, there are only ${lastPage} pages!`]);
             }
           }
 
@@ -451,9 +448,9 @@ module.exports = class Utils {
 
           if (currPage > 1) { i = (currPage * showAmountOfItems) - showAmountOfItems }
 
-          let allJSON = JSONlist;
+          let JSONlist = JSONlist;
 
-          for (let item of allJSON) {
+          for (let item of JSONlist) {
             let dbItem = await player.settings
             dbItem = dbItem.find(i => i.id === item.id)
             totalItemsAmount++
@@ -511,18 +508,16 @@ module.exports = class Utils {
 
           if (currPage > 1) { i = (currPage * showAmountOfItems) - showAmountOfItems }
 
-          let allJSON = JSONlist;
-
           if (filter && isNaN(filter)) {
             try {
-              allJSON = Array.from(require(`./commands/game/rpg/${filter}/${filter}.json`));
+              JSONlist = Array.from(require(`./commands/game/rpg/${filter}/${filter}.json`));
             } catch (error) {
               filter = '';
             }
           }
 
           let Continue = true
-          for (let item of allJSON) {
+          for (let item of JSONlist) {
 
             totalItemsAmount++
 

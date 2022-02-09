@@ -51,7 +51,7 @@ module.exports = {
 
     menu.addComponents(selectMenu)
 
-    function updateMenu(selected) {
+    function updateMenu(selected) { 
       let i = 0
       for (let option of selectMenu.options) {
         if (option.value === selected) { option.default = true; }
@@ -62,31 +62,31 @@ module.exports = {
     }
 
     const buttons = new Discord.MessageActionRow()
-      .addComponents(
-          new Discord.MessageButton()
-            .setCustomId('shop_first')
-            .setLabel('◄◄')
-            .setStyle('PRIMARY'),
+    .addComponents(
+        new Discord.MessageButton()
+          .setCustomId('shop_first')
+          .setLabel('◄◄')
+          .setStyle('PRIMARY'),
 
-          new Discord.MessageButton()
-            .setCustomId('shop_previous')
-            .setLabel('◄')
-            .setStyle('PRIMARY'),
+        new Discord.MessageButton()
+          .setCustomId('shop_previous')
+          .setLabel('◄')
+          .setStyle('PRIMARY'),
 
-          new Discord.MessageButton()
-            .setCustomId('shop_next')
-            .setLabel('►')
-            .setStyle('PRIMARY'),
+        new Discord.MessageButton()
+          .setCustomId('shop_next')
+          .setLabel('►')
+          .setStyle('PRIMARY'),
 
-          new Discord.MessageButton()
-            .setCustomId('shop_last')
-            .setLabel('►►')
-            .setStyle('PRIMARY'),
+        new Discord.MessageButton()
+          .setCustomId('shop_last')
+          .setLabel('►►')
+          .setStyle('PRIMARY'),
 
-          new Discord.MessageButton()
-            .setCustomId('cancel')
-            .setLabel('Cancel')
-            .setStyle('DANGER'),
+        new Discord.MessageButton()
+          .setCustomId('shop_cancel')
+          .setLabel('Cancel')
+          .setStyle('DANGER')
       )
 
     function returnEmbed(selected, page) {
@@ -111,10 +111,21 @@ module.exports = {
     let currentPage = 1
     let result;
 
+    function disableComponents() {
+      selectMenu.disabled = true
+      buttons.components.forEach(comp => {
+        comp.disabled = true
+        comp.style = 'SECONDARY'
+      })
+    }
+
     const message = await msg.reply({ embeds: [returnEmbed('tool')], components: [menu, buttons] })
 
     while (interactionEnded === false) {
-      const interaction = await message.awaitMessageComponent({ filter, time: 30000 }).catch(err => console.log('lol'));
+      const interaction = await message.awaitMessageComponent({ filter, time: 15000 }).catch(() => {
+        disableComponents()
+        message.edit({ embeds: [returnEmbed('tool')], components: [menu, buttons] })
+      })
       
       if (!interaction) break
 
@@ -155,10 +166,6 @@ module.exports = {
             prevSelection = selected
 
             updateMenu(selected)
-            break;
-
-          case 'cancel':
-            interactionEnded = true
             break;
         }
       }
@@ -212,6 +219,12 @@ module.exports = {
             
             interaction.update({ embeds: [returnEmbed(prevSelection, currentPage)], components: [menu, buttons] })
           break;
+
+          case 'shop_cancel':
+            disableComponents()
+            interactionEnded = true
+            interaction.update({ embeds: [returnEmbed(prevSelection, currentPage)], components: [menu, buttons] })
+          break
         }
       }
     }

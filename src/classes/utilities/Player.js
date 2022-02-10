@@ -98,8 +98,6 @@ module.exports = class Player {
 
   potion = { id: '', amount: 0}
 
-  run() { return new Battle(this, '').run() }
-
   setPotion() {
     this.getPotion.then(potion => {
       if (!potion) return this.potion = null

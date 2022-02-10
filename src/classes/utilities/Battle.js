@@ -38,7 +38,6 @@ module.exports = class Battle {
     const shopThrowable = throwable ? shop.find(item => item.id === throwable.id) : null
     const emote = throwable ? (shopThrowable.uploaded ? Bot.client.emojis.cache.find(e => e.name === shopThrowable.emoji) : shopThrowable.emoji) : null
 
-    console.log(throwable);
     throwable.amount -= 1
 
     this.enemy.hp.current -= shopThrowable.damage
@@ -48,9 +47,9 @@ module.exports = class Battle {
       : await DB.query(`update members set throwable = '[${JSON.stringify(throwable)}]' where member_id = ${this.player.member.id}`)
 
     if (this.enemy.hp.current < 1)
-      return [true, options ? `**${this.player.member.displayName}** killed **${this.enemy.name}** with ${emote}!` : { embeds: [sendEmbed(`**${this.player.member.displayName}** killed **${this.enemy.name}** with ${emote}!`, { color: colors.green })] }, shopThrowable]
+      return [true, options.returnString ? `**${this.player.member.displayName}** killed **${this.enemy.name}** with ${emote}!` : { embeds: [sendEmbed(`**${this.player.member.displayName}** killed **${this.enemy.name}** with ${emote}!`, { color: colors.green })] }, shopThrowable]
 
-    return [false, options ? `**${this.player.member.displayName}** threw a ${emote} **${shopThrowable.name}** and did **${shopThrowable.damage}** damage to **${this.enemy.name}'s (${this.enemy.hp.current}/${this.enemy.hp.max})**` : { embeds: [sendEmbed(`**${this.player.member.displayName}** threw a ${emote} **${shopThrowable.name}** and did **${shopThrowable.damage}** damage to **${this.enemy.name}'s (${this.enemy.hp.current}/${this.enemy.hp.max})**`, { color: colors.green })] }, shopThrowable]
+    return [false, options.returnString ? `**${this.player.member.displayName}** threw a ${emote} **${shopThrowable.name}** and did **${shopThrowable.damage}** damage to **${this.enemy.name}'s (${this.enemy.hp.current}/${this.enemy.hp.max})**` : { embeds: [sendEmbed(`**${this.player.member.displayName}** threw a ${emote} **${shopThrowable.name}** and did **${shopThrowable.damage}** damage to **${this.enemy.name}'s (${this.enemy.hp.current}/${this.enemy.hp.max})**`, { color: colors.green })] }, shopThrowable]
   }
 
   async attack(options = { returnString: false }) {

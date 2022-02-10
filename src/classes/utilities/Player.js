@@ -6,9 +6,9 @@ const { MessageEmbed } = require("discord.js")
 const { Discord } = require("../../Bot")
 
 module.exports = class Player {
-  constructor (member, msg) {
-    this.member = member
+  constructor(member, msg) {
     this.msg = msg
+    this.member = member
     this.setPotion()
   }
 

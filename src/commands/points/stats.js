@@ -15,6 +15,8 @@ module.exports = {
 
   async execute(msg, args) {
     const player = new Player(msg.member)
+    const stats = await player.stats
+    player.setHP = { current: stats.health, max: stats.health }
     const result = await DB.query(`select * from members where member_id = ${msg.member.id}`)
     const nextLevelExperience = ((await player.level + 1) * 125) + await player.level * 125
     let previousExperience = 0

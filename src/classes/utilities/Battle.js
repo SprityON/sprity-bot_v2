@@ -1,6 +1,7 @@
 const Bot = require("../../Bot");
 const DB = require("../database/DB");
 const { sendEmbed } = require("./AdvancedEmbed");
+const { colors } = require("./Utils");
 
 module.exports = class Battle {
   constructor(player, enemy) {
@@ -16,7 +17,7 @@ module.exports = class Battle {
     const emote = this.player.potion ? (shopPotion.uploaded ? Bot.client.emojis.cache.find(e => e.name === shopPotion.emoji) : shopPotion.emoji) : null
 
     if (this.player.hp.current >= this.player.hp.max) {
-      return [{ embeds: [sendEmbed(`You are already at full health!\n\nType \`attack\`, \`throw\`, \`potion\` or \`run\``, { color: 'ffff00' })] }]
+      return [false, { embeds: [sendEmbed(`You are already at full health!\n\nType \`attack\`, \`throw\`, \`potion\` or \`run\``, { color: colors.yellow })] }]
     } else {
       this.player.potion.amount -= 1
 
@@ -24,10 +25,10 @@ module.exports = class Battle {
         ? await DB.query(`update members set potion = '' where member_id = ${this.player.member.id}`)
         : await DB.query(`update members set potion = '[${JSON.stringify(this.player.potion)}]' where member_id = ${this.player.member.id}`)
 
-      this.player.hp.current += Math.floor(this.player.hp.max / shopPotion.heal_percentage)
+      this.player.hp.current += Math.floor(this.player.hp.max / 100 * shopPotion.heal_percentage)
 
       if (this.player.hp.current >= this.player.hp.max) this.player.hp.current = this.player.hp.max
-      return { embeds: [sendEmbed(`You restored ${shopPotion.heal_percentage}% of your health by using ${emote} **${shopPotion.name}**\n***Your* HP: ${this.player.hp.current}/${this.player.hp.max}**`, { color: 'ffff00' })] }
+      return [false, { embeds: [sendEmbed(`You restored **${shopPotion.heal_percentage}%** of your health **(${this.player.hp.current}/${this.player.hp.max})** by using ${emote} **${shopPotion.name}**`, { color: colors.green })] }]
     }
   }
 
@@ -45,26 +46,33 @@ module.exports = class Battle {
       ? await DB.query(`update members set throwable = '' where member_id = ${this.player.member.id}`)
       : await DB.query(`update members set throwable = '[${JSON.stringify(throwable)}]' where member_id = ${this.player.member.id}`)
 
-    if (minionHealth < 1)
-      return [true, { embeds: [sendEmbed(`You killed **${minionName}** with ${emote}!`, { color: '00ff00' })] }]
+    if (this.enemy.hp.current < 1)
+      return [true, { embeds: [sendEmbed(`You killed **${this.enemy.name}** with ${emote}!`, { color: colors.green })] }]
 
-    return [false, { embeds: [sendEmbed(`You threw a ${emote} **${shopThrowable.name}** and did **${shopThrowable.damage}** damage! ***${this.enemy.name}'s* HP: ${this.enemy.hp.current}/${this.enemy.hp.max}**`, { color: 'ffff00' })] }]
+    return [false, { embeds: [sendEmbed(`You threw a ${emote} **${shopThrowable.name}** and did **${shopThrowable.damage}** damage to **${this.enemy.name}'s (${this.enemy.hp.current}/${this.enemy.hp.max})**`, { color: colors.green })] }]
   }
 
   async attack() {
-    this.enemy.hp.current -= Math.floor(await this.damageDone())
+    const damage = await this.damageDone()
+    this.enemy.hp.current -= damage
 
     if (this.enemy.hp.current < 1) {
       if (this.enemy.run() === true) {
-        return [false, `Oh no, **${this.enemy.name}** ran away from you!`]
-      } else return [true, `You killed **${this.enemy.name}**`]
+        return [false, { embeds: [sendEmbed(`Oh no, **${this.enemy.name}** ran away from you!`, { color: colors.red })]
+      }]
+        
+      } else return [true, { embeds: [sendEmbed(`You killed **${this.enemy.name}** (**${this.enemy.hp.current}/${this.enemy.hp.max}**)`, { color: colors.green })] }]
     } 
     
-    else return ['skip', `You did **${await this.damageDone()}** damage! ***${this.enemy.name}'s* HP: ${this.enemy.hp.current}/${this.enemy.hp.max}**`]
+    else return ['skip', { embeds: [sendEmbed(`You did **${damage}** damage to **${this.enemy.name}'s (${this.enemy.hp.current}/${this.enemy.hp.max})**`, { color: colors.green })] }]
   }
 
   run() {
     const chance = Math.floor(Math.random() * 3) + 1
-    if (chance == 1) { return true } else { return true }
+    if (chance == 1) { 
+      return [false, { embeds: [sendEmbed(`You couldn't run away from **${this.enemy.name}**!`, { color: colors.red })] }] 
+    } else { 
+      return [true, { embeds: [sendEmbed(`You successfully ran away from **${this.enemy.name}**!`, { color: colors.green })] }] 
+    }
   }
 }

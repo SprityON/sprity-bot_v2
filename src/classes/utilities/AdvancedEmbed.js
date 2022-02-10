@@ -1,10 +1,6 @@
 const { MessageEmbed } = require('discord.js')
 
 module.exports = class AdvancedEmbed {
-  constructor() {
-
-  }
-
   static sendEmbed(content, options = {
     title: '',
     description: '',

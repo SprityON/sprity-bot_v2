@@ -7,7 +7,7 @@ const { sendEmbed } = require('../../classes/utilities/AdvancedEmbed')
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
   category: Utils.getCmdCategory(__filename),
-  usage: 'use <item_id>',
+  usage: 'use <itemId>',
   aliases: ['equip'],
   permissions: ['SEND_MESSAGES'],
   timeout: 1000,
@@ -18,15 +18,18 @@ module.exports = {
     const player = new Player(msg.member)
     const inventory = await player.inventory
 
-    const item_id = args.shift()
+    const itemId = args.shift()
 
     const items = fs.readdirSync('./commands/points/items').filter(file => file.endsWith('.js'))
-    const item = items.find(item => item.includes(item_id)) ? require(`./items/${item_id}`) : null
+    const items_rpg = require('./shop.json').filter(item => item.type !== 'tool' && item.type !== 'usable')
+    const item_rpg = items_rpg.find(item => item.id === itemId)
+    if (item_rpg) return require('./items/equip').execute(msg, itemId, item_rpg.type)
+    const item = items.find(item => item.includes(itemId)) ? require(`./items/${itemId}`) : null
     
     if (!item) return msg.reply({ embeds: [sendEmbed(`That item was not found!`)] })
 
-    const shopItem = require('./shop.json').find(i => i.id === item_id)
-    const invItem = inventory.find(item => item.id === item_id)
+    const shopItem = require('./shop.json').find(i => i.id === itemId)
+    const invItem = inventory.find(item => item.id === itemId)
     
     if (!invItem || invItem.amount <= 0) return msg.reply({ embeds: [sendEmbed(`You do not have that item!`)] })
 

@@ -41,6 +41,33 @@ module.exports = class Utils {
     this.refresh()
   }
 
+  /**
+   * Counts how many of a certain type of character is in a certain string
+   * @param {String} str 
+   */
+  static countChar(str, char) {
+    let counter = 0
+    for (let i = 0; i < str.length; i++) {
+      const c = str.charAt(i)
+      c === char ? counter++ : null
+    }
+    return counter + 1
+  }
+
+  static colors = {
+    default: '#424FD9',
+    green: '4aff61',
+    yellow_green: 'bbf525',
+    yellow: 'fff647',
+    orange: 'ff9543',
+    red: 'ec3232'
+  }
+
+  static messages = {
+    wrong_argument: "The provided arguments were incorrect.",
+    unusable_interaction: "You may not use this interaction."
+  }
+
   static wait(time) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
@@ -316,7 +343,6 @@ module.exports = class Utils {
         let testI = 0;
 
         let embed = new Bot.Discord.MessageEmbed()
-          .setColor('#3E4BDD')
 
         if (!currPage) currPage = 1;
 
@@ -359,7 +385,7 @@ module.exports = class Utils {
         embed.setDescription(`${title.toString()}\n\n${text}`)
           .setFooter({ text: `Page ${currPage}/${lastPage} | Use ${await DB.guild.getPrefix()}help for more info` })
 
-        text ? callback(embed) : callback(new Bot.Discord.MessageEmbed().setColor('#3E4BDD').setDescription(`Your inventory is empty. Buy something!`))
+        text ? callback({ embeds: [embed.setColor('#3E4BDD')]} ) : callback({ embeds: [new Bot.Discord.MessageEmbed().setColor('#3E4BDD').setDescription(`Your inventory is empty. Buy something!`)] })
         break;
 
       case 'shop':

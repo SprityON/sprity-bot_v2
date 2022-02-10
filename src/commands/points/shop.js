@@ -9,7 +9,7 @@ module.exports = {
   usage: '',
   aliases: [],
   permissions: ['SEND_MESSAGES'],
-  timeout: 1000,
+  timeout: 10000,
 
   async execute(msg, args) {
     const shop = require('./shop.json')
@@ -49,18 +49,6 @@ module.exports = {
         }
       ])
 
-    menu.addComponents(selectMenu)
-
-    function updateMenu(selected) { 
-      let i = 0
-      for (let option of selectMenu.options) {
-        if (option.value === selected) { option.default = true; }
-        if (option.value !== selected && option.default === true) option.default = false
-      }
-
-      i++
-    }
-
     const buttons = new Discord.MessageActionRow()
     .addComponents(
         new Discord.MessageButton()
@@ -87,7 +75,19 @@ module.exports = {
           .setCustomId('shop_cancel')
           .setLabel('Cancel')
           .setStyle('DANGER')
-      )
+    )
+
+    menu.addComponents(selectMenu)
+
+    function updateMenu(selected) {
+      let i = 0
+      for (let option of selectMenu.options) {
+        if (option.value === selected) { option.default = true; }
+        if (option.value !== selected && option.default === true) option.default = false
+      }
+
+      i++
+    }
 
     function returnEmbed(selected, page) {
       let message 
@@ -104,13 +104,6 @@ module.exports = {
       return message
     }
 
-    const filter = interaction => interaction.customId.startsWith('shop') && interaction.user.id === msg.member.id;
-
-    let interactionEnded = false
-    let prevSelection = 'tool'
-    let currentPage = 1
-    let result;
-
     function disableComponents() {
       selectMenu.disabled = true
       buttons.components.forEach(comp => {
@@ -119,55 +112,28 @@ module.exports = {
       })
     }
 
+    const filter = interaction => interaction.customId.startsWith('shop') && interaction.user.id === msg.member.id;
+
+    let prevSelection = 'tool'
+    let currentPage = 1
+    let result;
+
     const message = await msg.reply({ embeds: [returnEmbed('tool')], components: [menu, buttons] })
 
-    while (interactionEnded === false) {
+    while (true) {
       const interaction = await message.awaitMessageComponent({ filter, time: 15000 }).catch(() => {
         disableComponents()
-        message.edit({ embeds: [returnEmbed('tool')], components: [menu, buttons] })
+        message.edit({ embeds: [returnEmbed(prevSelection, currentPage)], components: [menu, buttons] })
       })
-      
+
       if (!interaction) break
 
       if (interaction.componentType === 'SELECT_MENU') {
         const selected = interaction.values[0]
 
-        switch (selected) {
-          case 'tool':
-            interaction.update({ embeds: [returnEmbed(selected)], components: [menu, buttons] })
-            prevSelection = selected
-
-            updateMenu(selected)
-            break;
-
-          case 'usable':
-            interaction.update({ embeds: [returnEmbed(selected)], components: [menu, buttons] })
-            prevSelection = selected
-
-            updateMenu(selected)
-            break;
-
-          case 'throwable':
-            interaction.update({ embeds: [returnEmbed(selected)], components: [menu, buttons] })
-            prevSelection = selected
-
-            updateMenu(selected)
-            break;
-
-          case 'potion':
-            interaction.update({ embeds: [returnEmbed(selected)], components: [menu, buttons] })
-            prevSelection = selected
-
-            updateMenu(selected)
-            break;
-
-          case 'everything':
-            interaction.update({ embeds: [returnEmbed()], components: [menu, buttons] })
-            prevSelection = selected
-
-            updateMenu(selected)
-            break;
-        }
+        interaction.update({ embeds: [returnEmbed(selected)], components: [menu, buttons] })
+        prevSelection = selected
+        updateMenu(selected)
       }
       
       else if (interaction.componentType === 'BUTTON') {
@@ -222,9 +188,8 @@ module.exports = {
 
           case 'shop_cancel':
             disableComponents()
-            interactionEnded = true
             interaction.update({ embeds: [returnEmbed(prevSelection, currentPage)], components: [menu, buttons] })
-          break
+          return
         }
       }
     }

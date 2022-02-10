@@ -1,3 +1,6 @@
+const { sendEmbed } = require("./AdvancedEmbed")
+const { colors } = require("./Utils")
+
 module.exports = class Enemy {
   constructor(player) {
     this.player = player
@@ -24,13 +27,14 @@ module.exports = class Enemy {
 
   async damageDone() { return Math.floor(await this.att()) }
   
-  async attack()  {
-    this.player.hp.current -= await this.damageDone()
+  async attack() {
+    const damage = await this.damageDone()
+    this.player.hp.current -= damage
 
     if (this.player.hp.current < 1) {
-      return [true, `**${this.name}** did **${await this.damageDone()}** damage and you died with **${this.player.hp.current}** HP!`]
+      return [true, { embeds: [sendEmbed(`**${this.name}** did **${damage}** damage and you died at **(${this.player.hp.current}/${this.player.hp.max})** HP!`, { color: colors.red })] }]
     } else {
-      return [false, `**${this.name}** did **${await this.damageDone()}** damage. ***Your* HP: ${this.player.hp.current}/${this.player.hp.max}**\n\nType \`attack\`, \`throw\`, \`potion\` or \`run\``]
+      return [false, { embeds: [sendEmbed(`**${this.name}** did **${damage}** damage to **${this.player.member.displayName} (${this.player.hp.current}/${this.player.hp.max})**\n\nType \`attack\`, \`throw\`, \`potion\` or \`run\``, { color: colors.red })] }]
     }
   }
 

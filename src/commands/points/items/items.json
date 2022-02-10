@@ -102,7 +102,7 @@
     "emoji": ":fish:",
     "uploaded": false,
     "chance": 9999,
-    "price": 2,
+    "price": 4,
     "amountNultiplier": 0.5
   },
 
@@ -113,7 +113,7 @@
     "emoji": ":crab:",
     "uploaded": false,
     "chance": 2500,
-    "price": 5,
+    "price": 10,
     "amountNultiplier": 0.4
   },
 
@@ -135,7 +135,7 @@
     "emoji": ":shark:",
     "uploaded": false,
     "chance": 25,
-    "price": 500,
+    "price": 5000,
     "amountNultiplier": 0.1
   }
 ]

@@ -78,8 +78,30 @@
     "uploaded": true,
     "name": "Health Potion (10%)",
     "description": "Using this potion will restore 10% of your HP.",
-    "price": 250,
+    "price": 900,
     "heal_percentage": 10
+  },
+
+  {
+    "id": "hp_pot25",
+    "type": "potion",
+    "emoji": "health_potion",
+    "uploaded": true,
+    "name": "Health Potion (25%)",
+    "description": "Using this potion will restore 25% of your HP.",
+    "price": 1800,
+    "heal_percentage": 25
+  },
+
+  {
+    "id": "hp_pot50",
+    "type": "potion",
+    "emoji": "health_potion",
+    "uploaded": true,
+    "name": "Health Potion (50%)",
+    "description": "Using this potion will restore 50% of your HP.",
+    "price": 3000,
+    "heal_percentage": 50
   },
 
   {
@@ -89,8 +111,19 @@
     "uploaded": false,
     "name": "XS Bomb",
     "description": "Does **25** damage.",
-    "price": 250,
+    "price": 800,
     "damage": 25
+  },
+
+  {
+    "id": "s_bomb",
+    "type": "throwable",
+    "emoji": ":bomb:",
+    "uploaded": false,
+    "name": "Small Bomb",
+    "description": "Does **50** damage.",
+    "price": 1500,
+    "damage": 50
   },
 
   {
@@ -98,10 +131,43 @@
     "type": "throwable",
     "emoji": ":bomb:",
     "uploaded": false,
-    "name": "M Bomb",
+    "name": "Medium Bomb",
     "description": "Does **100** damage.",
-    "price": 1000,
+    "price": 2500,
     "damage": 100
+  },
+
+  {
+    "id": "l_bomb",
+    "type": "throwable",
+    "emoji": ":bomb:",
+    "uploaded": false,
+    "name": "Large Bomb",
+    "description": "Does **250** damage.",
+    "price": 6000,
+    "damage": 250
+  },
+
+  {
+    "id": "xl_bomb",
+    "type": "throwable",
+    "emoji": ":bomb:",
+    "uploaded": false,
+    "name": "XL Bomb",
+    "description": "Does **500** damage.",
+    "price": 10000,
+    "damage": 500
+  },
+
+  {
+    "id": "xxl_bomb",
+    "type": "throwable",
+    "emoji": ":bomb:",
+    "uploaded": false,
+    "name": "XXL Bomb",
+    "description": "Does **2500** damage.",
+    "price": 40000,
+    "damage": 2500
   },
 
   {

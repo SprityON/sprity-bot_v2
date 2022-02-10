@@ -9,8 +9,6 @@ module.exports.execute = async(msg, item_id, type) => {
 
   const weapon = await player[type]
   const shop = require('../shop.json')
-  const shopThrowable = weapon ? shop.find(item => item.id === weapon.id) : null
-  const throwableEmote = weapon ? (shopThrowable.uploaded ? Bot.client.emojis.cache.find(e => e.name === shopThrowable.emoji) : shopThrowable.emoji) : null
   const newShopThrowable = shop.find(item => item.id === item_id)
   const newThrowableEmote = newShopThrowable.uploaded ? Bot.client.emojis.cache.find(e => e.name === newShopThrowable.emoji) : newShopThrowable.emoji
 
@@ -37,7 +35,6 @@ module.exports.execute = async(msg, item_id, type) => {
   } else {
     msg.reply({ embeds: [sendEmbed(`You are now using ${newThrowableEmote} **${newShopThrowable.name}** as a ${type}`)] })
     const item = inventory.find(item => item.id === item_id)
-    console.log(item);
     const invItemAmount = item.amount
     inventory[item.pos].amount -= item.amount
     await DB.query(`update members set ${type} = '[{"id": "${item_id}", "amount": ${invItemAmount}}]', inventory = '${JSON.stringify(inventory)}' where member_id = ${msg.member.id}`)

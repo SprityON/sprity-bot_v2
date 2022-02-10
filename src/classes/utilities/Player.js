@@ -4,6 +4,7 @@ const moment = require('moment')
 const { sendEmbed } = require("./AdvancedEmbed")
 const { MessageEmbed } = require("discord.js")
 const { Discord } = require("../../Bot")
+const Battle = require("./Battle")
 
 module.exports = class Player {
   constructor(member, msg) {
@@ -96,6 +97,8 @@ module.exports = class Player {
   }
 
   potion = { id: '', amount: 0}
+
+  run() { return new Battle(this, '').run() }
 
   setPotion() {
     this.getPotion.then(potion => {

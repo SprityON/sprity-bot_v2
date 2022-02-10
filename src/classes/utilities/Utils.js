@@ -65,7 +65,8 @@ module.exports = class Utils {
 
   static messages = {
     wrong_argument: "The provided arguments were incorrect.",
-    unusable_interaction: "You may not use this interaction."
+    unusable_interaction: "You may not use this interaction.",
+    not_enough_item: "You do not have enough of that item."
   }
 
   static wait(time) {

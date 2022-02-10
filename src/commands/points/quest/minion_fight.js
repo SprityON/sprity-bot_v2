@@ -53,10 +53,10 @@ module.exports.execute = async (msg, args, quest) => {
         const [hasWon, message] = await battle.usePotion()
 
         if (hasWon === true) {
-          msg.reply(message)
+          msg.reply(message + `\n\nType \`attack\`, \`throw\`, \`potion\` or \`run\``)
           return [true, inventory]
         } else {
-          msg.reply(message)
+          msg.reply(message + `\n\nType \`attack\`, \`throw\`, \`potion\` or \`run\``)
 
           await Utils.wait(1000)
 

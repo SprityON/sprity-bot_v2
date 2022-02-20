@@ -120,8 +120,8 @@ module.exports = {
           )
 
           embed.spliceFields(0, 999)
-            .addField(`${msg.member.displayName}'s HP`, `${playerStats.health}/${playerStats.health} ${heart} `, true)
-            .addField(`${mention.displayName}'s HP`, `${mentionStats.health}/${mentionStats.health} ${heart} `, true)
+            .addField(`${msg.member.displayName}`, `${playerStats.health}/${playerStats.health} ${heart} `, true)
+            .addField(`${mention.displayName}`, `${mentionStats.health}/${mentionStats.health} ${heart} `, true)
             .addField(`\u200b`, `*Status: **${mention.displayName}** and **${msg.member.displayName}** are currently battling*`)
             .setColor(colors.orange)
             .setTitle(`:crossed_swords: Battle: ${msg.member.displayName} VS ${mention.displayName}`)
@@ -156,12 +156,10 @@ module.exports = {
       }
     }
 
-    if (cancelled === true) return
-
     let turn = player
     let nextTurn = mentionedPlayer
 
-    while (true) {
+    while (cancelled === false && true) {
       filter = interaction => interaction.customId.startsWith('battle') && interaction.user.id === turn.member.id
       let interaction = await message.awaitMessageComponent({ filter, time: '60000' }).catch(err => {
         disableComponents()
@@ -203,8 +201,8 @@ module.exports = {
 
           embed.spliceFields(0, 999)
             .setTitle(`:crossed_swords: Battle: ${turn.member.displayName} VS ${nextTurn.member.displayName}`)
-            .addField(`${msg.member.displayName}'s HP`, `${player.hp.current}/${player.hp.max} ${heart} ${showText(0)}`, true)
-            .addField(`${mention.displayName}'s HP`, `${mentionedPlayer.hp.current}/${mentionedPlayer.hp.max} ${heart} ${showText(1)}`, true)
+            .addField(`${msg.member.displayName}`, `${player.hp.current}/${player.hp.max} ${heart} ${showText(0)}`, true)
+            .addField(`${mention.displayName}`, `${mentionedPlayer.hp.current}/${mentionedPlayer.hp.max} ${heart} ${showText(1)}`, true)
             .addField(`\u200b`, `*Status: ${string}*`)
 
           return embed
@@ -283,6 +281,7 @@ module.exports = {
           break
 
           case 'battle_potion':
+            if (!turn.potion.id) continue;
             [hasWon, string, potion] = await battle.usePotion({ returnString: true })
             healText = `(+${(turn.hp.max / 100 * potion.heal_percentage)})`
 

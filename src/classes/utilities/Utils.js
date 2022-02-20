@@ -1,5 +1,5 @@
-const ms = require('ms');
 const DB = require('../database/DB');
+const Bot = require('../../Bot')
 
 module.exports = class Utils {
   static async load() {
@@ -16,12 +16,12 @@ module.exports = class Utils {
               .forEach(scndCommandFile => {
                 if (scndCommandFile.endsWith('.js')) {
                   let command = require(`../../commands/${category}/${commandFile}/${scndCommandFile}`)
-                  require('../../Bot').Commands.set(command.name, command);
+                  Bot.Commands.set(command.name, command);
                 }
               })
           } else if (commandFile.endsWith('.js')) {
             let command = require(`../../commands/${category}/${commandFile}`);
-            require('../../Bot').Commands.set(command.name, command);
+            Bot.Commands.set(command.name, command);
           }
           
         })
@@ -31,7 +31,7 @@ module.exports = class Utils {
       .filter(selected => selected.endsWith('.js'))
       .forEach(e => {
         
-        require('../../Bot').client["on"]
+        Bot.client["on"]
           (Utils.getFileName(e),
             (...args) => {
               require(`../../events/${e}`).execute(...args);
@@ -39,6 +39,14 @@ module.exports = class Utils {
       })
 
     this.refresh()
+  }
+
+  static returnEmoji(item) {
+    const emoji = item.uploaded 
+      ? Bot.client.emojis.cache.find(e => e.name === item.id) 
+      : item.id
+
+    return emoji
   }
 
   /**
@@ -78,7 +86,11 @@ module.exports = class Utils {
   }
 
   static normalizePrice(n) {
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumSignificantDigits: 1 }).format(n).replace('$', ' ')
+    return new Intl.NumberFormat('en-US', { 
+      style: 'currency', 
+      currency: 'USD', 
+      minimumSignificantDigits: 1 
+    }).format(n).replace('$', ' ')
   }
 
   /**
@@ -166,7 +178,7 @@ module.exports = class Utils {
   }
 
   static botRoleColor() {
-    const me = require('../../Bot').client.guilds.cache.first().me
+    const me = Bot.client.guilds.cache.first().me
     return me.roles.cache.first() ? me.roles.cache.first().color : process.env.EMBEDCOLOR
   }
 
@@ -193,8 +205,7 @@ module.exports = class Utils {
   }
 
   static async refresh() {
-    const me = require('../../Bot').client.guilds.cache.get(process.env.GUILD_ID).me
-    // check if there is a member who is not in the db
+    const me = Bot.client.guilds.cache.get(process.env.GUILD_ID).me
     me.guild.members.cache.forEach(async member => {
       const botRole = me.guild.roles.cache.find(role => role.name === "Bot")
       if (member.user.bot) {
@@ -207,7 +218,6 @@ module.exports = class Utils {
         const memberRole = me.guild.roles.cache.find(role => role.name === "Member")
         if (!member.roles.cache.find(r => r.name === "Member")) member.roles.add(memberRole)
         if (!result[0][0]) return await DB.member.addToDB(member)
-        
 
         const role = me.guild.roles.cache.find(role => role.name === "Muted")
 
@@ -328,7 +338,7 @@ module.exports = class Utils {
   }, callback) {
     const Player = require('./Player');
     const Utils = this
-    const Bot = require('../../Bot');
+    const Bot = Bot;
 
     switch (type) {
       case 'inventory':

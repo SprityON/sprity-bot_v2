@@ -1,14 +1,6 @@
-const Utils = require('../../../classes/utilities/Utils')
 const { sendEmbed } = require('../../../classes/utilities/AdvancedEmbed')
 
 module.exports = {
-  name: Utils.getCmdName(__filename, __dirname),
-  category: Utils.getCmdCategory(__filename),
-  usage: '',
-  aliases: [],
-  permissions: ['SEND_MESSAGES'],
-  timeout: 1000,
-
   async execute(msg, args) {
     return new Promise((resolve, reject) => {
       msg.reply({ embeds: [sendEmbed(`Please type in your new nickname.`, { footer: 'type cancel to cancel' })] })
@@ -25,10 +17,4 @@ module.exports = {
       })
     })
   },
-
-  help: {
-    enabled: false,
-    title: '',
-    description: ``,
-  }
 }

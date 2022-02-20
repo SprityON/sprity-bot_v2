@@ -1,1 +1,2 @@
-require('./Bot');
+const Bot = require('./Bot')
+Bot.run(Bot.client)

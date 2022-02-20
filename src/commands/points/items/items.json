@@ -67,6 +67,7 @@
     "id": "basic_chest",
     "name": "Basic Chest",
     "emoji": "basic_chest",
+    "type": "chest",
     "price": 100,
     "uploaded": true
   },
@@ -75,6 +76,7 @@
     "id": "rare_chest",
     "name": "Rare Chest",
     "emoji": "rare_chest",
+    "type": "chest",
     "price": 500,
     "uploaded": true
   },
@@ -83,6 +85,7 @@
     "id": "epic_chest",
     "name": "Epic Chest",
     "emoji": "epic_chest",
+    "type": "chest",
     "price": 2000,
     "uploaded": true
   },
@@ -91,6 +94,7 @@
     "id": "legendary_chest",
     "name": "Legendary Chest",
     "emoji": "legendary_chest",
+    "type": "chest",
     "price": 10000,
     "uploaded": true
   },

@@ -80,7 +80,7 @@ module.exports.execute = async (msg) => {
         let cmdFile
         try {
           cmdFile = require(`../commands/${cmd.category}/${cmd.name}`);
-        } catch {}
+        } catch (err) { return }
 
         let files = readdirSync(`./commands/${cmd.category}`)
 

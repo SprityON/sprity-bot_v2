@@ -131,7 +131,7 @@
       {"id": "points", "chance": 3500, "amountMultiplier": 100},
       {"id": "hp_pot50", "chance": 3500, "amountMultiplier": 0.6},
       {"id": "xl_bomb", "chance": 3500, "amountMultiplier": 0.3},
-      {"id": "xxl_bomb", "chance": 250, "amountMultiplier": 0.1},
+      {"id": "nuke", "chance": 250, "amountMultiplier": 0.1},
       {"id": "gold_ore", "chance": 9999, "amountMultiplier": 2},
       {"id": "diamond", "chance": 9999, "amountMultiplier": 0.5}
     ]

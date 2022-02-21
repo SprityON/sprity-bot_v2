@@ -34,7 +34,7 @@ module.exports = {
 
         invItem 
           ? inventory[invItem.pos].amount += itemAmount 
-          : inventory.push({pos: inventory.length, id: obt.id, amount: inventory[invItem.pos].amount})
+          : inventory.push({pos: inventory.length, id: obt.id, amount: itemAmount})
         
         receivedItems.push(`**${emoji} ${itemAmount}**`)
       }

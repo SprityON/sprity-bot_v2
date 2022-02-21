@@ -484,8 +484,6 @@ module.exports = class Utils {
 
           if (currPage > 1) { i = (currPage * showAmountOfItems) - showAmountOfItems }
 
-          let JSONlist = JSONlist;
-
           for (let item of JSONlist) {
             let dbItem = await player.settings
             dbItem = dbItem.find(i => i.id === item.id)

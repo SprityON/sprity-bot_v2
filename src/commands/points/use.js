@@ -16,7 +16,7 @@ module.exports = {
     if (!args[0] || args[0] && !isNaN(args[0])) return msg.reply({ embeds: [sendEmbed(`You have to provide a valid item ID!`)] })
 
     const player = new Player(msg.member)
-    const inventory = await player.inventory
+    let inventory = await player.inventory
 
     const itemId = args.shift()
 
@@ -42,9 +42,10 @@ module.exports = {
     
     if (!invItem || invItem.amount <= 0) return msg.reply({ embeds: [sendEmbed(`You do not have that item!`)] })
 
-    item.execute(msg, args)
-    .then(async ([bool, message]) => {
+    item.execute(msg, itemId.includes('chest') ? [itemId] : args)
+    .then(async ([bool, message, inv]) => {
       if (bool === true) {
+        if (inv) inventory = inv
         if (item.role) return msg.reply({ embeds: [sendEmbed(message)] })
 
         inventory[invItem.pos].amount -= 1

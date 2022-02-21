@@ -34,14 +34,18 @@ module.exports = {
     const shopThrowable = shop.find(item => item.id === throwable.id)
     const shopPotion = potion ? shop.find(item => item.id === potion.id) : null
 
+    const attackEmoji = Bot.client.emojis.cache.find(e => e.name === 'attack_rpg')
+    const defenseEmoji = Bot.client.emojis.cache.find(e => e.name === 'defense_rpg')
+    const healthEmoji = Bot.client.emojis.cache.find(e => e.name === 'heart_rpg')
+
     if (!args[0]) {
       const embed = new Discord.MessageEmbed().setColor('#3E4BDD')
       .setTitle(`${msg.author.username}'s stats | LVL: ${await player.level} (${currExperience}/${nextLevelExperience})`)
       .setThumbnail(msg.author.avatarURL({dynamic: true}))
       .setDescription(`You have **${result[0][0].attributes}** attributes.`)
-      .addField(`HP`, `${player.hp.max}`, true)
-      .addField(`ATT`, `${await player.att}`, true)
-      .addField(`DEF`, `${await player.def}`, true)
+      .addField(`${healthEmoji} ${player.hp.max}`, `\u200b`, true)
+      .addField(`${attackEmoji} ${await player.att}`, `\u200b`, true)
+      .addField(`${defenseEmoji} ${await player.def}`, `\u200b`, true)
       .addField(`THROWABLE`, throwable ? `${shopThrowable.uploaded ? Bot.client.emojis.cache.find(e => e.name === shopThrowable.emoji) : shopThrowable.emoji} ${shopThrowable.name} (${throwable.amount})` : `:x: NONE`, true)
         .addField(`POTION`, potion ? `${shopPotion.uploaded ? Bot.client.emojis.cache.find(e => e.name === shopPotion.emoji) : shopPotion.emoji} ${shopPotion.name} (${potion.amount})` : `:x: NONE`, true)
       .setFooter({text: `to upgrade: ${await DB.guild.getPrefix()}stats upgrade <stat> <amount>` })

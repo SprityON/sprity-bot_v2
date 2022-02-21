@@ -69,7 +69,16 @@
     "emoji": "basic_chest",
     "type": "chest",
     "price": 100,
-    "uploaded": true
+    "uploaded": true,
+    "obtainables": [
+      {"id": "points", "chance": 3500, "amountMultiplier": 3},
+      {"id": "stone", "chance": 9999, "amountMultiplier": 1.5},
+      {"id": "hp_pot10", "chance": 500, "amountMultiplier": 0.2},
+      {"id": "xs_bomb", "chance": 500, "amountMultiplier": 0.3},
+      {"id": "copper_ore", "chance": 7000, "amountMultiplier": 0.8},
+      {"id": "iron_ore", "chance": 5000, "amountMultiplier": 0.8},
+      {"id": "coal_ore", "chance": 7000, "amountMultiplier": 1}
+    ]
   },
 
   {
@@ -78,7 +87,18 @@
     "emoji": "rare_chest",
     "type": "chest",
     "price": 500,
-    "uploaded": true
+    "uploaded": true,
+    "obtainables": [
+      {"id": "stone", "chance": 3500, "amountMultiplier": 5},
+      {"id": "points", "chance": 9999, "amountMultiplier": 6},
+      {"id": "hp_pot10", "chance": 2000, "amountMultiplier": 0.3},
+      {"id": "hp_pot25", "chance": 500, "amountMultiplier": 0.2},
+      {"id": "m_bomb", "chance": 2000, "amountMultiplier": 0.2},
+      {"id": "l_bomb", "chance": 500, "amountMultiplier": 0.1},
+      {"id": "coal_ore", "chance": 7000, "amountMultiplier": 1},
+      {"id": "iron_ore", "chance": 4000, "amountMultiplier": 0.8},
+      {"id": "gold_ore", "chance": 2000, "amountMultiplier": 0.6}
+    ]
   },
 
   {
@@ -87,7 +107,17 @@
     "emoji": "epic_chest",
     "type": "chest",
     "price": 2000,
-    "uploaded": true
+    "uploaded": true,
+    "obtainables": [
+      {"id": "points", "chance": 3500, "amountMultiplier": 25},
+      {"id": "iron_ore", "chance": 8000, "amountMultiplier": 0.8},
+      {"id": "hp_pot25", "chance": 2000, "amountMultiplier": 0.3},
+      {"id": "hp_pot50", "chance": 500, "amountMultiplier": 0.2},
+      {"id": "l_bomb", "chance": 2000, "amountMultiplier": 0.2},
+      {"id": "xl_bomb", "chance": 500, "amountMultiplier": 0.1},
+      {"id": "gold_ore", "chance": 4000, "amountMultiplier": 0.6},
+      {"id": "diamond", "chance": 1000, "amountMultiplier": 0.25}
+    ]
   },
 
   {
@@ -96,7 +126,15 @@
     "emoji": "legendary_chest",
     "type": "chest",
     "price": 10000,
-    "uploaded": true
+    "uploaded": true,
+    "obtainables": [
+      {"id": "points", "chance": 3500, "amountMultiplier": 100},
+      {"id": "hp_pot50", "chance": 3500, "amountMultiplier": 0.6},
+      {"id": "xl_bomb", "chance": 3500, "amountMultiplier": 0.3},
+      {"id": "xxl_bomb", "chance": 250, "amountMultiplier": 0.1},
+      {"id": "gold_ore", "chance": 9999, "amountMultiplier": 2},
+      {"id": "diamond", "chance": 9999, "amountMultiplier": 0.5}
+    ]
   },
 
   {

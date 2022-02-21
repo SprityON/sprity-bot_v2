@@ -160,11 +160,11 @@
   },
 
   {
-    "id": "xxl_bomb",
+    "id": "nuke",
     "type": "throwable",
-    "emoji": ":bomb:",
-    "uploaded": false,
-    "name": "XXL Bomb",
+    "emoji": "nuke",
+    "uploaded": true,
+    "name": "Nuke",
     "description": "Does **2500** damage.",
     "price": 40000,
     "damage": 2500

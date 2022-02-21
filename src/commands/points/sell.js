@@ -28,7 +28,7 @@ module.exports = {
 
     if (!item) return msg.reply({ embeds: [sendEmbed(`That item was not found!`)] })
 
-    const emoji = item.uploaded ? Bot.client.emojis.cache.find(e => e.name === item.id) : item.emoji
+    const emoji = item.uploaded ? Bot.client.emojis.cache.find(e => e.name === (item.emoji ? item.emoji : item.id)) : item.emoji
 
     const player = new Player(msg.member)
     let inventory = await player.inventory
@@ -40,9 +40,9 @@ module.exports = {
       points += ((item.price * amount) / 100) * 60
       inventory[invItem.pos].amount -= amount
       
-      await DB.query(`update members set inventory = '${JSON.stringify(inventory)}', points = ${Math.floor(points)} where member_id = ${msg.member.id}`)
+      await DB.query(`update members set inventory = '${JSON.stringify(inventory)}', points = ${Math.ceil(points)} where member_id = ${msg.member.id}`)
         .then(() => {
-          msg.reply({ embeds: [sendEmbed(`You successfully sold **${amount} ${emoji}** for **${point} ${Utils.normalizePrice(Math.floor(((item.price * amount) / 100) * 60))}**! You now have ${point} **${Utils.normalizePrice(Math.floor(points))}** points.`)] })
+          msg.reply({ embeds: [sendEmbed(`You successfully sold **${amount} ${emoji}** for **${point} ${Utils.normalizePrice(Math.ceil(((item.price * amount) / 100) * 60))}**! You now have ${point} **${Utils.normalizePrice(Math.ceil(points))}** points.`)] })
 
           if (item.role) {
             const role = msg.guild.roles.cache.find(e => e.name === item.role)

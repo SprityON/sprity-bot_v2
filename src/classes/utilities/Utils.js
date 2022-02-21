@@ -103,7 +103,7 @@ module.exports = class Utils {
     keysOnly: false,
     valuesOnly: false
   }, ...args) {
-    typeof options == 'object' ? options : options = args.shift()
+    options.keysOnly === true || options.valuesOnly === true ? options : arguments[0] = args.push(options)
 
     let arr = []
     args.forEach(items => {
@@ -338,7 +338,6 @@ module.exports = class Utils {
   }, callback) {
     const Player = require('./Player');
     const Utils = this
-    const Bot = Bot;
 
     switch (type) {
       case 'inventory':

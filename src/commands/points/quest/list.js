@@ -89,7 +89,7 @@ module.exports.execute = async(msg) => {
         let endOfString
 
         items.forEach(item => {
-          if (item.chance < 100) return endOfString = '...and a hidden item!'
+          if (item.chance <= 500) return endOfString = '...and some hidden items!'
           const emoji = Bot.client.emojis.cache.find(e => e.name === item.id)
           str += `${emoji} `
         })

@@ -1,3 +1,4 @@
 src/.env
 ssh.txt
 src/events/messages.json
+src/config.json

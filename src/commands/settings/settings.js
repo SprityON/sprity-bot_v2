@@ -17,6 +17,8 @@ module.exports = {
     const player = new Player(msg.member)
     const playerSettings = await player.settings
 
+    if (!playerSettings) await DB.query(`insert into settings (member_id, settings) values (${msg.member.id}, [])`)
+
     const list = await player.showSettings(!isNaN(setting) ? setting : 1)
     
     if (!setting || !isNaN(setting)) return msg.reply(typeof list === 'string' ? list : { embeds: [list] })

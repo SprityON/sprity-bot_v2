@@ -69,9 +69,10 @@ module.exports = {
 
         memberSettings[findSetting.pos].enabled = status 
       } else {
-        memberSettings.push({ id: setting, pos: memberSettings.length, enabled: status })
+        const newSetting = { id: setting, pos: memberSettings.length, enabled: status }
+        memberSettings.push(newSetting)
 
-        if (memberSettings[findSetting.pos].enabled === status) 
+        if (memberSettings[newSetting.pos].enabled === status) 
           return msg.reply({ embeds: [sendEmbed(`This setting is already ${status === true ? 'enabled' : 'disabled'}`)] })
       }
     }

@@ -11,6 +11,10 @@ module.exports = class Battle {
 
   async damageDone() { return Math.floor(await this.player.att * ((Math.random() * 0.3) + 0.85)) }
 
+  showHistory(history) {
+    
+  }
+
   async usePotion(options = { returnString: false }) {
     const shop = require('../../commands/points/shop.json')
     const shopPotion = shop.find(item => item.id === this.player.potion.id)

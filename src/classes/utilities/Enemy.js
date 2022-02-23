@@ -27,14 +27,20 @@ module.exports = class Enemy {
 
   async damageDone() { return Math.floor(await this.att()) }
   
-  async attack() {
+  async attack(options = { returnString: false }) {
     const damage = await this.damageDone()
     this.player.hp.current -= damage
 
     if (this.player.hp.current < 1) {
-      return [true, { embeds: [sendEmbed(`**${this.name}** did **${damage}** damage and you died at **(${this.player.hp.current}/${this.player.hp.max})** HP!`, { color: colors.red })] }]
+      return [true, 
+        options.returnString ? `**${this.name}** did **${damage}** damage and you died at **(${this.player.hp.current}/${this.player.hp.max})** HP!` : { embeds: [sendEmbed(`**${this.name}** did **${damage}** damage and you died at **(${this.player.hp.current}/${this.player.hp.max})** HP!`, { color: colors.red })] },
+        damage
+      ]
     } else {
-      return [false, { embeds: [sendEmbed(`**${this.name}** did **${damage}** damage to **${this.player.member.displayName} (${this.player.hp.current}/${this.player.hp.max})**\n\nType \`attack\`, \`throw\`, \`potion\` or \`run\``, { color: colors.red })] }]
+      return [false, 
+        options.returnString ? `**${this.name}** did **${damage}** damage to **${this.player.member.displayName} (${this.player.hp.current}/${this.player.hp.max})**` : { embeds: [sendEmbed(`**${this.name}** did **${damage}** damage to **${this.player.member.displayName} (${this.player.hp.current}/${this.player.hp.max})**`, { color: colors.red })] },
+        damage
+      ]
     }
   }
 

@@ -28,15 +28,17 @@ module.exports = {
     mentionedPlayer.setHP = { current: mentionStats.health, max: mentionStats.health }
 
     const heart = Bot.client.emojis.cache.find(e => e.name === 'heart_rpg')
+    const attack = Bot.client.emojis.cache.find(e => e.name == 'attack_rpg')
+    const defense = Bot.client.emojis.cache.find(e => e.name == 'defense_rpg')
 
     function showStats(stats) {
-      return `Health: **${stats.health}** ${heart}\nAttack Damage: **${stats.attack}**\nDefense: **${stats.defense}**`
+      return `${heart} **${stats.health}**\n${attack} **${stats.attack}**\n${defense} **${stats.defense}**`
     }
 
     const embed = new Discord.MessageEmbed().setColor(colors.yellow)
       .setTitle(`:crossed_swords: Battle: ${msg.member.displayName} VS ${mention.displayName}`)
-      .addField(`${msg.member.displayName}'s Stats`, showStats(playerStats), true)
-      .addField(`${mention.displayName}'s Stats`, showStats(mentionStats), true)
+      .addField(`${msg.member.displayName}`, showStats(playerStats), true)
+      .addField(`${mention.displayName}`, showStats(mentionStats), true)
       .addField(`\u200b`, `*Status: Awaiting **${mention.displayName}'s** answer*`)
 
     const buttons = new Discord.MessageActionRow().addComponents(
@@ -283,7 +285,7 @@ module.exports = {
           case 'battle_potion':
             if (!turn.potion.id) continue;
             [hasWon, string, potion] = await battle.usePotion({ returnString: true })
-            healText = `(+${(turn.hp.max / 100 * potion.heal_percentage)})`
+            healText = `(+${Math.floor(turn.hp.max / 100 * potion.heal_percentage)})`
 
             if (hasWon === true) {
               const temp_embed = updateEmbed().setColor(colors.green)

@@ -64,6 +64,7 @@ module.exports = class Utils {
 
   static colors = {
     default: '#424FD9',
+    grey: 'c1c1c1',
     green: '4aff61',
     yellow_green: 'bbf525',
     yellow: 'fff647',

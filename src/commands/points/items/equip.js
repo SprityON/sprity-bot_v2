@@ -14,18 +14,21 @@ module.exports.execute = async(msg, item_id, type) => {
 
   if (weapon && weapon.id == item_id) {
     const item = inventory.find(item => item.id === item_id)
+    if (!item) return msg.reply({ embeds: [sendEmbed(`You do not have that item!`)] })
     msg.reply({ embeds: [sendEmbed(`You are now using **${item.amount + weapon.amount}** of ${newThrowableEmote} **${newShopThrowable.name}** as a ${type}`)] })
 
     const invItemAmount = item.amount
     inventory[item.pos].amount -= item.amount
     await DB.query(`update members set ${type} = '[{"id": "${item_id}", "amount": ${invItemAmount + weapon.amount}}]', inventory = '${JSON.stringify(inventory)}' where member_id = ${msg.member.id}`)
   } else if (weapon) {
-    msg.reply({ embeds: [sendEmbed(`You are now using ${newThrowableEmote} **${newShopThrowable.name}** as a ${type}`)] })
 
     const oldWeapon = weapon
 
     const oldWeaponInv = inventory.find(item => item.id === oldWeapon.id)
     const newWeaponInv = inventory.find(item => item.id === item_id)
+
+    if (!newWeaponInv) return msg.reply({ embeds: [sendEmbed(`You do not have that item!`)] })
+    msg.reply({ embeds: [sendEmbed(`You are now using ${newThrowableEmote} **${newShopThrowable.name}** as a ${type}`)] })
     
     const oldNewWeaponAmount = newWeaponInv.amount
     inventory[newWeaponInv.pos].amount -= newWeaponInv.amount
@@ -33,8 +36,9 @@ module.exports.execute = async(msg, item_id, type) => {
 
     await DB.query(`update members set ${type} = '[{"id": "${item_id}", "amount": ${oldNewWeaponAmount}}]', inventory = '${JSON.stringify(inventory)}' where member_id = ${msg.member.id}`)
   } else {
-    msg.reply({ embeds: [sendEmbed(`You are now using ${newThrowableEmote} **${newShopThrowable.name}** as a ${type}`)] })
     const item = inventory.find(item => item.id === item_id)
+    if (!item) return msg.reply({ embeds: [sendEmbed(`You do not have that item!`)] })
+    msg.reply({ embeds: [sendEmbed(`You are now using ${newThrowableEmote} **${newShopThrowable.name}** as a ${type}`)] })
     const invItemAmount = item.amount
     inventory[item.pos].amount -= item.amount
     await DB.query(`update members set ${type} = '[{"id": "${item_id}", "amount": ${invItemAmount}}]', inventory = '${JSON.stringify(inventory)}' where member_id = ${msg.member.id}`)

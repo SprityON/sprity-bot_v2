@@ -90,13 +90,13 @@ module.exports.execute = async(msg) => {
         let endOfString
 
         items.forEach(item => {
-          if (item.chance <= 500) return endOfString = '...and some hidden items!'
+          if (item.chance <= 250) return endOfString = 'hidden item(s)'
           const findEmoji = Utils.concatArrays(require('../shop.json'),require('../items/items.json')).find(i => i.id === item.id)
           const emoji = Utils.returnEmoji(findEmoji) 
           str += `${emoji} `
         })
 
-        if (endOfString) str += `\n\n${endOfString}`
+        if (endOfString) str += ` + ${endOfString}`
         return str
       }
 
@@ -105,17 +105,16 @@ module.exports.execute = async(msg) => {
         if (!tracker) DB.query(`insert into trackers (member_id, quest_id, name, current, goal) values ('${msg.member.id}', '${quest.id}', '${quest.name}', '0','${Math.floor(quest.goal * await player.difficulty)}')`)
 
         const current = tracker ? tracker.current : 0
-
-        quest.title = `${quest.command.charAt(0).toUpperCase() + quest.command.slice(1)} ${Math.floor((tracker ? tracker.goal : quest.goal * difficulty))} times`
-        quest.desc = `${quest.command.charAt(0).toUpperCase() + quest.command.slice(1)} **${Math.floor((tracker ? tracker.goal : quest.goal * difficulty) - current)}** times to complete`
+        quest.title = `${quest.title.replace('$[amount]', quest.goal)}`
+        quest.desc = `${quest.command.charAt(0).toUpperCase() + quest.command.slice(1)} **${Math.floor((tracker ? tracker.goal * difficulty : quest.goal * difficulty) - current)}** times to complete`
       }
 
       const active = quest.active && quest.active == true ? quest.tracker ? '(t)' : '(active)' : ''
       const completed = quest.completed && quest.completed === true ? '~~' : ''
 
       jsonQuests
-        ? embed.addField(`${completed}${o + 1}. ${quest.title} ${completed}${active}`, `*${quest.desc}*\n${obtainables()}\n\n**XP:** ${jsonQuests[o].xp}\n**${point}:** ${jsonQuests[o].points}`, true)
-        : embed.addField(`${completed}${o + 1}. ${quest.title} ${completed}${active}`, `*${quest.desc}*\n${obtainables()}\n\n**XP:** ${questXP}\n**${point}:** ${questPoints}`, true)
+        ? embed.addField(`${Utils.returnEmoji(quest)} ${completed} ${quest.title} ${completed}${active}`, `*${quest.desc}*\n${obtainables()}\n\n**XP:** ${jsonQuests[o].xp}\n**${point}:** ${jsonQuests[o].points}`, true)
+        : embed.addField(`${Utils.returnEmoji(quest)} ${completed} ${quest.title} ${completed}${active}`, `*${quest.desc}*\n${obtainables()}\n\n**XP:** ${questXP}\n**${point}:** ${questPoints}`, true)
     }
 
     if (newPlayerQuests.length > 0 && await player.settingIsEnabled('autonext') === true) newPlayerQuests[0].active = true

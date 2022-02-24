@@ -2,20 +2,22 @@
   {
     "id": 0,
     "name": "mine",
+    "emoji": "mine",
+    "uploaded": true,
     "type": "",
     "command": "",
     "tracker": false,
     "goal": 0,
-    "title": "Go into the mine",
-    "desc": "Explore vast caves",
+    "title": "Go Mine",
+    "desc": "Explore mines",
     "requires": ["pickaxe"],
     "obtainables": [
       {"id": "stone", "chance": 9999, "amountMultiplier": 1.5},
       {"id": "copper_ore", "chance": 7000, "amountMultiplier": 0.8},
-      {"id": "iron_ore", "chance": 5000, "amountMultiplier": 0.8},
       {"id": "coal_ore", "chance": 7000, "amountMultiplier": 1},
+      {"id": "iron_ore", "chance": 5000, "amountMultiplier": 0.8},
       {"id": "gold_ore", "chance": 4000, "amountMultiplier": 0.6},
-      {"id": "diamond", "chance": 500, "amountMultiplier": 0.4}
+      {"id": "epic_chest", "chance": 100, "amountMultiplier": 0.1}
     ],
     "exp_range": [50, 50],
     "points_range": [50, 50]
@@ -24,12 +26,14 @@
   {
     "id": 1,
     "name": "forest",
+    "emoji": "forest",
+    "uploaded": true,
     "type": "",
     "command": "",
     "tracker": false,
     "goal": 0,
-    "title": "Go into the forest",
-    "desc": "Explore the forest",
+    "title": "Go Chop",
+    "desc": "Chop trees",
     "requires": [],
     "obtainables": [
       {"id": "wood", "chance": 9999, "amountMultiplier": 1}
@@ -41,6 +45,8 @@
   {
     "id": 2,
     "name": "minion_fight",
+    "emoji": ":crossed_swords:",
+    "uploaded": false,
     "type": "",
     "command": "",
     "tracker": false,
@@ -62,11 +68,13 @@
   {
     "id": 3,
     "name": "guess",
+    "emoji": "bubble",
+    "uploaded": true,
     "type": "",
     "command": "",
     "tracker": false,
     "goal": 0,
-    "title": "Guess my number",
+    "title": "Guess My Number",
     "desc": "Guess the right number!",
     "requires": [],
     "obtainables": [
@@ -82,6 +90,8 @@
   {
     "id": 4,
     "name": "fish_10_times",
+    "emoji": ":fishing_pole_and_fish:",
+    "uploaded": false,
     "type": "tracker",
     "command": "fish",
     "title": "Fish $[amount] Times",
@@ -101,11 +111,13 @@
   {
     "id": 5,
     "name": "wordgame",
+    "emoji": "typing",
+    "uploaded": true,
     "type": "",
     "command": "",
     "tracker": false,
     "goal": 0,
-    "title": "Typing challenge",
+    "title": "Typing Challenge",
     "desc": "Type the correct word",
     "requires": [],
     "obtainables": [

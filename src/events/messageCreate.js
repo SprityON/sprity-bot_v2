@@ -117,10 +117,10 @@ module.exports.execute = async (msg) => {
                 if (trackers[0]) {
                   trackers[0].forEach(async tracker => {
                     const current = tracker.current + 1
- 
                     if (current >= tracker.goal) {
                       if (!questsDB.find(q => q.id === trackerQuest.id).completed) {
                         DB.query(`update trackers set current = ${current} where member_id = ${msg.member.id} and name = '${tracker.name}'`)
+                        console.log(trackerQuest);
                         return msg.reply({ embeds: [sendEmbed(`You completed quest **${trackerQuest.title.replace('$[amount]', tracker.goal)}**`)] })
                         .then(() => {
                           require(`../commands/points/quest`).execute(msg, [], tracker)

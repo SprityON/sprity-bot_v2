@@ -23,7 +23,6 @@ module.exports = class Utils {
             let command = require(`../../commands/${category}/${commandFile}`);
             Bot.Commands.set(command.name, command);
           }
-          
         })
     })
 

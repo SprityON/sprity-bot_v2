@@ -16,7 +16,7 @@ module.exports.execute = async (msg, args, quest) => {
 
   const enemy = new Enemy(player)
   enemy.setName = `🤖 Minion #${Math.floor(Math.random() * 998) + 1}`
-  enemy.setHP = ((stats.health / stats.attack) * stats.attack) * await player.difficulty
+  enemy.setHP = Math.floor(stats.health * (await player.difficulty * (Math.random() * 0.10 + 0.95)))
 
   const battle = new Battle(player, enemy)
 
@@ -59,7 +59,7 @@ module.exports.execute = async (msg, args, quest) => {
     })
   }
 
-  const embed = sendEmbed(`Kill **${enemy.name}** (**${enemy.hp.current}/${enemy.hp.max}**) to steal its loot!`,
+  const embed = sendEmbed(`Kill **${enemy.name}** to steal its loot!`,
     {
       title: `You encountered ${enemy.name}!`,
       color: Utils.colors.red
@@ -78,7 +78,7 @@ module.exports.execute = async (msg, args, quest) => {
   let cancelled = false
   if (cancelled === true) return
 
-  const history = []
+  const history = ['No Interaction']
 
   while (true) {
     const interaction = await msg.channel.awaitMessageComponent({filter, timeout: 60000, max: 1 }).catch(err => {
@@ -96,10 +96,10 @@ module.exports.execute = async (msg, args, quest) => {
 
     const selected = interaction.customId
 
-    let hasWon, string, damage, throwable, potion = '';
+    let hasWon, string, damage, potion = '';
 
     function updateEmbed(num) {
-      embed.setDescription(`Kill **${enemy.name}** (**${enemy.hp.current}/${enemy.hp.max}**) to steal its loot!`)
+      embed.setDescription(`Kill **${enemy.name}** to steal its loot!`)
       embed.spliceFields(0, 999)
         .setTitle(`You encountered ${enemy.name}!`)
         .addField(`${msg.member.displayName}`, `${player.hp.current}/${player.hp.max} ${heart} ${
@@ -142,8 +142,6 @@ module.exports.execute = async (msg, args, quest) => {
     }
 
     if (selected === 'battle_throw') {
-      throwable = await player.throwable
-
       if (throwable) {
         [hasWon, string, shopThrowable] = await battle.useThrowable({ returnString: true })
         damage = shopThrowable.damage
@@ -170,6 +168,7 @@ module.exports.execute = async (msg, args, quest) => {
       } else {
         string = `You are not using a throwable!`
         interaction.update({ embeds: [updateEmbed(99).setColor(Utils.colors.yellow)], components: [buttons] });
+        embed.setColor(Utils.colors.red)
       }
     }
 
@@ -196,7 +195,11 @@ module.exports.execute = async (msg, args, quest) => {
 
           interaction.update({ embeds: [updateEmbed(1)], components: [buttons] }); 
         }
-      } else msg.reply({ embeds: [sendEmbed(`You are not using a potion!\n\nType \`attack\`, \`throw\`, \`potion\` or \`run\``, { color: Utils.colors.yellow })] })
+      } else {
+        string = `You are not using a potion!`
+        interaction.update({ embeds: [updateEmbed(99).setColor(Utils.colors.yellow)], components: [buttons] });
+        embed.setColor(Utils.colors.red)
+      }
     }
 
     if (selected === 'battle_run') {

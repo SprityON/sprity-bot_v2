@@ -212,7 +212,7 @@ module.exports = {
 
         switch (selected) {
           case 'battle_attack':
-            [hasWon, string, damage] = await battle.attack({ returnString: true})
+            [hasWon, string, damage] = await battle.attack()
             damageText = `(-${damage})`
 
             if (hasWon === true) 

@@ -104,14 +104,14 @@ module.exports.execute = async (msg, args, quest) => {
         .setTitle(`You encountered ${enemy.name}!`)
         .addField(`${msg.member.displayName}`, `${player.hp.current}/${player.hp.max} ${heart} ${
           num === 1
-          ? `(-${damage})` 
+          ? damage ? `(-${damage})` : ''
           : num === 2 
             ? `(+${Math.floor(player.hp.max / 100 * potion.heal_percentage)})` 
             : ''
         }`, true)
         .addField(`${enemy.name}`, `${enemy.hp.current}/${enemy.hp.max} ${heart} ${
           num === 0
-          ? `(-${damage})` 
+          ? damage ? `(-${damage})` : ''
           : num === 3
             ? `(+${Math.floor(player.hp.max / 100 * potion.heal_percentage)})` 
             : ''
@@ -174,7 +174,7 @@ module.exports.execute = async (msg, args, quest) => {
 
     if (selected === 'battle_potion') {
       if (player.potion) {
-        [hasWon, string, potion] = await battle.usePotion({returnString: true})
+        [hasWon, string, potion] = await battle.usePotion()
 
         if (hasWon === true) {
           disableComponents()
@@ -185,7 +185,7 @@ module.exports.execute = async (msg, args, quest) => {
 
           await Utils.wait(1000);
 
-          [hasWon, string, damage] = await enemy.attack({returnString: true})
+          [hasWon, string, damage] = await enemy.attack()
 
           if (hasWon) {
             disableComponents()
@@ -203,7 +203,7 @@ module.exports.execute = async (msg, args, quest) => {
     }
 
     if (selected === 'battle_run') {
-      [bool, string] = battle.run({returnString: true})
+      [bool, string] = battle.run()
 
       if (bool === true) {
         disableComponents()
@@ -217,7 +217,7 @@ module.exports.execute = async (msg, args, quest) => {
     }
 
     if (selected === 'battle_attack') {
-      [hasWon, string, damage] = await battle.attack({returnString: true})
+      [hasWon, string, damage] = await battle.attack()
       
       if (hasWon === true) {
         disableComponents()
@@ -234,7 +234,7 @@ module.exports.execute = async (msg, args, quest) => {
 
         await Utils.wait(1500);
 
-        [hasWon, string, damage] = await enemy.attack({returnString: true})
+        [hasWon, string, damage] = await enemy.attack()
 
         if (hasWon === true) {
           disableComponents()

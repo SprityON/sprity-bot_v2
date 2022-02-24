@@ -18,27 +18,43 @@ module.exports = class Enemy {
    */
   set setHP(hp) { this.hp.current = hp, this.hp.max = hp }
 
-  async att() {
+  dodged() {
+    const random = Math.floor(Math.random() * 4)
+    const dodged = random === 1 ? true : false
+
+    return dodged
+  }
+
+  async calculateDamage() {
     const playerAtt = await this.player.att
     const playerDiff = await this.player.difficulty
     
     return Math.floor(playerAtt * ((Math.random() * 0.2) + 0.85)) * playerDiff
   }
 
-  async damageDone() { return Math.floor(await this.att()) }
+  async damageDone() { return Math.floor(await this.calculateDamage()) }
   
-  async attack(options = { returnString: false }) {
+  async attack() {
+    if (this.dodged() === true) {
+      return [
+        false,
+        `**${this.player.member.displayName}** dodged!`
+      ]
+    }
+
     const damage = await this.damageDone()
     this.player.hp.current -= damage
 
     if (this.player.hp.current < 1) {
-      return [true, 
-        options.returnString ? `**${this.name}** did **${damage}** damage and you died at **(${this.player.hp.current}/${this.player.hp.max})** HP!` : { embeds: [sendEmbed(`**${this.name}** did **${damage}** damage and you died at **(${this.player.hp.current}/${this.player.hp.max})** HP!`, { color: colors.red })] },
+      return [
+        true, 
+        `**${this.name}** did **${damage}** damage and you died at **(${this.player.hp.current}/${this.player.hp.max})** HP!`,
         damage
       ]
     } else {
-      return [false, 
-        options.returnString ? `**${this.name}** did **${damage}** damage to **${this.player.member.displayName} (${this.player.hp.current}/${this.player.hp.max})**` : { embeds: [sendEmbed(`**${this.name}** did **${damage}** damage to **${this.player.member.displayName} (${this.player.hp.current}/${this.player.hp.max})**`, { color: colors.red })] },
+      return [
+        false, 
+        `**${this.name}** did **${damage}** damage to **${this.player.member.displayName} (${this.player.hp.current}/${this.player.hp.max})**`,
         damage
       ]
     }

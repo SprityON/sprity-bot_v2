@@ -74,7 +74,7 @@
   {
     "id": "hp_pot10",
     "type": "potion",
-    "emoji": "health_potion",
+    "emoji": "health_potion_10",
     "uploaded": true,
     "name": "Health Potion (10%)",
     "description": "Using this potion will restore 10% of your HP.",
@@ -85,7 +85,7 @@
   {
     "id": "hp_pot25",
     "type": "potion",
-    "emoji": "health_potion",
+    "emoji": "health_potion_25",
     "uploaded": true,
     "name": "Health Potion (25%)",
     "description": "Using this potion will restore 25% of your HP.",
@@ -96,7 +96,7 @@
   {
     "id": "hp_pot50",
     "type": "potion",
-    "emoji": "health_potion",
+    "emoji": "health_potion_50",
     "uploaded": true,
     "name": "Health Potion (50%)",
     "description": "Using this potion will restore 50% of your HP.",

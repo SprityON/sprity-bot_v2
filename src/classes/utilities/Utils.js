@@ -42,9 +42,10 @@ module.exports = class Utils {
   }
 
   static returnEmoji(item) {
+    console.log(item);
     const emoji = item.uploaded 
-      ? Bot.client.emojis.cache.find(e => e.name === item.id) 
-      : item.id
+      ? Bot.client.emojis.cache.find(e => e.name === item.emoji) 
+      : item.emoji
 
     return emoji
   }

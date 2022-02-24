@@ -1,6 +1,7 @@
 const Bot = require('../../../Bot')
 const DB = require('../../../classes/database/DB')
 const Player = require('../../../classes/utilities/Player')
+const Utils = require('../../../classes/utilities/Utils')
 
 module.exports.execute = async(msg) => {
   const point = Bot.client.emojis.cache.find(e => e.name === 'pointdiscord')
@@ -90,7 +91,8 @@ module.exports.execute = async(msg) => {
 
         items.forEach(item => {
           if (item.chance <= 500) return endOfString = '...and some hidden items!'
-          const emoji = Bot.client.emojis.cache.find(e => e.name === item.id)
+          const findEmoji = Utils.concatArrays(require('../shop.json'),require('../items/items.json')).find(i => i.id === item.id)
+          const emoji = Utils.returnEmoji(findEmoji) 
           str += `${emoji} `
         })
 

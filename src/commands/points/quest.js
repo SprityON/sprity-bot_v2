@@ -56,7 +56,8 @@ module.exports = {
               let strings = []
               quest.items.forEach(item => {
                 if (!item) return
-                const emoji = Bot.client.emojis.cache.find(e => e.name === item.id)
+                const findEmoji = Utils.concatArrays(require('./shop.json'), require('./items/items.json')).find(i => i.id === item.id)
+                const emoji = Utils.returnEmoji(findEmoji)
                 strings.push(`${emoji} **${item.amount}**`)
 
                 const invItem = inventory.find(i => i.id === item.id)

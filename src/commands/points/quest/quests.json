@@ -51,6 +51,7 @@
     "obtainables": [
       {"id": "iron_ingot", "chance": 8000, "amountMultiplier": 0.3},
       {"id": "basic_chest", "chance": 5000, "amountMultiplier": 0.25},
+      {"id": "hp_pot25", "chance": 2500, "amountMultiplier": 0.25},
       {"id": "basic_chest", "chance": 2500, "amountMultiplier": 0.25},
       {"id": "rare_chest", "chance": 500, "amountMultiplier": 0.25},
       {"id": "epic_chest", "chance": 100, "amountMultiplier": 0.01},
@@ -71,10 +72,10 @@
     "desc": "Don't lose now",
     "needs": [],
     "obtainables": [
-      {"id": "basic_chest", "chance": 8000, "amountMultiplier": 0.25},
-      {"id": "rare_chest", "chance": 5000, "amountMultiplier": 0.25},
-      {"id": "epic_chest", "chance": 2000, "amountMultiplier": 0.01},
-      {"id": "legendary_chest", "chance": 500, "amountMultiplier": 0.01}
+      {"id": "basic_chest", "chance": 7500, "amountMultiplier": 0.25},
+      {"id": "rare_chest", "chance": 1000, "amountMultiplier": 0.25},
+      {"id": "epic_chest", "chance": 250, "amountMultiplier": 0.01},
+      {"id": "legendary_chest", "chance": 100, "amountMultiplier": 0.01}
     ],
     "exp_range": [200, 100],
     "points_range": [200, 100]

@@ -8,7 +8,7 @@ module.exports = {
   async execute(msg, args) {
     const item_id = args[0]
     
-    const items = require('./items.json')
+    const items = require('./items.json').concat(require('../shop.json'))
     const chest = items.find(i => i.id === item_id)
     const point = Bot.client.emojis.cache.find(e => e.name === 'pointdiscord')
     const player = new Player(msg.member)
@@ -26,8 +26,9 @@ module.exports = {
         if (obt.id === 'points') 
           return receivedPoints += Math.floor((10 * obt.amountMultiplier) * random)
 
-        const item = require('../shop.json').find(i => i.id === obt.id)
-        const emoji = Bot.client.emojis.cache.find(e => e.name === (item ? item.emoji : obt.id))
+        const item = items.find(i => i.id === obt.id)
+        
+        const emoji = Utils.returnEmoji(item)
         const itemAmount = Math.floor((10) * obt.amountMultiplier * random)
         if (itemAmount < 1) itemAmount = 1
         const invItem = inventory.find(item => item.id === obt.id)

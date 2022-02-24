@@ -16,21 +16,26 @@ module.exports = class DB {
     })
   }
 
-  static get pool() {
-    return require('mysql2').createPool({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASS,
-      database: "sprity_bot",
-      multipleStatements: true
+  static connection() {
+    return new Promise((resolve, reject) => {
+      resolve(require('mysql2').createConnection({
+        host: process.env.DB_HOST,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASS,
+        database: "sprity_bot",
+        multipleStatements: true,
+        connectionLimit: 1
+      }))
     })
   }
 
   static async query(sql, bindings) {
-    return new Promise((resolve) => {
+    return new Promise(async (resolve) => {
+      const connection = await this.connection()
+
       switch (typeof bindings) {
         case 'function':
-          this.pool.query(sql, [], (err, result, fields) => {
+          await connection.query(sql, [], (err, result, fields) => {
             err
               ? (() => { throw err })()
               : bindings([result, fields, err]);
@@ -38,7 +43,7 @@ module.exports = class DB {
           break;
 
           case 'array':
-            this.pool.query(sql, bindings, (err, result, fields) => {
+            connection.query(sql, bindings, (err, result, fields) => {
               err
                 ? (() => { throw err })()
                 : resolve([result, fields, err]);
@@ -46,13 +51,15 @@ module.exports = class DB {
           break;
 
         default:
-          this.pool.query(sql, [], (err, result, fields) => {
+          connection.query(sql, [], (err, result, fields) => {
             err
               ? (() => { throw err })()
               : resolve([result, fields, err]);
           })
           break;
       }
+
+      connection.end()
     })
   }
 

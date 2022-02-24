@@ -8,7 +8,7 @@
     "goal": 0,
     "title": "Go into the mine",
     "desc": "Explore vast caves",
-    "needs": ["pickaxe"],
+    "requires": ["pickaxe"],
     "obtainables": [
       {"id": "stone", "chance": 9999, "amountMultiplier": 1.5},
       {"id": "copper_ore", "chance": 7000, "amountMultiplier": 0.8},
@@ -30,7 +30,7 @@
     "goal": 0,
     "title": "Go into the forest",
     "desc": "Explore the forest",
-    "needs": ["axe"],
+    "requires": [],
     "obtainables": [
       {"id": "wood", "chance": 9999, "amountMultiplier": 1}
     ],
@@ -47,11 +47,9 @@
     "goal": 0,
     "title": "Fight a Minion",
     "desc": "Fight a Sprity Bot Minion",
-    "needs": [],
+    "requires": [],
     "obtainables": [
       {"id": "iron_ingot", "chance": 8000, "amountMultiplier": 0.3},
-      {"id": "basic_chest", "chance": 5000, "amountMultiplier": 0.25},
-      {"id": "hp_pot25", "chance": 2500, "amountMultiplier": 0.25},
       {"id": "basic_chest", "chance": 2500, "amountMultiplier": 0.25},
       {"id": "rare_chest", "chance": 500, "amountMultiplier": 0.25},
       {"id": "epic_chest", "chance": 100, "amountMultiplier": 0.01},
@@ -69,10 +67,10 @@
     "tracker": false,
     "goal": 0,
     "title": "Guess my number",
-    "desc": "Don't lose now",
-    "needs": [],
+    "desc": "Guess the right number!",
+    "requires": [],
     "obtainables": [
-      {"id": "basic_chest", "chance": 7500, "amountMultiplier": 0.25},
+      {"id": "basic_chest", "chance": 5000, "amountMultiplier": 0.25},
       {"id": "rare_chest", "chance": 1000, "amountMultiplier": 0.25},
       {"id": "epic_chest", "chance": 250, "amountMultiplier": 0.01},
       {"id": "legendary_chest", "chance": 100, "amountMultiplier": 0.01}
@@ -89,9 +87,9 @@
     "title": "Fish $[amount] Times",
     "tracker": true,
     "goal": 5,
-    "needs": [],
+    "requires": [],
     "obtainables": [
-      {"id": "basic_chest", "chance": 7500, "amountMultiplier": 0.25},
+      {"id": "basic_chest", "chance": 2500, "amountMultiplier": 0.25},
       {"id": "rare_chest", "chance": 500, "amountMultiplier": 0.25},
       {"id": "epic_chest", "chance": 100, "amountMultiplier": 0.01},
       {"id": "legendary_chest", "chance": 25, "amountMultiplier": 0.01}
@@ -109,7 +107,7 @@
     "goal": 0,
     "title": "Typing challenge",
     "desc": "Type the correct word",
-    "needs": [],
+    "requires": [],
     "obtainables": [
       {"id": "basic_chest", "chance": 7500, "amountMultiplier": 0.25},
       {"id": "rare_chest", "chance": 500, "amountMultiplier": 0.25},

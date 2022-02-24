@@ -86,17 +86,22 @@ module.exports.execute = async(msg) => {
 
       const obtainables = () => {
         if (!items) return ''
-        let str = ''
+        let str = []
         let endOfString
+
+        let i = 0
 
         items.forEach(item => {
           if (item.chance <= 250) return endOfString = 'hidden item(s)'
+          
           const findEmoji = Utils.concatArrays(require('../shop.json'),require('../items/items.json')).find(i => i.id === item.id)
           const emoji = Utils.returnEmoji(findEmoji) 
-          str += `${emoji} `
+          str.push(`${i === 3 ? `\n` : ``}${emoji} **${item.amount}**`)
+
+          i++
         })
 
-        if (endOfString) str += ` + ${endOfString}`
+        if (endOfString) str = `${str.join(", ")} + ${endOfString}`
         return str
       }
 
@@ -113,8 +118,8 @@ module.exports.execute = async(msg) => {
       const completed = quest.completed && quest.completed === true ? '~~' : ''
 
       jsonQuests
-        ? embed.addField(`${Utils.returnEmoji(quest)} ${completed} ${quest.title} ${completed}${active}`, `*${quest.desc}*\n${obtainables()}\n\n**XP:** ${jsonQuests[o].xp}\n**${point}:** ${jsonQuests[o].points}`, true)
-        : embed.addField(`${Utils.returnEmoji(quest)} ${completed} ${quest.title} ${completed}${active}`, `*${quest.desc}*\n${obtainables()}\n\n**XP:** ${questXP}\n**${point}:** ${questPoints}`, true)
+        ? embed.addField(`${Utils.returnEmoji(quest)} ${completed} ${quest.title} ${completed}${active}`, `*${quest.desc}*\n\n${obtainables()}\n\n**XP:** ${jsonQuests[o].xp}\n**${point}:** ${jsonQuests[o].points}`, true)
+        : embed.addField(`${Utils.returnEmoji(quest)} ${completed} ${quest.title} ${completed}${active}`, `*${quest.desc}*\n\n${obtainables()}\n\n**XP:** ${questXP}\n**${point}:** ${questPoints}`, true)
     }
 
     if (newPlayerQuests.length > 0 && await player.settingIsEnabled('autonext') === true) newPlayerQuests[0].active = true

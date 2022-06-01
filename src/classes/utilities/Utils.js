@@ -208,6 +208,9 @@ module.exports = class Utils {
     const me = Bot.client.guilds.cache.get(process.env.GUILD_ID).me
     me.guild.members.cache.forEach(async member => {
       const botRole = me.guild.roles.cache.find(role => role.name === "Bot")
+
+      if (!member.manageable) return
+
       if (member.user.bot) {
         if (!member.roles.cache.find(role => role.name === "Bot")) 
           member.roles.add(botRole)
@@ -216,7 +219,9 @@ module.exports = class Utils {
 
       await DB.query(`select member_id from members where member_id = ${member.id}`).then(async result => {
         const memberRole = me.guild.roles.cache.find(role => role.name === "Member")
-        if (!member.roles.cache.find(r => r.name === "Member")) member.roles.add(memberRole)
+        if (!member.roles.cache.find(r => r.name === "Member")) {
+          member.roles.add(memberRole)
+        }
         if (!result[0][0]) return await DB.member.addToDB(member)
 
         const role = me.guild.roles.cache.find(role => role.name === "Muted")

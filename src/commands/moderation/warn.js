@@ -13,13 +13,13 @@ module.exports = {
 
   async execute(msg, args) {
     const member = msg.mentions.members.first()
-    if (!member) return msg.reply(`You have to mention a member.`)
+    if (!member) return msg.reply({ embeds: [sendEmbed(`You have to mention a member.`)]})
     let warns = JSON.parse(await DB.member.getWarns(member))
-    if (!args[1]) return msg.reply(`You have to provide a reason.`)
+    if (!args[1]) return msg.reply({ embeds: [sendEmbed(`You have to provide a reason.`)]})
 
-    const warning1 = msg.guild.roles.cache.find(role => role.name === 'Warning 1')
-    const warning2 = msg.guild.roles.cache.find(role => role.name === 'Warning 2')
-
+    let warning1 = msg.guild.roles.cache.find(role => role.name === 'Warning 1')
+    let warning2 = msg.guild.roles.cache.find(role => role.name === 'Warning 2')
+    let kicked = msg.guild.roles.cache.find(role => role.name === 'Kicked')
     const reason = args.filter(arg => !Bot.Discord.MessageMentions.USERS_PATTERN.test(arg)).join(' ')
 
     warns.push(reason)
@@ -40,11 +40,12 @@ module.exports = {
       case 2:
         member.roles.cache.find(role => role.name === "Kicked")
           ? (
-            msg.reply(`**${member.user.username}** Banned by warning system.`),
+            msg.reply({ embeds: [sendEmbed(`**${member.user.username}** banned by warning system.`)]}),
+            await DB.query(`delete from members where guild_id = ${msg.guild.id} and member_id = ${msg.member.id}`),
             member.ban(reason)
           )
           : (
-            msg.reply(`**${member.user.username}** kicked by warning system.`),
+            msg.reply({ embeds: [sendEmbed(`**${member.user.username}** kicked by warning system.`)]}),
             await DB.query(`update members set kicked = 1, warns = '[]' where member_id = ${member.id}`),
             member.kick(reason)
           )

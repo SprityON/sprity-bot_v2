@@ -1,4 +1,5 @@
 const DB = require('../../classes/database/DB')
+const { sendEmbed } = require('../../classes/utilities/AdvancedEmbed')
 const Utils = require('../../classes/utilities/Utils')
 
 module.exports = {
@@ -11,22 +12,16 @@ module.exports = {
 
   async execute(msg, args) {
     const member = msg.mentions.members.first()
-    if (!member) return msg.reply(`You did not mention a member.`)
+    if (!member) return msg.reply({ embeds: [sendEmbed(`You did not mention a member.`)]})
 
-    const role = msg.guild.roles.cache.find(role => role.name === "Muted")
-
-    if (member.roles.cache.find(r => r.name == role.name)) {
-      member.roles.remove(role)
-      msg.reply(`**${member.user.username}** has been unmuted!`)
-      await DB.query(`DELETE FROM timer_dates WHERE member_id = ${member.id} AND 'type' = 'mute'`)
-    } else {
-      msg.reply(`**${member.user.username}** is already unmuted.`)
-    }
+    if (!member.isCommunicationDisabled()) return msg.reply({embeds: [sendEmbed(`Communication for ${member.displayName} is already enabled.`)]}) 
+    member.timeout(null, `Communication enabled by ${msg.member.displayName}`)
+    return msg.reply({ embeds: [sendEmbed(`Communication for **${member.displayName}** is now disabled.`)] }) 
   },
 
   help: {
-    enabled: false,
-    title: '',
-    description: ``,
+    enabled: true,
+    title: 'Unmute Member',
+    description: `Unmute a member.`,
   }
 }

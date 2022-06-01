@@ -1,62 +1,65 @@
-const { sendEmbed } = require("./AdvancedEmbed")
-const { colors } = require("./Utils")
-
 module.exports = class Enemy {
   constructor(player) {
     this.player = player
-    this.name = 'Enemy'
-    this.hp = { current: 0, max: 0 }
   }
 
-  /**
-   * @param {String} arg
-   */
-  set setName(arg) { this.name = arg }
+  name = 'Enemy'
+  setName(arg) { this.name = arg; return this }
 
-  /**
-   * @param {Number} hp
-   */
-  set setHP(hp) { this.hp.current = hp, this.hp.max = hp }
+  battle
 
-  dodged() {
-    const random = Math.floor(Math.random() * 4)
-    const dodged = random === 1 ? true : false
+  async load() {
+    await this.setHP()
+    return this
+  }
+  
+  health = {}
+  async setHP() {
+    const difficulty = await this.player.difficulty
+    const hp = Math.floor(this.player.health.current * (difficulty * (Math.random() * 0.10 + 0.95)))
+    this.health = { current: hp, max: hp }
+  }
 
-    return dodged
+  async dodge() {
+    const stat_def = await this.player.def
+    const defense = stat_def.current
+
+    const math = defense / 100
+    const random = Math.random().toFixed(2)
+
+    return random < math ? true : false
   }
 
   async calculateDamage() {
     const playerAtt = await this.player.att
     const playerDiff = await this.player.difficulty
-    
-    return Math.floor(playerAtt * ((Math.random() * 0.2) + 0.85)) * playerDiff
+
+    return Math.floor(playerAtt.current * ((Math.random() * 0.2) + 0.85)) * playerDiff
   }
 
-  async damageDone() { return Math.floor(await this.calculateDamage()) }
-  
+  async setDamage() { 
+      this.battle.damage = Math.floor(await this.calculateDamage())
+  }
+
   async attack() {
-    if (this.dodged() === true) {
-      return [
-        false,
-        `**${this.player.member.displayName}** dodged!`
-      ]
-    }
+    await this.setDamage()
 
-    const damage = await this.damageDone()
-    this.player.hp.current -= damage
+    if (await this.dodge() === true) {
+      this.battle.embedActions.setStatus(`**${this.player.member.displayName}** dodged!`)
+      this.battle.embedActions.updateBattle(99)
+      return false
+    } else this.player.health.current -= this.battle.damage
 
-    if (this.player.hp.current < 1) {
-      return [
-        true, 
-        `**${this.name}** did **${damage}** damage and you died at **(${this.player.hp.current}/${this.player.hp.max})** HP!`,
-        damage
-      ]
-    } else {
-      return [
-        false, 
-        `**${this.name}** did **${damage}** damage to **${this.player.member.displayName} (${this.player.hp.current}/${this.player.hp.max})**`,
-        damage
-      ]
+    if (this.player.health.current < 1) {
+      this.battle.embedActions.setStatus(`**${this.name}** did **${this.battle.damage}** damage and you died at **(${this.player.health.current}/${this.player.health.max})** HP!`)
+      this.battle.embedActions.updateBattle(1)
+      return true
+    } 
+    
+    else {
+      this.battle.embedActions.setStatus(`**${this.name}** did **${this.battle.damage}** damage to **${this.player.member.displayName} (${this.player.health.current}/${this.player.health.max})**`)
+      this.battle.embedActions.updateBattle(1)
+      return false
     }
   }
 

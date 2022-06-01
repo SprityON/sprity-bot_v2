@@ -138,7 +138,7 @@ module.exports = {
 
               if (quests.length > 0) DB.query(`update members set quests = '${JSON.stringify(quests)}' where member_id = ${msg.member.id}`)
             } else return
-        }).catch(err => console.log(err))
+        }).catch((err) => { console.log(err);})
       break;
     }
   },

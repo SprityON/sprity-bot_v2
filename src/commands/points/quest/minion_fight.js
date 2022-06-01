@@ -1,5 +1,3 @@
-const Bot = require('../../../Bot')
-const { Discord } = require('../../../Bot')
 const { sendEmbed } = require('../../../classes/utilities/AdvancedEmbed')
 const Battle = require('../../../classes/utilities/Battle')
 const Enemy = require('../../../classes/utilities/Enemy')
@@ -7,84 +5,33 @@ const Player = require('../../../classes/utilities/Player')
 const Utils = require('../../../classes/utilities/Utils')
 
 module.exports.execute = async (msg, args, quest) => {
-  const player = new Player(msg.member, msg)
-  const inventory = await player.inventory
-  const stats = await player.stats
-  player.setHP = { current: stats.health, max: stats.health }
+  const player = await (new Player(msg.member, msg)).load()
 
-  const throwable = await player.throwable
+  const battle = new Battle()
 
-  const enemy = new Enemy(player)
-  enemy.setName = `🤖 Minion #${Math.floor(Math.random() * 998) + 1}`
-  enemy.setHP = Math.floor(stats.health * (await player.difficulty * (Math.random() * 0.10 + 0.95)))
+  const enemy = (await (new Enemy(player, battle).load()))
+  .setName(`🤖 Minion #${Math.floor(Math.random() * 998) + 1}`)
 
-  const battle = new Battle(player, enemy)
+  battle.player = player
+  battle.enemy = enemy
 
-  const heart = Bot.client.emojis.cache.find(e => e.name === 'heart_rpg')
-  const attack = Bot.client.emojis.cache.find(e => e.name == 'attack_rpg')
-  const defense = Bot.client.emojis.cache.find(e => e.name == 'defense_rpg')
-
-  const buttons = new Discord.MessageActionRow().addComponents(
-
-    new Discord.MessageButton()
-      .setCustomId('battle_attack')
-      .setLabel('Attack')
-      .setStyle('SECONDARY'),
-
-    new Discord.MessageButton()
-      .setCustomId('battle_throw')
-      .setLabel('Throw')
-      .setStyle('SECONDARY'),
-
-    new Discord.MessageButton()
-      .setCustomId('battle_potion')
-      .setLabel('Potion')
-      .setStyle('SECONDARY'),
-
-    new Discord.MessageButton()
-      .setCustomId('battle_run')
-      .setLabel('Run')
-      .setStyle('DANGER'),
-
-    new Discord.MessageButton()
-      .setCustomId('battle_history')
-      .setLabel('History')
-      .setStyle('PRIMARY')
-  )
-
-  function disableComponents() {
-    buttons.components.forEach(button => {
-      button.disabled = true
-      button.style = 'SECONDARY'
-    })
-  }
-
-  const embed = sendEmbed(`Kill **${enemy.name}** to steal its loot!`,
-    {
-      title: `You encountered ${enemy.name}!`,
-      color: Utils.colors.red
-    })
-    embed
+  battle.embedActions
     .setTitle(`You encountered ${enemy.name}!`)
-    .addField(`${msg.member.displayName}`, `${player.hp.current}/${player.hp.max} ${heart}`, true)
-    .addField(`${enemy.name}`, `${enemy.hp.current}/${enemy.hp.max} ${heart}`, true)
-    .addField(`\u200b`, `*Status: No Interaction*`)
-  
-  const message = msg.reply({
-    embeds: [embed], components: [buttons] } )
+    .setDescription(`Kill ${enemy.name} to steal its loot!`)
+    .setColor(Utils.colors.red)
+
+  battle.embedActions.updateBattle(99)
+
+  const inventory = await player.inventory
+  const throwable = await player.throwable
+  const message = await msg.reply({ embeds: [battle.embed], components: [battle.embedActions.getActionButtons()] })
 
   let filter = interaction => interaction.customId.startsWith('battle') && interaction.user.id === msg.member.id
 
-  let cancelled = false
-  if (cancelled === true) return
-
-  const history = ['No Interaction']
-
+  let hasWon = ''
   while (true) {
-    const interaction = await msg.channel.awaitMessageComponent({filter, timeout: 60000, max: 1 }).catch(err => {
-      disableComponents()
-      cancelled = true
-      message.edit({ embeds: [embed], components: [buttons] })
+    const interaction = await msg.channel.awaitMessageComponent({ filter, time: 60000, max: 1 }).catch(err => {
+      message.edit({ embeds: [battle.embed], components: [battle.embedActions.getActionButtons(true)] })
     })
 
     if (!interaction) break
@@ -96,151 +43,108 @@ module.exports.execute = async (msg, args, quest) => {
 
     const selected = interaction.customId
 
-    let hasWon, string, damage, potion = '';
-
-    function updateEmbed(num) {
-      embed.setDescription(`Kill **${enemy.name}** to steal its loot!`)
-      embed.spliceFields(0, 999)
-        .setTitle(`You encountered ${enemy.name}!`)
-        .addField(`${msg.member.displayName}`, `${player.hp.current}/${player.hp.max} ${heart} ${
-          num === 1
-          ? damage ? `(-${damage})` : ''
-          : num === 2 
-            ? `(+${Math.floor(player.hp.max / 100 * potion.heal_percentage)})` 
-            : ''
-        }`, true)
-        .addField(`${enemy.name}`, `${enemy.hp.current}/${enemy.hp.max} ${heart} ${
-          num === 0
-          ? damage ? `(-${damage})` : ''
-          : num === 3
-            ? `(+${Math.floor(player.hp.max / 100 * potion.heal_percentage)})` 
-            : ''
-        }`, true)
-        .addField(`\u200b`, `*Status: ${string}*`)
-
-        history.push(string)
-
-      return embed
-    }
-
     if (selected === 'battle_history') {
-      embed.spliceFields(0, 999)
-      embed.setDescription(history.join("\n\n"))
-      embed.setColor(Utils.colors.grey)
-      const newButtons = new Discord.MessageActionRow().addComponents(
-        new Discord.MessageButton()
-          .setCustomId('battle_present')
-          .setLabel('< Back')
-          .setStyle('SECONDARY'))
-      interaction.update({ embeds: [embed], components: [newButtons] });
+      battle.embedActions.showHistory()
+      interaction.update({ embeds: [battle.embed], components: [battle.embedActions.getHistoryButtons()] });
     }
 
     if (selected === 'battle_present') {
-      string = history[history.length - 1]
-      history.splice(history.length - 1, 1)
-      interaction.update({ embeds: [updateEmbed(99).setColor(Utils.colors.red)], components: [buttons] });
+      battle.embedActions.showBattle()
+      interaction.update({ embeds: [battle.embed.setColor(Utils.colors.red)], components: [battle.embedActions.getActionButtons()] });
     }
 
     if (selected === 'battle_throw') {
       if (throwable) {
-        [hasWon, string, shopThrowable] = await battle.useThrowable({ returnString: true })
-        damage = shopThrowable.damage
+        hasWon = await battle.useThrowable()
 
         if (hasWon === true) {
-          disableComponents()
-          interaction.update({ embeds: [updateEmbed(0).setColor(Utils.colors.green)], components: [buttons] });
+          interaction.update({ embeds: [battle.embed.setColor(Utils.colors.green)], components: [battle.embedActions.getActionButtons(true)] });
           return [true, inventory]
         } else {
-          interaction.message.edit({ embeds: [updateEmbed(0)], components: [buttons] });
+          interaction.message.edit({ embeds: [battle.embed], components: [battle.embedActions.getActionButtons()] });
 
           await Utils.wait(1000);
 
-          [hasWon, string] = await enemy.attack({ returnString: true })
+          hasWon = await enemy.attack()
 
           if (hasWon === true) {
-            disableComponents()
-            interaction.update({ embeds: [updateEmbed(1).setColor(Utils.colors.red)], components: [buttons] });
+            interaction.update({ embeds: [battle.embed.setColor(Utils.colors.red)], components: [battle.embedActions.getActionButtons(true)] });
             return [false, inventory]
-          }
-
-          interaction.update({ embeds: [updateEmbed(1)], components: [buttons] });
+          } else interaction.update({ embeds: [battle.embed], components: [battle.embedActions.getActionButtons()] });
         }
       } else {
-        string = `You are not using a throwable!`
-        interaction.update({ embeds: [updateEmbed(99).setColor(Utils.colors.yellow)], components: [buttons] });
-        embed.setColor(Utils.colors.red)
+        battle.embedActions.setStatus(`You are not using a throwable!`)
+        interaction.update({ embeds: [battle.embedActions.updateBattle(99).setColor(Utils.colors.yellow)], components: [battle.embedActions.getActionButtons()] });
       }
     }
 
     if (selected === 'battle_potion') {
+      
       if (player.potion) {
-        [hasWon, string, potion] = await battle.usePotion()
+        hasWon = await battle.usePotion()
+
 
         if (hasWon === true) {
-          disableComponents()
-          interaction.update({ embeds: [updateEmbed(99).setColor(Utils.colors.green)], components: [buttons] }); 
+          interaction.update({ embeds: [battle.embed.setColor(Utils.colors.green)], components: [battle.embedActions.getActionButtons(true)] });
           return [true, inventory]
-        } else {
-          interaction.message.edit({ embeds: [updateEmbed(2)], components: [buttons]})
+        } else if (hasWon === false) {
+          interaction.message.edit({ embeds: [battle.embed], components: [battle.embedActions.getActionButtons()] })
 
           await Utils.wait(1000);
 
-          [hasWon, string, damage] = await enemy.attack()
+          hasWon = await enemy.attack()
 
           if (hasWon) {
-            disableComponents()
-            interaction.update({ embeds: [updateEmbed(2)], components: [buttons] }); 
+            interaction.update({ embeds: [battle.embed], components: [battle.embedActions.getActionButtons(true)] });
             return [false, inventory]
           }
 
-          interaction.update({ embeds: [updateEmbed(1)], components: [buttons] }); 
-        }
+          interaction.update({ embeds: [battle.embed], components: [battle.embedActions.getActionButtons()] });
+        } else if (hasWon === 'skip') interaction.update({ embeds: [battle.embed], components: [battle.embedActions.getActionButtons()] });
       } else {
-        string = `You are not using a potion!`
-        interaction.update({ embeds: [updateEmbed(99).setColor(Utils.colors.yellow)], components: [buttons] });
-        embed.setColor(Utils.colors.red)
+        battle.embedActions.setStatus(`You are not using a potion!`)
+        interaction.update({ embeds: [battle.embedActions.updateBattle(99).setColor(Utils.colors.yellow)], components: [battle.embedActions.getActionButtons()] });
       }
     }
 
     if (selected === 'battle_run') {
-      [bool, string] = battle.run()
+      const bool = battle.run()
 
       if (bool === true) {
-        disableComponents()
-        interaction.update({ embeds: [updateEmbed(99).setColor(Utils.colors.green)], components: [buttons]}); 
+        interaction.update({ embeds: [battle.embed.setColor(Utils.colors.green)], components: [battle.embedActions.getActionButtons(true)] });
         return ['skip']
       } else {
-        disableComponents()
-        interaction.update({ embeds: [updateEmbed(99).setColor(Utils.colors.red)], components: [buttons] }); 
+        interaction.update({ embeds: [battle.embed.setColor(Utils.colors.red)], components: [battle.embedActions.getActionButtons(true)] });
         return [false]
       }
     }
 
     if (selected === 'battle_attack') {
-      [hasWon, string, damage] = await battle.attack()
-      
+      hasWon = await battle.attack()
+
       if (hasWon === true) {
-        disableComponents()
-        interaction.update({ embeds: [updateEmbed(0).setColor(Utils.colors.green)], components: [buttons] }); 
-        return [true, inventory] 
-      } 
+        interaction.update({ embeds: [battle.embed.setColor(Utils.colors.green)], components: [battle.embedActions.getActionButtons(true)] });
+        return [true, inventory]
+      }
+
       else if (hasWon === false) {
-        disableComponents()
-        interaction.update({ embeds: [updateEmbed(0).setColor(Utils.colors.red)], components: [buttons] });
-        return [false] 
-      } 
+        interaction.update({ embeds: [battle.embed.setColor(Utils.colors.red)], components: [battle.embedActions.getActionButtons(true)] });
+        return [false]
+      }
+
       else if (hasWon === 'skip') {
-        interaction.message.edit({ embeds: [updateEmbed(0)], components: [buttons] })
+        interaction.message.edit({ embeds: [battle.embed], components: [battle.embedActions.getActionButtons()] })
 
         await Utils.wait(1500);
 
-        [hasWon, string, damage] = await enemy.attack()
+        hasWon = await enemy.attack()
 
         if (hasWon === true) {
-          disableComponents()
-          interaction.update({ embeds: [updateEmbed(1)], components: [buttons] })
-          return [false, inventory] }
-        else if (hasWon === false) { interaction.update({ embeds: [updateEmbed(1)], components: [buttons] }) }
+          interaction.update({ embeds: [battle.embed], components: [battle.embedActions.getActionButtons(true)] })
+          return [false, inventory]
+        }
+        else if (hasWon === false) { 
+          interaction.update({ embeds: [battle.embed], components: [battle.embedActions.getActionButtons()] }) }
       }
     }
   }

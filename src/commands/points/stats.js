@@ -15,8 +15,13 @@ module.exports = {
 
   async execute(msg, args) {
     const player = new Player(msg.member)
-    const stats = await player.stats
-    player.setHP = { current: stats.health, max: stats.health }
+    await player.setHP()
+    await player.setPotion()
+
+    const stat_hp = player.health
+    const stat_att = await player.att
+    const stat_def = await player.def
+
     const result = await DB.query(`select * from members where member_id = ${msg.member.id}`)
     const nextLevelExperience = ((await player.level + 1) * 125) + await player.level * 125
     let previousExperience = 0
@@ -43,9 +48,9 @@ module.exports = {
       .setTitle(`${msg.author.username}'s stats | LVL: ${await player.level} (${currExperience}/${nextLevelExperience})`)
       .setThumbnail(msg.author.avatarURL({dynamic: true}))
       .setDescription(`You have **${result[0][0].attributes}** attributes.`)
-      .addField(`${healthEmoji} ${player.hp.max}`, `\u200b`, true)
-      .addField(`${attackEmoji} ${await player.att}`, `\u200b`, true)
-      .addField(`${defenseEmoji} ${await player.def}`, `\u200b`, true)
+      .addField(`${healthEmoji} ${stat_hp.current}`, `*Cap: **${stat_hp.cap}***\n\u200b`, true)
+      .addField(`${attackEmoji} ${stat_att.current}`, `*Cap: **${stat_att.cap}***\n\u200b`, true)
+      .addField(`${defenseEmoji} ${stat_def.current}`, `*Cap: **${stat_def.cap}***\n\u200b`, true)
       .addField(`THROWABLE`, throwable ? `${shopThrowable.uploaded ? Bot.client.emojis.cache.find(e => e.name === shopThrowable.emoji) : shopThrowable.emoji} ${shopThrowable.name} (${throwable.amount})` : `:x: NONE`, true)
         .addField(`POTION`, potion ? `${shopPotion.uploaded ? Bot.client.emojis.cache.find(e => e.name === shopPotion.emoji) : shopPotion.emoji} ${shopPotion.name} (${potion.amount})` : `:x: NONE`, true)
       .setFooter({text: `to upgrade: ${await DB.guild.getPrefix()}stats upgrade <stat> <amount>` })
@@ -54,13 +59,33 @@ module.exports = {
     } 
     
     else if (args[0].toLowerCase() === 'upgrade') {
-      const units = [
-        "hp",
-        "att",
-        "def"
+      if (!args[1]) return msg.reply({embeds: [sendEmbed(Utils.messages.wrong_argument)]})
+
+      let correctArguments = [
+        { 'attack': 'att' },
+        { 'att': 'att' },
+        { 'atk': 'att' },
+        { 'health': 'hp' },
+        { 'hp': 'hp' },
+        { 'hitpoints': 'hp' },
+        { 'defense': 'def' },
+        { 'def': 'def' },
+        { 'defend': 'def' }
       ]
-     
-      if (!args[1] || !units.includes(args[1].toLowerCase())) return msg.reply({ embeds: [sendEmbed(`Please type in a valid stat!`)] })
+
+      let isCorrectArgument = false
+      for (let i = 0; i < correctArguments.length; i++) {
+        const arg = correctArguments[i]
+
+        if (args[1] == Object.keys(arg)[0]) {
+          args[1] = Object.values(arg)[0]
+          isCorrectArgument = true
+
+          break
+        }
+      }
+
+      if (!isCorrectArgument) return msg.reply({ embeds: [sendEmbed(Utils.messages.wrong_argument)] })
 
       const amount = args[2] && !isNaN(args[2]) ? Number(args[2]) : 1
       const attributes = (await DB.query(`select attributes from members where member_id = ${msg.member.id}`))[0][0].attributes
@@ -72,24 +97,35 @@ module.exports = {
 
       switch (args[1].toLowerCase()) {
         case 'hp':
-          stats.health += (2 * amount)
+          if (stat_hp.current === stat_hp.cap) return msg.reply({embeds: [sendEmbed(`Your health is maxed out!`)]})
+          if ((stat_hp.current + 2 * amount) > stat_hp.cap) return msg.reply({ embeds: [sendEmbed(`You can not use that many attributes on health! Upgrade your cap.`)] })
+
+          stat_hp.current += (2 * amount)
           await DB.query(`update members set stats = '${JSON.stringify(stats)}', attributes = ${attributes - amount} where member_id = ${msg.member.id}`)
 
-          msg.reply({ embeds: [sendEmbed(`You used your **${amount}** attributes and you now have **${stats.health} ${args[1].toUpperCase()}**`)] })
+          msg.reply({ embeds: [sendEmbed(`You used your **${amount}** attributes and you now have **${stat_hp} ${args[1].toUpperCase()}**`)] })
         break;
 
         case 'att':
-          stats.attack += (2 * amount)
+          if (stat_att.current === stat_att.cap) return msg.reply({ embeds: [sendEmbed(`Your attack is maxed out!`)] })
+          if ((stat_att.current + 2 * amount) > stat_att.cap) return msg.reply({ embeds: [sendEmbed(`You can not use that many attributes on attack! Upgrade your cap.`)] })
+
+          stat_att.current += (2 * amount)
           await DB.query(`update members set stats = '${JSON.stringify(stats)}', attributes = ${attributes - amount} where member_id = ${msg.member.id}`)
           
-          msg.reply({ embeds: [sendEmbed(`You used your **${amount}** attributes and you now have **${stats.attack} ${args[1].toUpperCase()}**`)] })
+          msg.reply({ embeds: [sendEmbed(`You used your **${amount}** attributes and you now have **${stat_att} ${args[1].toUpperCase()}**`)] })
         break;
 
         case 'def':
-          stats.defense += (2 * amount)
+          /*[{"id": "health", "current": 50, "max": 100},{"id": "attack", "current": 10, "max": 100},{"id": "defense", "current": 20, "max": 30}]
+          */
+          if (stat_def.current === stat_def.cap) return msg.reply({ embeds: [sendEmbed(`Your defense is maxed out!`)] })
+          if ((stat_def.current + 1 * amount) > stat_def.cap) return msg.reply({ embeds: [sendEmbed(`You can not use that many attributes on defense! Upgrade your cap.`)] })
+
+          stat_def += (1 * amount)
           await DB.query(`update members set stats = '${JSON.stringify(stats)}', attributes = ${attributes - amount} where member_id = ${msg.member.id}`)
 
-          msg.reply({ embeds: [sendEmbed(`You used your **${amount}** attributes and you now have **${stats.defense} ${args[1].toUpperCase()}**`)] })
+          msg.reply({ embeds: [sendEmbed(`You used your **${amount}** attributes and you now have **${stat_def} ${args[1].toUpperCase()}**`)] })
         break;
       }
     }

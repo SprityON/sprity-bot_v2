@@ -1,7 +1,6 @@
 const Utils = require("../../classes/utilities/Utils")
-const moment = require('moment')
 const ms = require('ms')
-const DB = require("../../classes/database/DB")
+const { sendEmbed } = require("../../classes/utilities/AdvancedEmbed")
 
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
@@ -12,11 +11,9 @@ module.exports = {
   timeout: 1000,
 
   async execute(msg, args) {
-    const role = msg.guild.roles.cache.find(role => role.name === "Muted")
     const member = msg.mentions.members.first()
 
-    if (!member) return msg.reply('You have to mention a member!')
-    if (member.roles.cache.find(r => r.name === role.name)) return msg.reply(`**${member.user.username}** has already been muted!`)
+    if (!member) return msg.reply({ embeds: [sendEmbed('You have to mention a member!')]})
 
     let time, timeINT = '';
     let unit = ''
@@ -41,21 +38,16 @@ module.exports = {
         accepted = true
     });
     
-    if (accepted == false) return msg.reply(`Invalid time unit!\nAccepted units: \`ms\` \`s\` \`m\` \`h\` \`d\` \`w\` \`y\``)
+    if (accepted == false) return msg.reply({ embeds: [sendEmbed(`Invalid time unit!\nAccepted units: \`ms\` \`s\` \`m\` \`h\` \`d\` \`w\` \`y\``)]})
 
-    const endDate = moment().add(`${timeINT}`, `${unit}`).format('M/D/YYYY H:mm:ss:SSS')
+    if (member.isCommunicationDisabled()) {
+      return msg.reply({ embeds: [sendEmbed(`Communication for ${member.displayName} is already disabled, and will be enabled at:\n\`${
+        ms(member.communicationDisabledUntil, { long: true })}\``)] }) 
+    }
 
-    await DB.query(`INSERT INTO timer_dates(member_id, enddate, type) VALUES ('${member.id}', '${endDate}', 'mute')`)
-    member.roles.add(role)
-
-    msg.reply(`**${member.user.username}** has been muted for ${ms(ms(time), { long: true })}!`)
-
-    setTimeout(async() => {
-      member.roles.remove(role)
-      msg.reply(`**${member.displayName}** has been unmuted!`)
-
-      await DB.query(`DELETE FROM timer_dates WHERE member_id = ${member.id} AND 'type' = 'mute'`)
-    }, ms(time));
+    member.timeout(ms(time), `Muted by ${msg.member.displayName}`).then(() => {
+      msg.reply({ embeds: [sendEmbed(`**${member.user.username}** has been muted for ${ms(ms(time), { long: true })}!`)] })
+    }).catch(() => { msg.reply(`I do not have the highest role.`) })
   },
 
   help: {

@@ -12,6 +12,8 @@ let waiting = false
 module.exports.execute = async (msg) => {
   if (msg.member.user.bot) return
 
+  
+
   const player = new Player(msg.member)
 
   // [begin] instead of creating a query for every single message, it will save the message count for a later db update
@@ -120,7 +122,6 @@ module.exports.execute = async (msg) => {
                     if (current >= tracker.goal) {
                       if (!questsDB.find(q => q.id === trackerQuest.id).completed) {
                         DB.query(`update trackers set current = ${current} where member_id = ${msg.member.id} and name = '${tracker.name}'`)
-                        console.log(trackerQuest);
                         return msg.reply({ embeds: [sendEmbed(`You completed quest **${trackerQuest.title.replace('$[amount]', tracker.goal)}**`)] })
                         .then(() => {
                           require(`../commands/points/quest`).execute(msg, [], tracker)

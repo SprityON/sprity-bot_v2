@@ -3,14 +3,12 @@ const Utils = require("./Utils")
 const moment = require('moment')
 const { sendEmbed } = require("./AdvancedEmbed")
 const { MessageEmbed } = require("discord.js")
-const { Discord } = require("../../Bot")
-const Battle = require("./Battle")
 
 module.exports = class Player {
   constructor(member, msg) {
     this.msg = msg
     this.member = member
-    this.setPotion()
+    this.name = this.member.displayName
   }
 
   /** 
@@ -26,7 +24,7 @@ module.exports = class Player {
    * @returns {Boolean} 
    */
   hasAccount() {
-    return new Promise(async (resolve, reject) => {
+    return new Promise(async (resolve) => {
       const result = await DB.query(`SELECT * FROM timer_dates WHERE member_id = ${this.member.id}`)
 
       if (result[0][0]) {
@@ -36,7 +34,7 @@ module.exports = class Player {
   }
 
   /**
-   * Checks if member is able to level up.
+   * Checks if player is able to level up. If true, then the player levels up.
    * @param {Number} amount 
    */
   async levelUp(amount) {
@@ -57,80 +55,90 @@ module.exports = class Player {
   }
 
   get difficulty() {
-    return new Promise(async (resolve, reject) => {
+    return new Promise(async (resolve) => {
       const result = await DB.query(`select difficulty from members where member_id = ${this.member.id}`)
       resolve(result[0][0].difficulty)
     })
   }
 
   get stats() {
-    return new Promise(async (resolve, reject) => {
+    return new Promise(async (resolve) => {
       const result = await DB.query(`select stats from members where member_id = ${this.member.id}`)
       resolve(JSON.parse(result[0][0].stats))
     })
   }
 
-  hp = {}
-  set setHP(hp) { this.hp = hp }
-
   get att() {
-    return new Promise(async (resolve, reject) => {
-      const result = await DB.query(`select stats from members where member_id = ${this.member.id}`)
-      resolve(JSON.parse(result[0][0].stats).attack)
+    return new Promise(async (resolve) => {
+      const stats = await this.stats
+      resolve(stats.find(stat => stat.id === 'attack'))
     })
   }
 
   get def() {
-    return new Promise(async (resolve, reject) => {
-      const result = await DB.query(`select stats from members where member_id = ${this.member.id}`)
-      resolve(JSON.parse(result[0][0].stats).defense)
+    return new Promise(async (resolve) => {
+      const stats = await this.stats
+      resolve(stats.find(stat => stat.id === 'defense'))
     })
   }
 
   get throwable() {
-    return new Promise(async (resolve, reject) => {
+    return new Promise(async (resolve) => {
       const result = await DB.query(`select throwable from members where member_id = ${this.member.id}`)
-      const throwable = result[0][0].throwable
+      let throwable = result[0][0].throwable
 
-      resolve(throwable ? JSON.parse(throwable)[0] : '')
+      resolve(throwable ? (() => {
+        throwable = JSON.parse(throwable)[0]
+        const throwableShop = require('../../commands/points/shop.json').find(t => t.id === throwable.id)
+        throwable.damage = throwableShop.damage
+        throwable.shop = throwableShop
+        return throwable
+      })() : '')
     })
   }
 
-  potion = { id: '', amount: 0}
-
-  setPotion() {
-    this.getPotion.then(potion => {
-      if (!potion) return this.potion = null
-      this.potion.id = potion.id
-      this.potion.amount = potion.amount
-    })
+  async load() {
+    await this.setHP()
+    await this.setPotion()
+    return this
   }
 
-  get getPotion() {
-    return new Promise(async (resolve, reject) => {
-      const result = await DB.query(`select potion from members where member_id = ${this.member.id}`)
-      const potion = result[0][0].potion
+  health = {}
+  async setHP() {
+    const stats = await this.stats
+    const health = stats.find(stat => stat.id === 'health')
+    this.health = { current: health.current, max: health.current, cap: health.cap }
+  }
 
-      resolve(potion ? JSON.parse(potion)[0] : '')
-    })
+  potion = {}
+  async setPotion() {
+    const result = await DB.query(`select potion from members where member_id = ${this.member.id}`)
+    let potion = result[0][0].potion
+    potion ? (() => {
+      potion = JSON.parse(potion)[0]
+      const potionShop = require('../../commands/points/shop.json').find(p => p.id === potion.id)
+      potion.percentage = potionShop.heal_percentage
+      potion.shop = potionShop
+      this.potion = potion
+     })() : this.potion = null
   }
 
   get level() {
-    return new Promise(async (resolve, reject) => {
+    return new Promise(async (resolve) => {
       const result = await DB.query(`select level from members where member_id = ${this.member.id}`)
       resolve(result[0][0].level)
     })
   }
 
   get experience() {
-    return new Promise(async (resolve, reject) => {
+    return new Promise(async (resolve) => {
       const result = await DB.query(`select experience from members where member_id = ${this.member.id}`)
       resolve(result[0][0].experience)
     })
   }
 
   get inventory() {
-    return new Promise(async (resolve, reject) => {
+    return new Promise(async (resolve) => {
       const result = await DB.query(`select inventory from members where member_id = ${this.member.id}`)
       resolve(JSON.parse(result[0][0].inventory))
     })
@@ -145,7 +153,7 @@ module.exports = class Player {
   }
 
   get points() {
-    return new Promise(async (resolve, reject) => {
+    return new Promise(async (resolve) => {
       const result = await DB.query(`select points from members where member_id = ${this.member.id}`)
       const points = result[0][0].points
       resolve(points)
@@ -153,7 +161,7 @@ module.exports = class Player {
   }
 
   get messages() {
-    return new Promise(async (resolve, reject) => {
+    return new Promise(async (resolve) => {
       const result = await DB.query(`select messages from members where member_id = ${this.member.id}`)
       const messages = result[0][0].messages
       resolve(messages)
@@ -161,7 +169,7 @@ module.exports = class Player {
   }
 
   get experience() {
-    return new Promise(async (resolve, reject) => {
+    return new Promise(async (resolve) => {
       const result = await DB.query(`select experience from members where member_id = ${this.member.id}`)
       const experience = result[0][0].experience
       resolve(experience)
@@ -169,7 +177,7 @@ module.exports = class Player {
   }
 
   getDaily() {
-    return new Promise(async (resolve, reject) => {
+    return new Promise(async (resolve) => {
       const result = await DB.query(`select enddate from timer_dates where member_id = ${this.member.id} and type = 'daily'`)
       if (result[0][0]) {
         const enddate = result[0][0].enddate
@@ -184,7 +192,7 @@ module.exports = class Player {
   }
 
   getWeekly() {
-    return new Promise(async (resolve, reject) => {
+    return new Promise(async (resolve) => {
       const result = await DB.query(`select enddate from timer_dates where member_id = ${this.member.id} and type = 'weekly'`)
       if (result[0][0]) {
         const enddate = result[0][0].enddate
@@ -199,7 +207,7 @@ module.exports = class Player {
   }
 
   getMonthly() {
-    return new Promise(async (resolve, reject) => {
+    return new Promise(async (resolve) => {
       const result = await DB.query(`select enddate from timer_dates where member_id = ${this.member.id} and type = 'monthly'`)
       if (result[0][0]) {
         const enddate = result[0][0].enddate
@@ -214,7 +222,7 @@ module.exports = class Player {
   }
 
   get settings() {
-    return new Promise(async (resolve, reject) => {
+    return new Promise(async (resolve) => {
       const result = await DB.query(`select settings from settings where member_id = ${this.member.id}`)
       const settings = result[0][0] ? JSON.parse(result[0][0].settings) : []
       resolve(settings)
@@ -227,7 +235,7 @@ module.exports = class Player {
    * @returns {Boolean}
    */
   settingIsEnabled = async (setting) => {
-    return await new Promise(async (resolve, reject) => {
+    return await new Promise(async (resolve) => {
       const settings = await this.settings
       settings.find(s => s.id === setting)
         ? resolve(true)
@@ -242,7 +250,7 @@ module.exports = class Player {
   async showSettings(page) {
     const settingsJSON = require('../../commands/settings/settings.json')
     
-    let message = await new Promise((resolve, reject) => {
+    let message = await new Promise((resolve) => {
       Utils.embedList({
         JSONlist: settingsJSON,
         currPage: page,

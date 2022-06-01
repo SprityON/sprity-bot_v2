@@ -7,7 +7,7 @@ module.exports.execute = async(msg, item_id, type) => {
   const player = new Player(msg.member)
   const inventory = await player.inventory
 
-  const weapon = await player[type]
+  const weapon = await player.throwable
   const shop = require('../shop.json')
   const newShopThrowable = shop.find(item => item.id === item_id)
   const newThrowableEmote = newShopThrowable.uploaded ? Bot.client.emojis.cache.find(e => e.name === newShopThrowable.emoji) : newShopThrowable.emoji

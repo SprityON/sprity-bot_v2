@@ -13,15 +13,13 @@ module.exports = {
     const member = msg.mentions.members.first()
     if (!member) return msg.reply({embeds: [sendEmbed(`You have to mention a member!`)]})
 
-    msg.reply(`Are you sure you want to ban **${member.user.username}**? **(Y/N)**\n*The warn system already does this!*`)
+    msg.reply({ embeds: [sendEmbed(`Are you sure you want to ban **${member.displayName}**? **(Y/N)**\n*NOTE: Members automatically get banned by the warn system!*`)]})
 
     const filter = m => m.author.id === msg.author.id
     msg.channel.awaitMessages({filter, timeout: 30000, max: 1 })
       .then(collected => {
         const answer = collected.first().content.toLowerCase()
-        if (answer !== 'y') return msg.reply({ embeds: [sendEmbed(`**${member.user.username}** was not kicked!`)] })
-        
-        
+        if (answer !== 'y') return msg.reply({ embeds: [sendEmbed(`**${member.displayName}** was not kicked!`)] })
 
         if (args[0] == member.id && args[0].startsWith('<@') && args[0].endsWith('>')) {
           if (member.bannable) {
@@ -32,9 +30,9 @@ module.exports = {
             member.ban(reason)
             
             msg.reply({ embeds: [sendEmbed([
-              [`${member.user.username} was banned for:`], [`${reason}`]
+              [`${member.displayName} was banned for:`], [`${reason}`]
             ])] })
-          } else return msg.reply({ embeds: [sendEmbed('You cannot ban this member.')] })
+          } else return msg.reply({ embeds: [sendEmbed('I cannot ban this member.')] })
         } else return msg.reply({ embeds: [sendEmbed(`You have to provide a reason.`)] })
       })
   },

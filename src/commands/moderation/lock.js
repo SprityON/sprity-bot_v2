@@ -4,17 +4,13 @@ const { sendEmbed } = require('../../classes/utilities/AdvancedEmbed')
 module.exports = {
   name: Utils.getCmdName(__filename, __dirname),
   category: Utils.getCmdCategory(__filename),
-  usage: '',
+  usage: 'lock',
   aliases: [],
-  permissions: ['BAN_MEMBERS'],
+  permissions: ['MANAGE_MESSAGES'],
   timeout: 1000,
 
   async execute(msg, args) {
-    const role = msg.guild.roles.cache.find(r => r.name === '@everyone')
-    await msg.channel.updateOverwrite(role, {
-      SEND_MESSAGES: false
-    });
-
+    await msg.channel.permissionOverwrites.edit(msg.guild.id, { SEND_MESSAGES: false });
     msg.reply({ embeds: [sendEmbed(`Channel locked.`)] })
   },
 

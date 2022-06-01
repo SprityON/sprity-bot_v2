@@ -6,21 +6,17 @@ module.exports = {
   category: Utils.getCmdCategory(__filename),
   usage: '',
   aliases: [],
-  permissions: ['BAN_MEMBERS'],
+  permissions: ['MANAGE_MESSAGES'],
   timeout: 1000,
 
   async execute(msg, args) {
-    const role = msg.guild.roles.cache.find(r => r.name === '@everyone')
-    await msg.channel.updateOverwrite(role, {
-      SEND_MESSAGES: true
-    });
-
+    await msg.channel.permissionOverwrites.edit(msg.guild.id, { SEND_MESSAGES: true });
     msg.reply({ embeds: [sendEmbed(`Channel unlocked.`)] })
   },
 
   help: {
     enabled: true,
-    title: 'Unlock Channel',
-    description: `Unlock a channel`,
+    title: 'Lock Channel',
+    description: `Lock a channel.`,
   }
 }

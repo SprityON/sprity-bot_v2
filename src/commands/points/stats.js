@@ -97,35 +97,36 @@ module.exports = {
 
       switch (args[1].toLowerCase()) {
         case 'hp':
-          if (stat_hp.current === stat_hp.cap) return msg.reply({embeds: [sendEmbed(`Your health is maxed out!`)]})
-          if ((stat_hp.current + 2 * amount) > stat_hp.cap) return msg.reply({ embeds: [sendEmbed(`You can not use that many attributes on health! Upgrade your cap.`)] })
+          let health = stats[0];
+          if (health.current === health.cap) return msg.reply({embeds: [sendEmbed(`Your health is maxed out!`)]})
+          if ((health.current + 2 * amount) > health.cap) return msg.reply({ embeds: [sendEmbed(`You can not use that many attributes on health! Upgrade your cap.`)] })
 
-          stat_hp.current += (2 * amount)
+          health.current += (2 * amount)
           await DB.query(`update members set stats = '${JSON.stringify(stats)}', attributes = ${attributes - amount} where member_id = ${msg.member.id}`)
 
-          msg.reply({ embeds: [sendEmbed(`You used your **${amount}** attributes and you now have **${stat_hp} ${args[1].toUpperCase()}**`)] })
+          msg.reply({ embeds: [sendEmbed(`You used your **${amount}** attributes and you now have **${health.current} ${args[1].toUpperCase()}**`)] })
         break;
 
         case 'att':
-          if (stat_att.current === stat_att.cap) return msg.reply({ embeds: [sendEmbed(`Your attack is maxed out!`)] })
-          if ((stat_att.current + 2 * amount) > stat_att.cap) return msg.reply({ embeds: [sendEmbed(`You can not use that many attributes on attack! Upgrade your cap.`)] })
+          let attack = stats[1];
+          if (attack.current === attack.cap) return msg.reply({ embeds: [sendEmbed(`Your attack is maxed out!`)] })
+          if ((attack.current + 2 * amount) > attack.cap) return msg.reply({ embeds: [sendEmbed(`You can not use that many attributes on attack! Upgrade your cap.`)] })
 
-          stat_att.current += (2 * amount)
+          attack.current += (2 * amount)
           await DB.query(`update members set stats = '${JSON.stringify(stats)}', attributes = ${attributes - amount} where member_id = ${msg.member.id}`)
           
-          msg.reply({ embeds: [sendEmbed(`You used your **${amount}** attributes and you now have **${stat_att} ${args[1].toUpperCase()}**`)] })
+          msg.reply({ embeds: [sendEmbed(`You used your **${amount}** attributes and you now have **${attack.current} ${args[1].toUpperCase()}**`)] })
         break;
 
         case 'def':
-          /*[{"id": "health", "current": 50, "max": 100},{"id": "attack", "current": 10, "max": 100},{"id": "defense", "current": 20, "max": 30}]
-          */
-          if (stat_def.current === stat_def.cap) return msg.reply({ embeds: [sendEmbed(`Your defense is maxed out!`)] })
-          if ((stat_def.current + 1 * amount) > stat_def.cap) return msg.reply({ embeds: [sendEmbed(`You can not use that many attributes on defense! Upgrade your cap.`)] })
+          let defense = stats[2];
+          if (defense.current === defense.cap) return msg.reply({ embeds: [sendEmbed(`Your defense is maxed out!`)] })
+          if ((defense.current + 1 * amount) > defense.cap) return msg.reply({ embeds: [sendEmbed(`You can not use that many attributes on defense! Upgrade your cap.`)] })
 
-          stat_def += (1 * amount)
+          defense += (1 * amount)
           await DB.query(`update members set stats = '${JSON.stringify(stats)}', attributes = ${attributes - amount} where member_id = ${msg.member.id}`)
 
-          msg.reply({ embeds: [sendEmbed(`You used your **${amount}** attributes and you now have **${stat_def} ${args[1].toUpperCase()}**`)] })
+          msg.reply({ embeds: [sendEmbed(`You used your **${amount}** attributes and you now have **${defense.current} ${args[1].toUpperCase()}**`)] })
         break;
       }
     }

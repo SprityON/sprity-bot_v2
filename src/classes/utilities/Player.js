@@ -8,7 +8,7 @@ module.exports = class Player {
   constructor(member, msg) {
     this.msg = msg
     this.member = member
-    this.name = this.member.displayName
+    this.name = this.member ? this.member.displayName : 'No name'
   }
 
   /** 

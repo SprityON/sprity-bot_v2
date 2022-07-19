@@ -10,7 +10,6 @@ let isUsing = false
 let waiting = false
 
 module.exports.execute = async (msg) => {
-  console.log(msg);
   if (msg.member && msg.member.user.bot) return
 
   const player = new Player(msg.member)

@@ -111,7 +111,7 @@ module.exports = {
         break;
 
         case 'battle_potion':
-          if (battle.turn.potion) {
+          if (battle.turn.potion) { 
             hasWon = await battle.usePotion()
 
             if (hasWon === true) {

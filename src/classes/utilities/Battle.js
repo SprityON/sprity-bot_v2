@@ -214,13 +214,20 @@ module.exports = class Battle {
 
   damage = 0
   async setDamage () {
+    if (this.turn.isNPC) return this.damage = await this.turn.calculateDamage()
     const stat_att = await this.turn.att
     this.damage = Math.floor(stat_att.current * ((Math.random() * 0.3) + 0.85))
   }
 
   async dodge() {
-    const stat_def = await this.turn.def
-    const defense = stat_def.current
+    let defense
+
+    if (this.turn.isNPC) {
+      defense = 20
+    } else {
+      let stat_def = await this.turn.def
+      defense = stat_def.current
+    }
 
     const math = defense / 100
     const random = Math.random().toFixed(2)

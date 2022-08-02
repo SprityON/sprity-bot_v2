@@ -207,6 +207,9 @@ module.exports = class Utils {
   static async refresh() {
     const me = Bot.client.guilds.cache.get(process.env.GUILD_ID).me
     me.guild.members.cache.forEach(async member => {
+      //temp
+      DB.query(`insert into settings (member_id, settings) values (${member.id}, '[]')`)
+      //temp
       const botRole = me.guild.roles.cache.find(role => role.name === "Bot")
 
       if (!member.manageable) return

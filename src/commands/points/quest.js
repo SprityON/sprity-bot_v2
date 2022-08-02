@@ -42,17 +42,20 @@ module.exports = {
         if (quest.tracker === true && !tracker) return msg.reply({ embeds: [sendEmbed(`Tracker quests not playable.`)] })
 
         await require(`./quest/${quest.name}`).execute(msg, args, quest)
-          .then(async ([success, inventory, tracker]) => {
-            if (success === 'skip') return
+          .then(async ([victory, inventory, tracker]) => {
+            if (victory === 'skip') return
 
             const player = new Player(msg.member, msg)
             if (!inventory) inventory = await player.inventory
             const settings = await player.settings
-            const autonext = settings.find(s => s.id === 'autonext')
-            const newPoints = success ? await player.points + questDB.points : await player.points - questDB.points
+            const settingsJSON = require('../settings/settings.json')
+            const autonext = settings.find(s => s.id === 'autonext') 
+              ? settings.find(s => s.id === 'autonext') 
+              : settingsJSON.find(s => s.id === 'autonext')
+            const newPoints = victory ? await player.points + questDB.points : await player.points - questDB.points
             const point = Bot.client.emojis.cache.find(e => e.name === "pointdiscord")
 
-            if (success === true) {
+            if (victory === true) {
               let strings = []
               quest.items.forEach(item => {
                 if (!item) return
@@ -89,6 +92,7 @@ module.exports = {
             } 
             
             else {
+              
               msg.reply({ embeds: [sendEmbed(`You lost **${point} ${questDB.points}**`)] })
               questDB.completed = true
 
@@ -107,7 +111,7 @@ module.exports = {
              * Auto Next
              */
 
-            if (autonext && autonext.enabled === true && quests.find(q => q.completed === false && !q.tracker)) {
+            if ((!autonext && autonext.default === true) || autonext.enabled === true && quests.find(q => q.completed === false)) {
               let currPos = 0
               let nextPos = 0
 

@@ -12,8 +12,7 @@ module.exports.execute = async (msg, args, quest) => {
   const enemy = (await (new Enemy(player, battle).load()))
   .setName(`🤖 Minion #${Math.floor(Math.random() * 998) + 1}`)
 
-  battle.player = player
-  battle.enemy = enemy
+  battle.setPlayers(player, enemy)
 
   battle.embedActions
     .setTitle(`You encountered ${enemy.name}!`)
@@ -83,7 +82,6 @@ module.exports.execute = async (msg, args, quest) => {
       if (player.potion) {
         hasWon = await battle.usePotion()
 
-
         if (hasWon === true) {
           interaction.update({ embeds: [battle.embed.setColor(Utils.colors.green)], components: [battle.embedActions.getActionButtons(true)] });
           return [true, inventory]
@@ -135,7 +133,7 @@ module.exports.execute = async (msg, args, quest) => {
       else if (hasWon === 'skip') {
         interaction.message.edit({ embeds: [battle.embed], components: [battle.embedActions.getActionButtons()] })
 
-        await Utils.wait(1500);
+        await Utils.wait(2000);
 
         hasWon = await enemy.attack()
 
@@ -144,7 +142,7 @@ module.exports.execute = async (msg, args, quest) => {
           return [false, inventory]
         }
         else if (hasWon === false) { 
-          interaction.update({ embeds: [battle.embed], components: [battle.embedActions.getActionButtons()] }) }
+          interaction.update({ embeds: [battle.embedActions.updateBattle(0)], components: [battle.embedActions.getActionButtons()] }) }
       }
     }
   }

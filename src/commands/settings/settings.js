@@ -15,9 +15,9 @@ module.exports = {
     const settingsJSON = require('./settings.json')
     const setting = args[0] ? args[0].toLowerCase() : null
     const player = new Player(msg.member)
-    const playerSettings = await player.settings
+    let playerSettings = await player.settings
 
-    if (!playerSettings) await DB.query(`insert into settings (member_id, settings) values (${msg.member.id}, [])`)
+    if (!playerSettings) (await DB.query(`insert into settings (member_id, settings) values (${msg.member.id}, '[]')`), playerSettings = [])
 
     const list = await player.showSettings(!isNaN(setting) ? setting : 1)
     
@@ -25,7 +25,7 @@ module.exports = {
     if (setting && !settingsJSON.find(s => s.id === setting)) return msg.reply({ embeds: [sendEmbed(`That setting does not exist.`)]})
 
     const memberSettings = playerSettings.length > 0 ? playerSettings : []
-    const findSetting = playerSettings.find(s => s.id == setting)
+    const findSetting = playerSettings.length > 0 ? playerSettings.find(s => s.id == setting) : null
 
     function oppositeStatus() { 
       if (findSetting && findSetting.enabled === true) { return false } 
@@ -50,7 +50,7 @@ module.exports = {
       let isCorrectArgument = false
       for (let i = 0; i < correctArguments.length; i++) {
         const arg = correctArguments[i]
-        
+
         if (args[1] == Object.keys(arg)[0]) {
           status = Object.values(arg)[0]
           isCorrectArgument = true
@@ -71,17 +71,12 @@ module.exports = {
       } else {
         const newSetting = { id: setting, pos: memberSettings.length, enabled: status }
         memberSettings.push(newSetting)
-
-        if (memberSettings[newSetting.pos].enabled === status) 
-          return msg.reply({ embeds: [sendEmbed(`This setting is already ${status === true ? 'enabled' : 'disabled'}`)] })
       }
     }
 
     msg.reply({ embeds: [sendEmbed(`Setting \`${setting}\` was set to \`${status === true ? 'enabled' : 'disabled'}\``)]})
     
-    playerSettings.length > 0
-      ? DB.query(`update settings set settings = '${JSON.stringify(memberSettings)}' where member_id = ${msg.member.id}`)
-      : DB.query(`insert into settings (member_id, settings) values (${msg.member.id}, '${JSON.stringify(memberSettings)}')`)
+    DB.query(`update settings set settings = '${JSON.stringify(memberSettings)}' where member_id = ${msg.member.id}`)
   },
 
   help: {

@@ -1,12 +1,12 @@
 module.exports = class Enemy {
-  constructor(player) {
+  constructor(player, battle) {
     this.player = player
+    this.battle = battle
+    this.isNPC = true
   }
 
   name = 'Enemy'
   setName(arg) { this.name = arg; return this }
-
-  battle
 
   async load() {
     await this.setHP()
@@ -58,7 +58,7 @@ module.exports = class Enemy {
     
     else {
       this.battle.embedActions.setStatus(`**${this.name}** did **${this.battle.damage}** damage to **${this.player.member.displayName} (${this.player.health.current}/${this.player.health.max})**`)
-      this.battle.embedActions.updateBattle(1)
+      this.battle.embedActions.updateBattle(99)
       return false
     }
   }

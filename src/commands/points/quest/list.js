@@ -72,7 +72,7 @@ module.exports.execute = async(msg) => {
             newPlayerQuests.push({ 
               id: quest.id, 
               tracker: quest.tracker ? true : false, 
-              active: quest.tracker ? true : false, 
+              active: quest.tracker ? true : o === 0 ? true :false, 
               completed: false, 
               xp: questXP,
               points: questPoints, 

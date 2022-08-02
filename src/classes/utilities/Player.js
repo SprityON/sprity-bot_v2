@@ -9,6 +9,7 @@ module.exports = class Player {
     this.msg = msg
     this.member = member
     this.name = this.member ? this.member.displayName : 'No name'
+    this.isNPC = false
   }
 
   /** 
@@ -16,7 +17,7 @@ module.exports = class Player {
    * @param {object} member 
    */
   async create() {
-    await DB.query(`insert into timer_dates (member_id, enddate, type) values ('${this.member.id}', '${moment().clone().format('M/D/YYYY H:mm:ss:SSS')}', 'daily');insert into timer_dates (member_id, enddate, type) values ('${this.member.id}', '${moment().clone().format('M/D/YYYY H:mm:ss:SSS')}', 'weekly');insert into timer_dates (member_id, enddate, type) values ('${this.member.id}', '${moment().clone().format('M/D/YYYY H:mm:ss:SSS')}', 'monthly');`)
+    await DB.query(`insert into timer_dates (member_id, enddate, type) values ('${this.member.id}', '${moment().clone().format('M/D/YYYY H:mm:ss:SSS')}', 'daily');insert into timer_dates (member_id, enddate, type) values ('${this.member.id}', '${moment().clone().format('M/D/YYYY H:mm:ss:SSS')}', 'weekly');insert into timer_dates (member_id, enddate, type) values ('${this.member.id}', '${moment().clone().format('M/D/YYYY H:mm:ss:SSS')}', 'monthly'); insert into settings (member_id, settings) values ()`)
   }
 
   /**
@@ -224,7 +225,7 @@ module.exports = class Player {
   get settings() {
     return new Promise(async (resolve) => {
       const result = await DB.query(`select settings from settings where member_id = ${this.member.id}`)
-      const settings = result[0][0] ? JSON.parse(result[0][0].settings) : []
+      const settings = result[0][0] ? JSON.parse(result[0][0].settings) : null
       resolve(settings)
     })
   }

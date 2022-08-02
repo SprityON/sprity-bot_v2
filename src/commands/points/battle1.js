@@ -335,7 +335,7 @@ module.exports = {
   },
 
   help: {
-    enabled: true,
+    enabled: false,
     title: 'Go Battle!',
     description: `Battle a player.`,
   }

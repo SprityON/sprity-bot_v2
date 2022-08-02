@@ -27,6 +27,9 @@ module.exports = {
     let message = await msg.reply({embeds: [request.embed], components: [request.embedActions.request.getButtons()]})
 
     let filter = interaction => interaction.customId.startsWith('battle') && interaction.user.id === msg.member.id || interaction.user.id === mention.id
+
+    const battle = new Battle()
+    battle.setPlayers(player, player2)
     while (true) {
       const interaction = await message.awaitMessageComponent({ filter: filter, time: 60000, max: 1 }).catch(() => {})
 
@@ -40,10 +43,10 @@ module.exports = {
 
         interaction.update({ embeds: [request.embedActions.request.requestAccepted()], components: [request.embedActions.request.getButtons(true)] })
 
-        await Utils.wait(5000)
+        await Utils.wait(3000)
 
-        request.embedActions.setStatus('No Interaction')
-        interaction.message.edit({ embeds: [request.embedActions.updateBattle(99).setColor(Utils.colors.red)], components: [request.embedActions.getActionButtons()] })
+        battle.embedActions.setStatus(`It is **${battle.turn.name}'s** turn`)
+        interaction.message.edit({ embeds: [battle.embedActions.updateBattle(99)], components: [request.embedActions.getActionButtons()] })
 
         break;
       }
@@ -52,26 +55,15 @@ module.exports = {
         return interaction.update({ embeds: [request.embedActions.request.requestCancelled()], components: [request.embedActions.request.getButtons(true)] })
     }
 
-    let turn = player
-    let nxtTurn = player2
-
-    function nextTurn() {
-      let temp = nxtTurn
-      nxtTurn = turn
-      turn = temp
-    }
-
     while (true) {
       const interaction = await message.awaitMessageComponent({ filter: filter, time: 60000, max: 1 }).catch(() => {})
-
-      const battle = new Battle(turn, nxtTurn)
 
       if (!interaction) { 
         message.edit({embeds: [battle.embed], components: [battle.embedActions.getActionButtons(true)]})
         return
       }
 
-      if (interaction.member.id !== turn.member.id) {
+      if (interaction.member.id !== battle.turn.member.id) {
         interaction.reply({ embeds: [sendEmbed(Utils.messages.unusable_interaction)], ephemeral: true })
         continue;
       }
@@ -83,22 +75,83 @@ module.exports = {
 
           if (hasWon === true) {
             interaction.update({ embeds: [battle.embed.setColor(Utils.colors.green)], components: [battle.embedActions.getActionButtons(true)] });
+            return
           }
 
           else if (hasWon === false) {
             interaction.update({ embeds: [battle.embed.setColor(Utils.colors.red)], components: [battle.embedActions.getActionButtons(true)] });
+            return
           }
 
           else if (hasWon === 'skip') {
-            interaction.message.edit({ embeds: [battle.embed], components: [battle.embedActions.getActionButtons()] })
+            interaction.message.edit({ embeds: [battle.embed], components: [battle.embedActions.getActionButtons(true)] })
 
-            await Utils.wait(1000);
+            await Utils.wait(2000);
 
-            nextTurn()
-
-            battle.embedActions.setStatus(`It is now ${turn.name}'s turn`)
-            interaction.update({ embeds: [battle.embed], components: [battle.embedActions.getActionButtons()] })
+            battle.embedActions.setStatus(`It is **${battle.turn.name}'s** turn`)
+            interaction.update({ embeds: [battle.embedActions.updateBattle(99)], components: [battle.embedActions.getActionButtons()] })
           }
+        break;
+
+        case 'battle_throw':
+          const throwable = await battle.turn.throwable
+          if (throwable) {
+            hasWon = await battle.useThrowable()
+
+            if (hasWon === true) {
+              interaction.update({ embeds: [battle.embed.setColor(Utils.colors.green)], components: [battle.embedActions.getActionButtons(true)] });
+              return 
+            } else {
+              interaction.message.edit({ embeds: [battle.embed], components: [battle.embedActions.getActionButtons()] });
+            }
+          } else {
+            battle.embedActions.setStatus(`You are not using a throwable!`)
+            interaction.update({ embeds: [battle.embedActions.updateBattle(99).setColor(Utils.colors.yellow)], components: [battle.embedActions.getActionButtons()] });
+          }
+        break;
+
+        case 'battle_potion':
+          if (battle.turn.potion) {
+            hasWon = await battle.usePotion()
+
+            if (hasWon === true) {
+              interaction.update({ embeds: [battle.embed.setColor(Utils.colors.green)], components: [battle.embedActions.getActionButtons(true)] });
+              return
+            } else if (hasWon === false) {
+              interaction.update({ embeds: [battle.embed], components: [battle.embedActions.getActionButtons()] });
+
+            } else if (hasWon === 'skip') interaction.update({ embeds: [battle.embed], components: [battle.embedActions.getActionButtons()] });
+          } else {
+            battle.embedActions.setStatus(`You are not using a potion!`)
+            interaction.update({ embeds: [battle.embedActions.updateBattle(99).setColor(Utils.colors.yellow)], components: [battle.embedActions.getActionButtons()] });
+          }
+        break;
+
+        case 'battle_run':
+          const bool = Math.floor(Math.random() * 4) < 3 ? true : false
+
+          if (bool === true) {
+            battle.embedActions.setStatus(`**${battle.turn.name}** successfully ran away from **${battle.nextTurn.name}**!`)
+            interaction.update({ embeds: [battle.embedActions.updateBattle(99).setColor(Utils.colors.green)], components: [battle.embedActions.getActionButtons(true)] });
+            return 
+          } else {
+            battle.embedActions.setStatus(`**${battle.turn.name}** couldn't run away from **${battle.nextTurn.name}**!`)
+
+            interaction.message.edit({ embeds: [battle.embed], components: [battle.embedActions.getActionButtons(true)] })
+            await Utils.wait(2000);
+
+            interaction.update({ embeds: [battle.embedActions.updateBattle(0).setColor(Utils.colors.yellow)], components: [battle.embedActions.getActionButtons()] });
+          }
+        break;
+
+        case 'battle_history':
+          battle.embedActions.showHistory()
+          interaction.update({ embeds: [battle.embed], components: [battle.embedActions.getHistoryButtons()] });
+        break;
+
+        case 'battle_present':
+          battle.embedActions.showBattle()
+          interaction.update({ embeds: [battle.embed], components: [battle.embedActions.getActionButtons()] });
         break;
       }
     }

@@ -5,31 +5,57 @@ const Utils = require("./Utils");
 module.exports = class Battle {
   constructor() {
     this.embed = new Bot.Discord.MessageEmbed()
-    this.status = 'No Interaction'
+    this.status = ''
     this.history = [this.status]
   }
 
   player
   enemy
+  
+  turn
+  nextTurn
+
+  players = []
+  setPlayers(...players) {
+    players.forEach(player => {
+      this.players.push(player)
+    })
+
+    this.player = players[0]
+    this.enemy = players[1]
+
+    this.turn = players[0]
+    this.nextTurn = players[1]
+  }
+
+  calculateNextTurn = () => {
+    let temp = this.nextTurn
+    this.nextTurn = this.turn
+    this.turn = temp
+  }
 
   embedActions = {
-    updateBattle: (num) => {
+    updateBattle: (num, oldHealth) => {
+      if (num !== 99) this.calculateNextTurn()
       const heart = Bot.client.emojis.cache.find(e => e.name === 'heart_rpg')
 
       this.embed.spliceFields(0, 99)
-        .addField(`${this.player.name}`, `${this.player.health.current}/${this.player.health.max} ${heart} ${num === 1
+
+      this.players.forEach(player => {
+        this.embed.addField(`${player.name}`, `${player.health.current}/${player.health.max} ${heart} ${num === 1
           ? this.damage ? `(-${this.damage})` : ''
           : num === 2
-            ? `(+${Math.floor(this.player.health.max / 100 * this.player.potion.percentage)})`
-            : ''
+            ? player.potion 
+              ? this.turn.health.current >= this.turn.health.max 
+                ? `(+${Math.floor(player.health.max - oldHealth)})`
+                : `(+${Math.floor(player.health.max / 100 * player.potion.percentage)})` : ''
+              : ''
           }`, true)
-        .addField(`${this.enemy.name}`, `${this.enemy.health.current}/${this.enemy.health.max} ${heart} ${num === 0
-          ? this.damage ? `(-${this.damage})` : ''
-          : num === 3
-            ? `(+${Math.floor(this.player.health.max / 100 * this.player.potion.percentage)})`
-            : ''
-          }`, true)
-        .addField(`\u200b`, `*Status: ${this.status}*`)
+      })
+
+      this.embed.setTitle(`Battle: ${this.player.name} VS ${this.enemy.name}`)
+      this.embed.setColor(Utils.colors.yellow)
+      this.embed.addField(`\u200b`, `*Status: ${this.status}*`)
 
       return this.embed
     },
@@ -51,6 +77,7 @@ module.exports = class Battle {
     showHistory: () => {
       this.embedActions.description = this.embed.description;
       this.embed
+        .setTitle(`Battle: ${this.player.name} VS ${this.enemy.name} (History)`)
         .spliceFields(0, 99)
         .setDescription(this.history.join("\n\n"))
         .setColor(Utils.colors.grey)
@@ -59,10 +86,13 @@ module.exports = class Battle {
     },
 
     showBattle: () => {
+      this.embedActions.description 
+        ? this.embedActions.setDescription(this.embedActions.description)
+        :  this.embed.description = null
+
       this.embedActions
-        .setDescription(this.embedActions.description)
         .updateBattle(99)
-        .setColor(Utils.colors.red)
+        .setColor(Utils.colors.yellow)
 
       return this.embed
     },
@@ -183,14 +213,13 @@ module.exports = class Battle {
   }
 
   damage = 0
-  async setDamage() {
-    console.log(await this.player);
-    const stat_att = await this.player.att
+  async setDamage () {
+    const stat_att = await this.turn.att
     this.damage = Math.floor(stat_att.current * ((Math.random() * 0.3) + 0.85))
   }
 
   async dodge() {
-    const stat_def = await this.player.def
+    const stat_def = await this.turn.def
     const defense = stat_def.current
 
     const math = defense / 100
@@ -200,50 +229,51 @@ module.exports = class Battle {
   }
 
   async usePotion() {
-    const emote = this.player.potion.shop.uploaded
-      ? Bot.client.emojis.cache.find(e => e.name === this.player.potion.shop.emoji)
-      : this.player.potion.shop.emoji
+    const emote = this.turn.potion.shop.uploaded
+      ? Bot.client.emojis.cache.find(e => e.name === this.turn.potion.shop.emoji)
+      : this.turn.potion.shop.emoji
 
-    if (this.player.health.current >= this.player.health.max) {
-      this.embedActions.setStatus(`**${this.player.name}** is already at full health!`)
+    if (this.turn.health.current >= this.turn.health.max) {
+      this.embedActions.setStatus(`**${this.turn.name}** is already at full health!`)
       this.embedActions.updateBattle(99)
       return 'skip'
     } else {
-      this.player.potion.amount -= 1
+      this.turn.potion.amount -= 1
 
-      this.player.potion.amount < 1
-        ? await DB.query(`update members set potion = '' where member_id = ${this.player.member.id}`)
-        : await DB.query(`update members set potion = '[${JSON.stringify(this.player.potion)}]' where member_id = ${this.player.member.id}`)
+      this.turn.potion.amount < 1
+        ? await DB.query(`update members set potion = '' where member_id = ${this.turn.member.id}`)
+        : await DB.query(`update members set potion = '[${JSON.stringify(this.turn.potion)}]' where member_id = ${this.turn.member.id}`)
 
-      this.player.health.current += Math.floor(this.player.health.max / 100 * this.player.potion.percentage)
+      this.turn.health.current += Math.floor(this.turn.health.max / 100 * this.turn.potion.percentage)
 
-      if (this.player.health.current >= this.player.health.max) this.player.health.current = this.player.health.max
+      let oldHealth = this.turn.health.current
+      if (this.turn.health.current >= this.turn.health.max) this.turn.health.current = this.turn.health.max
 
-      this.embedActions.setStatus(`**${this.player.name}** used ${emote}`)
-      this.embedActions.updateBattle(2)
+      this.embedActions.setStatus(`**${this.turn.name}** used ${emote}`)
+      this.embedActions.updateBattle(2, oldHealth)
       return false
     }
   }
 
   async useThrowable() {
-    let throwable = await this.player.throwable
+    let throwable = await this.turn.throwable
     const emote = throwable.shop.uploaded ? Bot.client.emojis.cache.find(e => e.name === throwable.shop.emoji) : throwable.shop.emoji
 
     throwable.amount -= 1
 
     this.damage = throwable.shop.damage
-    this.enemy.health.current -= this.damage
+    this.nextTurn.health.current -= this.damage
 
     throwable.amount < 1
-      ? await DB.query(`update members set throwable = '' where member_id = ${this.player.member.id}`)
-      : await DB.query(`update members set throwable = '[${JSON.stringify(throwable)}]' where member_id = ${this.player.member.id}`)
+      ? await DB.query(`update members set throwable = '' where member_id = ${this.turn.member.id}`)
+      : await DB.query(`update members set throwable = '[${JSON.stringify(throwable)}]' where member_id = ${this.turn.member.id}`)
 
-    if (this.enemy.hp.current < 1) {
-      this.embedActions.setStatus(`**${this.player.name}** killed **${this.enemy.name}** with ${emote}!`)
+    if (this.nextTurn.health.current < 1) {
+      this.embedActions.setStatus(`**${this.turn.name}** killed **${this.nextTurn.name}** with ${emote}!`)
       this.embedActions.updateBattle(0)
       return true
     } else {
-      this.embedActions.setStatus(`**${this.player.name}** threw a ${emote} **${throwable.shop.name}** and did **${throwable.shop.damage}** damage to **${this.enemy.name}'s (${this.enemy.health.current}/${this.enemy.health.max})**`)
+      this.embedActions.setStatus(`**${this.turn.name}** threw a ${emote} **${throwable.shop.name}** and did **${throwable.shop.damage}** damage to **${this.nextTurn.name}'s (${this.nextTurn.health.current}/${this.nextTurn.health.max})**`)
       this.embedActions.updateBattle(0)
       return false
     }
@@ -253,29 +283,29 @@ module.exports = class Battle {
     await this.setDamage()
 
     if (await this.dodge() === true) {
-      this.embedActions.setStatus(`**${this.enemy.name}** dodged!`)
-      this.embedActions.updateBattle(99)
+      this.embedActions.setStatus(`**${this.nextTurn.name}** dodged!`)
+      this.embedActions.updateBattle(98)
       return 'skip'
     }
 
-    this.enemy.health.current -= this.damage
+    this.nextTurn.health.current -= this.damage
 
-    if (this.enemy.health.current < 1) {
+    if (this.nextTurn.health.current < 1) {
       if (this.run() === true) {
-        this.embedActions.setStatus(`Oh no, **${this.enemy.name}** ran away from **${this.player.name}**!`)
+        this.embedActions.setStatus(`**${this.nextTurn.name}** ran away from **${this.turn.name}**!`)
         this.embedActions.updateBattle(0)
         return false
       }
 
       else {
-        this.embedActions.setStatus(`**${this.player.name}** killed **${this.enemy.name}** (**${this.enemy.health.current}/${this.enemy.hp.max}**)`)
+        this.embedActions.setStatus(`**${this.turn.name}** killed **${this.nextTurn.name}** (**${this.nextTurn.health.current}/${this.nextTurn.health.max}**)`)
         this.embedActions.updateBattle(0)
         return true
       }
     }
 
     else {
-      this.embedActions.setStatus(`**${this.player.name}** did **${this.damage}** damage to **${this.enemy.name} (${this.enemy.health.current}/${this.enemy.health.max})**`)
+      this.embedActions.setStatus(`**${this.turn.name}** did **${this.damage}** damage to **${this.nextTurn.name} (${this.nextTurn.health.current}/${this.nextTurn.health.max})**`)
       this.embedActions.updateBattle(0)
       return 'skip'
     }
@@ -283,15 +313,15 @@ module.exports = class Battle {
   }
 
   run() {
-    const chance = Math.floor(Math.random() * 3) + 1
+    const chance = Math.floor(Math.random() * 4)
 
-    if (chance == 1) {
-      this.embedActions.setStatus(`**${this.player.name}** couldn't run away from **${this.enemy.name}**!`)
+    if (chance < 3) {
+      this.embedActions.setStatus(`**${this.turn.name}** couldn't run away from **${this.nextTurn.name}**!`)
       this.embedActions.updateBattle(99)
       return false
     } else {
 
-      this.embedActions.setStatus(`**${this.player.name}** successfully ran away from **${this.enemy.name}**!`)
+      this.embedActions.setStatus(`**${this.turn.name}** successfully ran away from **${this.nextTurn.name}**!`)
       this.embedActions.updateBattle(99)
       return true
     }
